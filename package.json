@@ -1,0 +1,11 @@
+{
+  "name": "sahsih-site",
+  "version": "1.0.0",
+  "description": "Static marketing site for Sahsih hangover jelly sticks",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes serve .",
+    "dev": "python3 -m http.server 8000"
+  },
+  "license": "UNLICENSED"
+}
