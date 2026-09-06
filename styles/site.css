@@ -1,0 +1,852 @@
+/* ===================================================================
+   Sahsih — design system
+   -------------------------------------------------------------------
+   One token layer, one motion language, one grid. Every value on the
+   page comes from a scale defined here; nothing is spelled out twice.
+   =================================================================== */
+
+/* -------------------------------------------------------------------
+   1. Tokens
+   ------------------------------------------------------------------- */
+:root {
+  /* Ink — the rule colours are opaque so they can be painted by grid
+     gaps, which is what keeps every cell divider exactly 2px. */
+  --ink:        #060606;
+  --paper:      #f3f2f2;
+  --body:       #d7d3d3;
+  --muted:      #9b9797;
+  --faint:      #605d5d;
+  --pink:       #ff4de0;
+  --blue:       #3f6cff;
+  --rule:       #353535;  /* == paper at 20% over ink */
+  --rule-soft:  #272727;  /* == paper at 14% over ink */
+  --plate:      #101010;  /* image plates, one step off the ink */
+
+  /* Tints painted as overlays so hovers cross-fade instead of jumping. */
+  --tint-pink:  rgba(255, 77, 224, 0.08);
+  --tint-blue:  rgba(63, 108, 255, 0.10);
+  --tint-paper: rgba(243, 242, 242, 0.05);
+
+  /* Space — a single 4px-based scale. */
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px;  --s-7: 32px; --s-8: 40px;
+  --s-9: 56px; --s-10: 72px;
+
+  /* Layout */
+  --wrap:    1400px;
+  --gutter:  clamp(22px, 4.4vw, 56px);
+  --cell-x:  clamp(18px, 2vw, 28px);   /* always < --gutter */
+  --cell-y:  clamp(32px, 3.4vw, 48px);
+  --lede-t:  clamp(56px, 7vw, 96px);
+  --lede-b:  clamp(24px, 3vw, 36px);
+  --rule-w:  2px;
+  --header-h: 74px;                     /* kept in sync by main.js */
+
+  /* Type — three tracking values, used everywhere, and nowhere else. */
+  --track-wide:  0.22em;
+  --track-mid:   0.16em;
+  --track-tight: 0.12em;
+
+  --t-eyebrow: 11px;
+  --t-meta:    11px;
+  --t-btn:     12px;
+  --t-small:   13px;
+  --t-body:    16px;
+  --t-lead:    clamp(17px, 1.3vw, 19px);
+  --t-h3:      clamp(21px, 1.8vw, 25px);
+  --t-h2:      clamp(32px, 4.4vw, 60px);
+  --t-h1:      clamp(42px, 6.2vw, 92px);
+  --t-display: clamp(40px, 7vw, 108px);
+  --t-figure:  clamp(34px, 4vw, 54px);
+
+  /* Motion — four durations, three curves. Everything that moves on
+     this site picks from this list. */
+  --dur-fast:   140ms;
+  --dur:        260ms;
+  --dur-slow:   420ms;
+  --dur-reveal: 760ms;
+  --stagger:    70ms;
+  --ease:       cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0.05, 0.36, 1);
+  --ease-jelly: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+  /* The brand squash, so every pressable thing deforms identically. */
+  --squash:      scale(1.03, 0.96);
+  --squash-hard: scale(1.05, 0.93);
+  --press:       scale(0.985, 1.02);
+
+  color-scheme: dark;
+}
+
+/* -------------------------------------------------------------------
+   2. Base
+   ------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--ink);
+  scrollbar-color: var(--rule) var(--ink);
+  scroll-padding-top: calc(var(--header-h) + var(--s-6));
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; margin: 0; }
+table { border-collapse: collapse; }
+
+h1, h2, h3, p, figure { margin: 0; }
+
+h1, h2, h3 {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+::selection { background: var(--pink); color: var(--ink); }
+
+:focus-visible {
+  outline: var(--rule-w) solid var(--pink);
+  outline-offset: 3px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+.skip {
+  position: fixed;
+  top: var(--s-3);
+  left: var(--s-3);
+  z-index: 200;
+  padding: var(--s-3) var(--s-5);
+  background: var(--pink);
+  color: var(--ink);
+  font-size: var(--t-btn);
+  font-weight: 900;
+  letter-spacing: var(--track-tight);
+  text-transform: uppercase;
+  transform: translateY(-200%);
+  transition: transform var(--dur) var(--ease);
+}
+.skip:focus-visible { transform: translateY(0); }
+
+.vh {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+[hidden] { display: none !important; }
+
+/* -------------------------------------------------------------------
+   3. Type utilities
+   ------------------------------------------------------------------- */
+.eyebrow {
+  font-size: var(--t-eyebrow);
+  font-weight: 800;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.eyebrow--pink { color: var(--pink); }
+.eyebrow--blue { color: var(--blue); }
+
+.meta {
+  font-size: var(--t-meta);
+  font-weight: 800;
+  letter-spacing: var(--track-mid);
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.lead  { font-size: var(--t-lead); color: var(--body); max-width: 46ch; }
+.copy  { font-size: var(--t-body); line-height: 1.55; color: var(--body); max-width: 52ch; }
+.fine  { font-size: var(--t-small); line-height: 1.5; color: var(--muted); max-width: 48ch; }
+
+.h1 { font-size: var(--t-h1); }
+.h2 { font-size: var(--t-h2); }
+.h3 { font-size: var(--t-h3); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; }
+
+/* -------------------------------------------------------------------
+   4. Layout — sections, ruled grids
+   -------------------------------------------------------------------
+   A band is a grid whose gaps are the rules. Because the rule is drawn
+   by the gap, every cell carries the same padding on all four sides and
+   the dividers stay 2px however the grid wraps. The band is pulled out
+   by exactly one cell inset, so cell content lines up with the section
+   text column while the rules sit just outside it.
+   ------------------------------------------------------------------- */
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.lede {
+  padding-block: var(--lede-t) var(--lede-b);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+
+.lede--split {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-6);
+}
+.lede--split > .lede-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+}
+
+.band {
+  margin-inline: calc(-1 * var(--cell-x));
+  display: grid;
+  gap: var(--rule-w);
+  background: var(--rule);
+  border-bottom: var(--rule-w) solid var(--rule);
+}
+.band--capped { border-top: var(--rule-w) solid var(--rule); }
+.band--open   { border-bottom: 0; }
+
+.cell {
+  position: relative;
+  isolation: isolate;
+  background: var(--ink);
+  padding: var(--cell-y) var(--cell-x);
+  min-width: 0;
+}
+
+/* Hover tints are overlays, so they cross-fade rather than snap. */
+.cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+.cell--pink::after  { background: var(--tint-pink); }
+.cell--blue::after  { background: var(--tint-blue); }
+.cell--paper::after { background: var(--tint-paper); }
+.cell--pink:hover::after,
+.cell--blue:hover::after,
+.cell--paper:hover::after,
+.cell--pink:focus-within::after,
+.cell--blue:focus-within::after,
+.cell--paper:focus-within::after { opacity: 1; }
+
+.cell__in {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-4);
+  height: 100%;
+  min-width: 0;
+}
+.cell__in--center { align-items: center; justify-content: center; }
+.cell__in--wide   { align-self: stretch; }
+
+/* Column counts are explicit at every width: the grid never leaves a
+   stretched orphan on the last row. */
+.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+@media (max-width: 1180px) {
+  .cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .cols-2, .cols-3 { grid-template-columns: minmax(0, 1fr); }
+  .cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* -------------------------------------------------------------------
+   5. Media plates
+   -------------------------------------------------------------------
+   The product shots ship at five different aspect ratios. Every one is
+   centred inside a fixed-ratio plate, so tiles in a row are identical
+   in height and the borders line up across the grid.
+   ------------------------------------------------------------------- */
+.plate {
+  --ratio: 3 / 4;
+  --plate-pad: var(--s-4);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: var(--plate-pad);
+  background: var(--plate);
+  border: var(--rule-w) solid var(--rule);
+  overflow: hidden;
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+/* The ratio lives on the image box, not the plate. A percentage height
+   does not resolve against an aspect-ratio box, and an absolutely
+   positioned replaced element ignores its insets when sizing — either way
+   the five product shots came out at five different heights. Giving the
+   image box the ratio makes every plate in a row identical, and object-fit
+   centres each shot inside it. */
+.plate img,
+.plate__glyph {
+  width: 100%;
+  aspect-ratio: var(--ratio);
+  object-fit: contain;
+  transition: transform var(--dur-slow) var(--ease);
+}
+.plate--wide  { --ratio: 3 / 1; max-width: 720px; }
+.plate__glyph {
+  display: grid;
+  place-items: center;
+  font-size: clamp(64px, 8vw, 124px);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--blue);
+  transition: transform var(--dur-slow) var(--ease-jelly);
+}
+.tile--cta:hover .plate__glyph,
+.tile--cta:focus-within .plate__glyph { transform: scale(1.08, 0.92); }
+.plate--hero  { --ratio: 11 / 5; --plate-pad: 0px; border: 0; background: none; }
+.plate--panel { max-width: 320px; }
+
+/* -------------------------------------------------------------------
+   6. Buttons and links
+   ------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-4) var(--s-6);
+  border: var(--rule-w) solid transparent;
+  font-size: var(--t-btn);
+  font-weight: 900;
+  letter-spacing: var(--track-tight);
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--dur) var(--ease-jelly),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+.btn:hover  { transform: var(--squash); }
+.btn:active { transform: var(--press); transition-duration: var(--dur-fast); }
+
+.btn__arrow {
+  display: inline-block;
+  transition: transform var(--dur) var(--ease-jelly);
+}
+.btn:hover .btn__arrow { transform: translateX(4px); }
+.btn--back:hover .btn__arrow { transform: translateX(-4px); }
+
+.btn--pink  { background: var(--pink); border-color: var(--pink); color: var(--ink); }
+.btn--pink:hover { background: var(--blue); border-color: var(--blue); color: var(--paper); }
+
+.btn--ghost { border-color: var(--paper); color: var(--paper); }
+.btn--ghost:hover { background: var(--paper); border-color: var(--paper); color: var(--ink); }
+
+.btn--outline { border-color: var(--paper); color: var(--paper); }
+.btn--outline:hover { border-color: var(--blue); color: var(--blue); }
+
+.btn--ink { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.btn--ink:hover { background: var(--paper); border-color: var(--paper); color: var(--ink); }
+
+.btn--sm { padding: var(--s-3) var(--s-5); font-size: var(--t-meta); }
+.btn--lg { padding: var(--s-5) var(--s-7); font-size: var(--t-small); }
+
+/* Text links get an underline that wipes in from the left. */
+.link {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: color var(--dur) var(--ease), background-size var(--dur) var(--ease);
+}
+.link:hover, .link:focus-visible { color: var(--pink); background-size: 100% 1px; }
+
+/* -------------------------------------------------------------------
+   7. Header
+   ------------------------------------------------------------------- */
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: var(--ink);
+  border-bottom: var(--rule-w) solid var(--rule);
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.hdr.is-scrolled {
+  background: rgba(6, 6, 6, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hdr.is-scrolled { background: var(--ink); }
+}
+
+.hdr__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-7);
+  padding-block: var(--s-4);
+}
+
+.hdr__logo {
+  flex: none;
+  height: 38px;
+  width: auto;
+  mix-blend-mode: screen;
+  cursor: pointer;
+  transition: transform var(--dur) var(--ease-jelly), opacity var(--dur) var(--ease);
+}
+.hdr__logo:hover { transform: var(--squash); }
+.hdr__logo:active { transform: var(--press); }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-7);
+  margin-left: auto;
+}
+.nav__item {
+  position: relative;
+  padding-block: var(--s-1);
+  font-size: var(--t-btn);
+  font-weight: 700;
+  letter-spacing: var(--track-mid);
+  text-transform: uppercase;
+  color: var(--paper);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.nav__item::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: var(--rule-w);
+  background: var(--pink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.nav__item:hover { color: var(--pink); }
+.nav__item:hover::after,
+.nav__item[aria-current="page"]::after { transform: scaleX(1); }
+.nav__item[aria-current="page"] { color: var(--pink); }
+
+.hdr__cart { flex: none; }
+.hdr__count {
+  display: inline-block;
+  min-width: 1ch;
+  font-variant-numeric: tabular-nums;
+}
+.hdr__count.is-bumped { animation: pop var(--dur-slow) var(--ease-jelly); }
+
+.burger {
+  display: none;
+  flex: none;
+  width: 44px; height: 40px;
+  padding: 0;
+  border: var(--rule-w) solid var(--paper);
+  cursor: pointer;
+  place-items: center;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.burger:hover { background: var(--tint-paper); }
+.burger__box { display: grid; gap: 4px; width: 18px; }
+.burger__box i {
+  display: block;
+  height: 2px;
+  background: var(--paper);
+  transition: transform var(--dur) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+.hdr.is-open .burger__box i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hdr.is-open .burger__box i:nth-child(2) { opacity: 0; }
+.hdr.is-open .burger__box i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* The panel animates its own height with the 0fr/1fr grid trick, which
+   keeps the slide smooth without hard-coding a height. */
+.hdr__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-slow) var(--ease);
+}
+.hdr.is-open .hdr__panel { grid-template-rows: 1fr; }
+.hdr__panel > div { overflow: hidden; }
+.hdr__panel .nav {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  border-top: var(--rule-w) solid var(--rule);
+}
+.hdr__panel .nav__item {
+  padding: var(--s-4) 0;
+  border-bottom: var(--rule-w) solid var(--rule-soft);
+}
+.hdr__panel .nav__item::after { display: none; }
+
+.hdr__progress {
+  position: absolute;
+  left: 0; right: 0; bottom: calc(-1 * var(--rule-w));
+  height: var(--rule-w);
+  background: var(--pink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+@media (max-width: 880px) {
+  .hdr__bar { gap: var(--s-4); }
+  .hdr__bar > .nav { display: none; }
+  .burger { display: grid; }
+  .hdr__cart { margin-left: auto; }
+}
+
+/* -------------------------------------------------------------------
+   8. Views
+   ------------------------------------------------------------------- */
+.view {
+  display: block;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+.view.is-leaving  { opacity: 0; transform: translateY(10px); pointer-events: none; }
+.view.is-entering { opacity: 0; transform: translateY(-10px); }
+
+/* -------------------------------------------------------------------
+   9. Ticker
+   ------------------------------------------------------------------- */
+.ticker {
+  overflow: hidden;
+  background: var(--pink);
+  color: var(--ink);
+  border-bottom: var(--rule-w) solid var(--ink);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.ticker__track {
+  display: flex;
+  width: max-content;
+  animation: ticker 34s linear infinite;
+  will-change: transform;
+}
+.ticker:hover .ticker__track { animation-play-state: paused; }
+.ticker__run {
+  display: flex;
+  align-items: center;
+  gap: var(--s-8);
+  padding: var(--s-3) var(--s-8) var(--s-3) 0;
+  margin: 0;
+  list-style: none;
+  font-size: var(--t-small);
+  font-weight: 900;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ticker__run li { display: flex; align-items: center; gap: var(--s-8); }
+.ticker__run li::after { content: "•"; }
+
+/* -------------------------------------------------------------------
+   10. Figures, table, tiles, cards
+   ------------------------------------------------------------------- */
+.figure {
+  font-size: var(--t-figure);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.figure--pink { color: var(--pink); }
+.figure--blue { color: var(--blue); }
+
+.stage {
+  font-size: clamp(38px, 4.8vw, 62px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.stage--pink  { color: var(--pink); }
+.stage--paper { color: var(--paper); }
+.stage--blue  { color: var(--blue); }
+
+.step {
+  font-size: var(--t-btn);
+  font-weight: 900;
+  letter-spacing: var(--track-wide);
+  line-height: 1;
+}
+.step--pink { color: var(--pink); }
+.step--blue { color: var(--blue); }
+
+.panel {
+  width: 100%;
+  text-align: left;
+}
+.panel th {
+  padding: var(--s-3) var(--s-3) var(--s-3) 0;
+  border-bottom: var(--rule-w) solid var(--paper);
+  font-size: var(--t-meta);
+  font-weight: 900;
+  letter-spacing: var(--track-mid);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.panel td {
+  padding: var(--s-4) var(--s-3) var(--s-4) 0;
+  border-bottom: var(--rule-w) solid var(--rule-soft);
+}
+.panel th:last-child, .panel td:last-child { padding-right: 0; }
+.panel tbody tr { transition: background-color var(--dur) var(--ease); }
+.panel tbody tr:hover { background: var(--tint-paper); }
+.panel__name { font-size: var(--t-lead); font-weight: 700; }
+.panel__role { font-size: var(--t-body); color: var(--body); }
+
+.quote { font-size: clamp(18px, 1.5vw, 21px); line-height: 1.4; font-weight: 600; }
+
+/* Product tiles and cards share one skeleton so nothing drifts. */
+.tile { cursor: pointer; }
+.tile .cell__in { gap: var(--s-4); }
+.tile:hover .plate img,
+.tile:focus-within .plate img { transform: scale(1.05); }
+.tile:hover .plate,
+.tile:focus-within .plate { border-color: var(--pink); }
+.tile__name { font-size: var(--t-lead); font-weight: 800; letter-spacing: -0.01em; }
+
+.card .cell__in { gap: var(--s-4); }
+.card__foot {
+  margin-top: auto;
+  padding-top: var(--s-2);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.card__price {
+  font-size: clamp(19px, 1.6vw, 23px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The sixth tile in each grid of five: a way on, not a product. */
+.tile__mark {
+  display: inline-block;
+  color: var(--blue);
+  transition: transform var(--dur) var(--ease-jelly);
+}
+.tile--cta:hover .tile__mark,
+.tile--cta:focus-within .tile__mark { transform: translateX(5px); }
+.tile--cta:hover .plate,
+.tile--cta:focus-within .plate { border-color: var(--blue); }
+
+/* A price beside a button, in normal flow — the card variant pins itself
+   to the bottom of the cell, this one follows the copy. */
+.price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-5);
+  padding-top: var(--s-2);
+}
+
+/* -------------------------------------------------------------------
+   11. CTA band, footer, toast
+   ------------------------------------------------------------------- */
+.cta {
+  background: var(--pink);
+  color: var(--ink);
+}
+.cta__in {
+  padding-block: clamp(64px, 8vw, 112px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-7);
+}
+.cta h2 { color: var(--ink); font-size: var(--t-display); line-height: 0.9; max-width: 18ch; }
+
+.foot__brand { height: 44px; width: auto; mix-blend-mode: screen; }
+.foot__col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); font-size: var(--t-small); color: var(--muted); }
+.foot__head { font-size: var(--t-meta); font-weight: 800; letter-spacing: var(--track-mid); text-transform: uppercase; color: var(--paper); }
+.foot__legal { font-size: 12px; line-height: 1.5; color: var(--faint); }
+.foot__base {
+  padding-block: var(--s-5) var(--s-8);
+  font-size: var(--t-meta);
+  font-weight: 800;
+  letter-spacing: var(--track-mid);
+  text-transform: uppercase;
+  color: var(--faint);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  justify-content: space-between;
+}
+
+.toast {
+  position: fixed;
+  right: var(--gutter);
+  bottom: var(--gutter);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  max-width: min(360px, calc(100vw - var(--gutter) * 2));
+  padding: var(--s-4) var(--s-5);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--t-meta);
+  font-weight: 900;
+  letter-spacing: var(--track-tight);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(140%);
+  pointer-events: none;
+  transition:
+    transform var(--dur-slow) var(--ease-jelly),
+    opacity var(--dur) var(--ease);
+}
+.toast.is-shown { opacity: 1; transform: translateY(0); }
+.toast__dot { width: 10px; height: 10px; flex: none; background: var(--pink); }
+
+/* -------------------------------------------------------------------
+   12. Motion
+   ------------------------------------------------------------------- */
+@keyframes wobble {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1, 1); }
+  25%      { transform: translate3d(0, -8px, 0) rotate(-0.6deg) scale(1.01, 0.985); }
+  50%      { transform: translate3d(0, 0, 0) rotate(0deg) scale(0.99, 1.015); }
+  75%      { transform: translate3d(0, 6px, 0) rotate(0.5deg) scale(1.012, 0.99); }
+}
+@keyframes bob {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1); }
+  50%      { transform: translate3d(0, -10px, 0) scale(0.99, 1.01); }
+}
+@keyframes ticker {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); color: var(--pink); }
+  100% { transform: scale(1); }
+}
+
+.float { animation: wobble 7s var(--ease-in-out) infinite; will-change: transform; }
+.float--slow { animation: bob 6s var(--ease-in-out) infinite; }
+
+/* Scroll reveal. Gated on .js so the page is fully readable without
+   JavaScript, and applied to cell contents rather than cells so the
+   grid rules never flash through. */
+.js .reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity var(--dur-reveal) var(--ease),
+    transform var(--dur-reveal) var(--ease);
+}
+.js .reveal.is-in { opacity: 1; transform: translate3d(0, 0, 0); }
+
+.js .band > .cell:nth-child(1) .reveal { transition-delay: calc(var(--stagger) * 0); }
+.js .band > .cell:nth-child(2) .reveal { transition-delay: calc(var(--stagger) * 1); }
+.js .band > .cell:nth-child(3) .reveal { transition-delay: calc(var(--stagger) * 2); }
+.js .band > .cell:nth-child(4) .reveal { transition-delay: calc(var(--stagger) * 3); }
+.js .band > .cell:nth-child(5) .reveal { transition-delay: calc(var(--stagger) * 4); }
+.js .band > .cell:nth-child(6) .reveal { transition-delay: calc(var(--stagger) * 5); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .reveal { opacity: 1; transform: none; }
+  .ticker__track { animation: none; }
+}
+
+/* -------------------------------------------------------------------
+   13. Narrow-screen adjustments
+   ------------------------------------------------------------------- */
+@media (max-width: 980px) {
+  .plate--hero { aspect-ratio: 3 / 2; }
+  .lede--split { align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .btn { width: 100%; }
+  .btn--sm, .btn--inline { width: auto; }
+  .card__foot { flex-wrap: wrap; }
+  .foot__base { justify-content: flex-start; }
+}
+
+/* -------------------------------------------------------------------
+   14. Small structural helpers
+   ------------------------------------------------------------------- */
+button.cell,
+a.cell {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Lines that need to reach the same extent as a band's rules. */
+.bleed {
+  margin-inline: calc(-1 * var(--cell-x));
+  padding-inline: var(--cell-x);
+}
+.foot__base { border-top: var(--rule-w) solid var(--rule); }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  width: 100%;
+}
+.plate--hero { overflow: visible; }
