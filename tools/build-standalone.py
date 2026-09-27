@@ -41,7 +41,10 @@ def inline_css(css_path: Path) -> str:
     css = css_path.read_text(encoding="utf-8")
 
     def repl(m):
-        target = (css_path.parent / m.group(1)).resolve()
+        ref = m.group(1)
+        if ref.startswith("data:"):
+            return m.group(0)  # already inline (the grain texture)
+        target = (css_path.parent / ref).resolve()
         return f'url("{data_uri(target)}")'
 
     return re.sub(r'url\("([^"]+)"\)', repl, css)

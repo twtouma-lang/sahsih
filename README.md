@@ -1,8 +1,9 @@
 # Sahsih, marketing site
 
-Static one-page site for Sahsih, a hangover jelly stick. Two views (home and
-shop), five flavours, a cart with line items, and a design system in
-`DESIGN.md`.
+Static one-page site for Sahsih, a hangover jelly stick. The home view is a
+scroll-driven product film (an opening card, pinned scenes that scrub with
+the scroll, film grain), the shop view is a plain grid with a cart, and the
+design system lives in `DESIGN.md`.
 
 No build step, no framework, no dependencies. Open `index.html` and it works.
 
@@ -32,7 +33,7 @@ scripts/
   main.js             Routing, cart, drawer, menu, ticker control, reveals
 assets/
   img/                Product renders as PNG plus WebP and AVIF siblings, OG card
-  img/cut/            Transparent cutouts of the renders (what the page shows)
+  img/cut/            Transparent cutouts of the renders and wordmark (what the page shows)
   fonts/              Archivo woff2 subsets (latin, latin-ext, vietnamese)
 tools/
   build-images.py     Regenerates the WebP/AVIF siblings and the OG card
@@ -107,10 +108,18 @@ image takes about a minute on CPU). Run it after replacing a render.
 
 ## Motion
 
+The home page is built from scenes. Each `.scene` is a tall wrapper with a
+sticky `.scene__stage`; CSS scroll-driven animations (`view-timeline`) scrub
+the elements inside against the scroll position, so there is no scroll
+listener and no animation library. Browsers without that support, and
+anyone with reduced motion, get every scene as a plain full-height section
+with everything visible. The opening card shows once per session, only when
+the page opens at the top of the home view, and any input skips it.
+
 Every animation collapses under `prefers-reduced-motion`, and the page is
 complete without script: hidden starting states only apply under the `.js`
-class inside a `no-preference` media query. The motion vocabulary and the
-rule for adding to it are in `DESIGN.md`, section 7.
+class inside a `no-preference` media query. The motion vocabulary, the scene
+rules and the three clocks are in `DESIGN.md`, sections 4 and 7.
 
 ## Sharing a single file
 

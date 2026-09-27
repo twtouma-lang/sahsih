@@ -1,8 +1,11 @@
 /* ==================================================================
    Sahsih site styles
 
-   Tokens live in :root and mirror DESIGN.md at the repo root. Layout is
-   native CSS: no framework, no preprocessor, no build step.
+   Tokens live in :root and mirror DESIGN.md. The home page is a sequence
+   of scenes: each pins to the viewport while you scroll, and the scroll
+   position scrubs the shot (CSS scroll-driven animations, no listeners).
+   Without that support, or with reduced motion, every scene renders as a
+   plain stacked section. Native CSS, no framework, no build step.
 
    Sections
      1. Tokens
@@ -10,20 +13,21 @@
      3. Type
      4. Buttons
      5. Header and navigation
-     6. Hero
-     7. Ticker
-     8. Stats
-     9. Section scaffolding and hairline grids
-    10. Three jobs (bento)
+     6. Film layer: grain, vignette, opening card, cut
+     7. Scenes: wrapper, stage, lights, labels
+     8. Title scene
+     9. Stats band
+    10. Three jobs scene
     11. Ingredient panel
-    12. Timeline
-    13. Flavours
-    14. Quotes
-    15. Pink CTA
-    16. Shop
-    17. Footer
-    18. Cart drawer and toast
-    19. Motion
+    12. When scene
+    13. Flavours scene
+    14. Intertitles
+    15. Finale
+    16. Ticker
+    17. Shop
+    18. Footer
+    19. Cart drawer and toast
+    20. Motion: keyframes, load sequence, reveals, scrubbing, reduced motion
    ================================================================== */
 
 /* ------------------------------------------------------------------
@@ -45,7 +49,6 @@
   --line: rgba(243, 242, 242, 0.2);
   --line-soft: rgba(243, 242, 242, 0.12);
 
-  /* Flavour tints, sampled from the packaging splashes. */
   --berry: #c74dff;
   --mango: #ff9a2e;
   --pineapple: #ffd52e;
@@ -57,7 +60,7 @@
   --container: 1400px;
   --gutter: 28px;
   --header-h: 66px;
-  --section-y: 72px;
+  --section-y: 96px;
   --rule: 2px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -67,7 +70,7 @@
 @media (max-width: 720px) {
   :root {
     --gutter: 20px;
-    --section-y: 48px;
+    --section-y: 64px;
   }
 }
 
@@ -80,7 +83,6 @@
 
 html {
   background: var(--bg);
-  scroll-padding-top: calc(var(--header-h) + 16px);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -140,7 +142,7 @@ button {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 300;
   padding: 14px 18px;
   background: var(--pink);
   color: var(--bg);
@@ -170,18 +172,16 @@ button {
 }
 
 .display {
-  font-size: clamp(44px, 6.4vw, 92px);
-  line-height: 0.92;
+  font-size: clamp(52px, 7.4vw, 112px);
+  line-height: 0.9;
   font-weight: 900;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 .display--sm {
   font-size: clamp(38px, 5.4vw, 76px);
   line-height: 0.95;
 }
-/* Each headline line is clipped so it can rise into view. The padding
-   keeps descenders (the q in Squeeze) clear of the clip edge. */
 .display .line {
   display: block;
   overflow: clip;
@@ -200,6 +200,16 @@ button {
 }
 .headline--sm { font-size: clamp(30px, 3.6vw, 50px); }
 
+/* Chapter title: a real heading at a quiet size, sentence case. */
+.scene__label {
+  font-size: clamp(20px, 2.2vw, 30px);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--fg-2);
+  text-wrap: balance;
+}
+
 .lede {
   max-width: 52ch;
   font-size: 17px;
@@ -216,12 +226,10 @@ button {
   text-wrap: pretty;
 }
 
-/* Small caption label used under stats, products and quotes. */
 .stat__label,
 .product__size,
 .quote__who,
-.flavour__note,
-.job__ingredient {
+.caption__ingredient {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.18em;
@@ -256,7 +264,6 @@ button {
   padding: 0 18px;
   font-size: 11px;
 }
-
 .btn--primary {
   background: var(--pink);
   border-color: var(--pink);
@@ -271,7 +278,6 @@ button {
   border-color: var(--bg);
   color: var(--fg);
 }
-
 @media (hover: hover) {
   .btn--primary:hover {
     background: var(--fg);
@@ -303,6 +309,12 @@ button {
   background: var(--bg);
   border-bottom: var(--rule) solid var(--line);
 }
+.site-header--glass {
+  background: rgba(6, 6, 6, 0.55);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom-color: var(--line-soft);
+}
 
 .site-header__bar {
   position: relative;
@@ -316,7 +328,6 @@ button {
 .site-header__logo img {
   height: 38px;
   width: auto;
-  mix-blend-mode: screen;
 }
 
 .site-nav {
@@ -412,105 +423,187 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   6. Hero
+   6. Film layer: grain, vignette, opening card, cut
    ------------------------------------------------------------------ */
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  border-bottom: var(--rule) solid var(--line);
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 70;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
 }
 
-.hero__copy {
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+/* Opening title card. Shown only when the head script decided so. */
+.intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  place-items: center;
+  background: #000;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+.has-intro .intro { display: grid; }
+.intro.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+.intro__mark { width: min(48vw, 420px); }
+
+/* Cut to black between views. */
+.cut {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.cut.is-on {
+  opacity: 1;
+  transition-duration: 0.16s;
+}
+
+/* ------------------------------------------------------------------
+   7. Scenes: wrapper, stage, lights, labels
+   The base layout is the static one (also the fallback). Section 20
+   turns scenes into pinned, scrubbed shots when the browser can.
+   ------------------------------------------------------------------ */
+.scene { position: relative; }
+
+.scene__stage {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: grid;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: calc(var(--header-h) + 24px) var(--gutter) 40px;
+}
+.scene__stage > * {
+  max-width: var(--container);
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* Pools of coloured light. The container is what the scroll scrubs;
+   the gradient inside it drifts on its own clock. */
+.light {
+  position: absolute;
+  z-index: -1;
+  width: 78vmax;
+  aspect-ratio: 1;
+  max-width: none;
+  margin: 0;
+  pointer-events: none;
+  translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -28px);
+  transition: translate 0.8s var(--ease-out);
+}
+.light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.light--pink {
+  left: -22%;
+  bottom: -30%;
+}
+.light--pink::before { background: radial-gradient(closest-side, rgba(255, 77, 224, 0.38), transparent); }
+.light--blue {
+  right: -22%;
+  top: -34%;
+  translate: calc(var(--px, 0) * 30px) calc(var(--py, 0) * 22px);
+}
+.light--blue::before { background: radial-gradient(closest-side, rgba(63, 108, 255, 0.34), transparent); }
+.light--white {
+  left: 50%;
+  top: 50%;
+  width: 60vmax;
+  transform: translate(-50%, -50%);
+}
+.light--white::before { background: radial-gradient(closest-side, rgba(243, 242, 242, 0.14), transparent); }
+
+/* ------------------------------------------------------------------
+   8. Title scene
+   ------------------------------------------------------------------ */
+.scene--title .scene__stage {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  column-gap: 24px;
+  padding-bottom: 32px;
+}
+
+.title {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 26px;
-  padding: 56px 40px 64px 0;
+  max-width: 640px;
+  margin-inline: 0;
 }
-
-.hero__media {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  place-items: center;
-  padding: 48px 0 40px 16px;
-  border-left: var(--rule) solid var(--line);
-  overflow: clip;
-}
-
-/* Stage light: two soft pools of the brand colours behind the sticks.
-   They drift slowly so the product reads as lit, not pasted on. */
-.hero__media::before,
-.hero__media::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: 72%;
-  aspect-ratio: 1;
-  pointer-events: none;
-}
-.hero__media::before {
-  left: -18%;
-  bottom: -28%;
-  background: radial-gradient(closest-side, rgba(255, 77, 224, 0.34), transparent);
-  translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -28px);
-  transition: translate 0.8s var(--ease-out);
-}
-.hero__media::after {
-  right: -18%;
-  top: -34%;
-  background: radial-gradient(closest-side, rgba(63, 108, 255, 0.3), transparent);
-  translate: calc(var(--px, 0) * 30px) calc(var(--py, 0) * 22px);
-  transition: translate 0.8s var(--ease-out);
-}
-
-/* Five cutouts in a shallow arc. The stage tilts a few degrees toward
-   the cursor (set as --tx/--ty by the script; zero without a pointer). */
-.hero__stage {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  align-items: end;
-  gap: 1.5%;
-  width: 100%;
-  max-width: 780px;
-  transform: perspective(1200px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg));
-  transform-style: preserve-3d;
-  transition: transform 0.6s var(--ease-out);
-}
-.hero__stick { min-width: 0; }
-.hero__stick:nth-child(2),
-.hero__stick:nth-child(4) { margin-bottom: 7%; }
-.hero__stick:nth-child(3) { margin-bottom: 14%; }
-.hero__stick img {
-  width: 100%;
-  filter: drop-shadow(0 26px 22px rgba(0, 0, 0, 0.6));
-  transition: translate 0.5s var(--ease-out), scale 0.5s var(--ease-out);
-}
-@media (hover: hover) {
-  .hero__stick:hover img {
-    translate: 0 -14px;
-    scale: 1.05;
-  }
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
+.stage {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  gap: 1.5%;
+  width: 100%;
+  max-width: 820px;
+  margin-inline: auto;
+  transform: perspective(1200px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+}
+.fly { min-width: 0; }
+.fly--2,
+.fly--4 { margin-bottom: 7%; }
+.fly--3 { margin-bottom: 14%; }
+.stick img {
+  width: 100%;
+  filter: drop-shadow(0 28px 24px rgba(0, 0, 0, 0.6));
+  transition: translate 0.5s var(--ease-out), scale 0.5s var(--ease-out);
+}
+@media (hover: hover) {
+  .stick:hover img {
+    translate: 0 -14px;
+    scale: 1.05;
+  }
+}
+
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero__copy {
-    gap: 22px;
-    padding: 40px 0 44px;
+  .scene--title .scene__stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    row-gap: 28px;
   }
-  .hero__media {
-    padding: 36px 0 28px;
-    border-left: 0;
-    border-top: var(--rule) solid var(--line);
+  .title { gap: 20px; }
+  .stage {
+    align-self: end;
+    gap: 3%;
   }
-  .hero__stage { gap: 3%; }
 }
 @media (max-width: 480px) {
   .actions { width: 100%; }
@@ -518,79 +611,23 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   7. Ticker (the one marquee on the page)
+   9. Stats band
    ------------------------------------------------------------------ */
-.ticker {
-  display: flex;
-  align-items: stretch;
-  background: var(--pink);
-  color: var(--bg);
+.band { position: relative; z-index: 1; }
+
+.hairgrid {
+  display: grid;
+  gap: var(--rule);
+  background: var(--line);
+  border-top: var(--rule) solid var(--line);
   border-bottom: var(--rule) solid var(--line);
 }
-
-.ticker__track {
-  flex: 1;
+.hairgrid > * {
   min-width: 0;
-  overflow: hidden;
+  background: var(--bg);
 }
 
-.ticker__row {
-  display: flex;
-  width: max-content;
-  animation: ticker 30s linear infinite;
-}
-.ticker__row.is-paused { animation-play-state: paused; }
-@media (hover: hover) {
-  .ticker:hover .ticker__row { animation-play-state: paused; }
-}
-
-.ticker__list {
-  display: flex;
-  flex: none;
-}
-.ticker__list li {
-  display: flex;
-  align-items: center;
-  padding: 13px 0 13px 20px;
-  font-size: 13px;
-  font-weight: 900;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.ticker__list li::after {
-  content: "•";
-  margin-left: 20px;
-}
-
-.ticker__toggle {
-  flex: none;
-  padding: 0 16px;
-  border-left: var(--rule) solid var(--bg);
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: background-color var(--dur) ease, color var(--dur) ease;
-}
-@media (hover: hover) {
-  .ticker__toggle:hover {
-    background: var(--bg);
-    color: var(--pink);
-  }
-}
-.ticker__toggle:focus-visible {
-  outline-color: var(--bg);
-  outline-offset: -4px;
-}
-
-/* ------------------------------------------------------------------
-   8. Stats
-   ------------------------------------------------------------------ */
-.stats {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 0;
-}
+.stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .stat {
   display: flex;
@@ -616,129 +653,113 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   9. Section scaffolding and hairline grids
+   10. Three jobs scene
    ------------------------------------------------------------------ */
-.section { padding-top: var(--section-y); }
-
-.section__head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  padding-bottom: 32px;
+.scene--jobs .scene__stage {
+  grid-template-rows: auto 1fr;
+  row-gap: 24px;
 }
 
-/* A grid whose gaps read as 2px hairlines: the grid background shows
-   through the gaps between opaque cells. Wrapping rows get lines too. */
-.hairgrid {
-  display: grid;
-  gap: var(--rule);
-  background: var(--line);
-  border-top: var(--rule) solid var(--line);
-  border-bottom: var(--rule) solid var(--line);
-}
-.hairgrid > * {
-  min-width: 0;
-  background: var(--bg);
-}
-
-/* ------------------------------------------------------------------
-   10. Three jobs (bento, exactly three cells)
-   ------------------------------------------------------------------ */
 .jobs {
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-  grid-template-rows: auto auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 30vh) minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 24px 40px;
+  align-items: center;
+}
+.jobs__stick {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  background: radial-gradient(60% 18% at 50% 98%, rgba(255, 77, 224, 0.45), transparent 76%);
+}
+.jobs__stick img {
+  width: 100%;
+  filter: drop-shadow(0 30px 26px rgba(0, 0, 0, 0.6));
 }
 
-.job {
-  position: relative;
+.caption {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 40px 28px 44px;
-  overflow: clip;
+  gap: 10px;
+  max-width: 34ch;
 }
-.job h3 {
-  font-size: 24px;
+.caption h3 {
+  font-size: clamp(24px, 2.6vw, 36px);
+  line-height: 1.05;
   font-weight: 800;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
-.job__body {
-  max-width: 44ch;
+.caption__body {
   font-size: 16px;
   line-height: 1.55;
   color: var(--fg-2);
 }
-
-.job--liver {
+.caption--1 {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+}
+.caption--2 {
+  grid-column: 3;
   grid-row: 1 / 3;
-  padding-left: 0;
-  padding-bottom: 28px;
-  background:
-    radial-gradient(120% 70% at 100% 100%, rgba(255, 77, 224, 0.16), transparent 62%),
-    var(--bg);
+  align-self: center;
+  justify-self: end;
+  text-align: right;
+  align-items: flex-end;
 }
-.job--liver .job__media {
-  width: min(220px, 42%);
-  margin-top: 28px;
-  align-self: flex-end;
-}
-.job--liver .job__media {
-  background: radial-gradient(60% 20% at 50% 98%, rgba(255, 77, 224, 0.45), transparent 76%);
-}
-.job--liver .job__media img { filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.55)); }
-
-.job--hydration {
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(63, 108, 255, 0.18), transparent 62%),
-    var(--bg);
+.caption--3 {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
 }
 
 @media (max-width: 900px) {
-  .jobs { grid-template-columns: 1fr; }
-  .job {
-    padding-left: 0;
-    padding-right: 0;
+  .jobs {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+    align-content: start;
   }
-  .job--liver { grid-row: auto; }
-  .job--liver .job__media { width: min(180px, 44%); }
+  .jobs__stick {
+    grid-column: 1;
+    grid-row: 1;
+    width: min(46vw, 34vh);
+  }
+  .caption,
+  .caption--1,
+  .caption--2,
+  .caption--3 {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+    align-self: start;
+    text-align: left;
+    align-items: flex-start;
+  }
+  .caption--2,
+  .caption--3 { margin-top: 0; }
 }
 
 /* ------------------------------------------------------------------
    11. Ingredient panel
    ------------------------------------------------------------------ */
-.panel-split {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+.panel-block {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--section-y);
 }
-
-.panel-split__media {
-  display: grid;
-  place-items: center;
-  padding: 48px 28px 48px 0;
-}
-.panel-split__media picture {
-  width: 100%;
-  max-width: 300px;
-}
-.panel-split__media picture {
-  background: radial-gradient(60% 18% at 50% 98%, rgba(143, 226, 63, 0.4), transparent 76%);
-}
-.panel-split__media img {
-  width: 100%;
-  filter: drop-shadow(0 22px 20px rgba(0, 0, 0, 0.55));
-}
-
-.panel-split__copy {
+.panel-block__inner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
-  padding: 64px 0 64px 40px;
+  max-width: 640px;
 }
-
 .panel {
   width: 100%;
-  max-width: 560px;
   border-top: var(--rule) solid var(--fg);
 }
 .panel__row {
@@ -757,214 +778,198 @@ button {
   color: var(--fg-2);
 }
 
-@media (max-width: 900px) {
-  .panel-split { grid-template-columns: 1fr; }
-  .panel-split__copy {
-    order: -1;
-    padding: 40px 0;
-  }
-  .panel-split__media { padding: 32px 0; }
-}
-
 /* ------------------------------------------------------------------
-   12. Timeline (before / during / after)
+   12. When scene
    ------------------------------------------------------------------ */
-.timeline {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
-  margin-top: 8px;
-  padding: 44px 0 var(--section-y);
-}
-.timeline::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--rule);
-  background: var(--line);
-  transform-origin: left;
+.scene--when .scene__stage {
+  grid-template-rows: auto 1fr;
+  row-gap: 24px;
 }
 
-.timeline__step {
+.cards {
+  display: grid;
+  gap: 48px;
+  align-content: center;
+}
+.card {
   --node: var(--fg);
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
-.timeline__step::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  left: 0;
-  width: 14px;
-  height: 14px;
-  background: var(--node);
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      align-items: center;
+      text-align: center;
+      justify-self: center;
+    }
+  }
 }
-.timeline__step--pink { --node: var(--pink); }
-.timeline__step--blue { --node: var(--blue); }
-
-.timeline__word {
-  font-size: clamp(40px, 5vw, 64px);
-  line-height: 1;
+.card--1 { --node: var(--pink); }
+.card--3 { --node: var(--blue); }
+.card__word {
+  font-size: clamp(72px, 15vw, 220px);
+  line-height: 0.9;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   color: var(--node);
 }
-.timeline__step p {
+.card p {
   max-width: 34ch;
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: clamp(17px, 1.6vw, 22px);
+  line-height: 1.45;
   color: var(--fg-2);
-}
-
-@media (max-width: 720px) {
-  .timeline {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    margin-top: 0;
-    padding: 8px 0 var(--section-y) 30px;
-  }
-  .timeline::before {
-    top: 0;
-    bottom: 0;
-    right: auto;
-    width: var(--rule);
-    height: auto;
-    transform-origin: top;
-  }
-  .timeline__step::before {
-    top: 10px;
-    left: -38px;
-  }
-}
-
-/* ------------------------------------------------------------------
-   13. Flavours
-   ------------------------------------------------------------------ */
-.flavours {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: var(--rule);
-  background: var(--line);
-  border-top: var(--rule) solid var(--line);
-  border-bottom: var(--rule) solid var(--line);
-}
-.flavours > li {
-  min-width: 0;
-  background: var(--bg);
-}
-
-.flavour {
-  --tint: var(--fg);
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  height: 100%;
-  padding: 28px 20px 32px;
-  background: var(--bg);
-  background:
-    radial-gradient(90% 55% at 50% 100%, color-mix(in srgb, var(--tint) 12%, transparent), transparent 72%),
-    var(--bg);
-}
-.flavour::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(90% 60% at 50% 100%, color-mix(in srgb, var(--tint) 28%, transparent), transparent 74%);
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-.flavour--berry { --tint: var(--berry); }
-.flavour--mango { --tint: var(--mango); }
-.flavour--pineapple { --tint: var(--pineapple); }
-.flavour--watermelon { --tint: var(--watermelon); }
-.flavour--citrus { --tint: var(--citrus); }
-
-.flavour__name {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-@media (hover: hover) {
-  .flavour:hover::before { opacity: 1; }
-  .flavour:hover .frame img,
-  .product:hover .frame img { transform: translateY(-10px) rotate(-2deg) scale(1.03); }
-}
-
-/* Fixed-aspect media frame so labels line up across renders of
-   different heights. Used by the flavour cards and the shop grid. */
-.frame {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  min-height: 0;
-  aspect-ratio: 5 / 8;
-  overflow: clip;
-}
-.frame picture { display: contents; }
-.frame img {
-  width: auto;
-  height: 100%;
-  min-height: 0;
-  max-width: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.55));
-  transition: transform 0.45s var(--ease-out);
-}
-/* A pool of the flavour colour on the floor under each cutout. */
-.flavour .frame,
-.product .frame {
-  background: radial-gradient(58% 22% at 50% 97%, color-mix(in srgb, var(--tint) 42%, transparent), transparent 76%);
-}
-
-@media (max-width: 1023px) {
-  .flavours {
-    display: flex;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--line) transparent;
-  }
-  .flavours > li {
-    flex: 0 0 clamp(220px, 31vw, 320px);
-    scroll-snap-align: start;
-  }
-}
-@media (max-width: 720px) {
-  .flavours > li { flex-basis: 64vw; }
-}
-
-/* ------------------------------------------------------------------
-   14. Quotes
-   ------------------------------------------------------------------ */
-.quotes {
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-}
-
-.quote {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 40px 28px 44px;
-}
-.quote blockquote p {
-  font-size: 19px;
-  line-height: 1.4;
-  font-weight: 600;
   text-wrap: pretty;
 }
-.quote figcaption {
+
+/* ------------------------------------------------------------------
+   13. Flavours scene
+   ------------------------------------------------------------------ */
+.scene--flavours .scene__stage {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  row-gap: 16px;
+  padding-inline: 0;
+}
+.scene--flavours .scene__label {
+  padding-inline: var(--gutter);
+}
+
+.pan {
+  display: flex;
+  width: 100%;
+  max-width: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.slide {
+  flex: 0 0 100vw;
+  scroll-snap-align: start;
+  overflow: clip;
+  --tint: var(--fg);
+}
+.slide--berry { --tint: var(--berry); }
+.slide--mango { --tint: var(--mango); }
+.slide--pineapple { --tint: var(--pineapple); }
+.slide--watermelon { --tint: var(--watermelon); }
+.slide--citrus { --tint: var(--citrus); }
+
+.slide__link {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 32px;
+  height: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 16px var(--gutter) 24px;
+}
+.slide__light {
+  position: absolute;
+  z-index: -1;
+  left: 4%;
+  top: 50%;
+  width: 46%;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--tint) 32%, transparent), transparent);
+  pointer-events: none;
+}
+.slide__media {
+  justify-self: center;
+  width: auto;
+  height: min(62vh, 560px);
+}
+.slide__media img {
+  width: auto;
+  height: 100%;
+  filter: drop-shadow(0 30px 26px rgba(0, 0, 0, 0.6));
+  transition: translate 0.5s var(--ease-out), scale 0.5s var(--ease-out);
+}
+.slide__copy {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+.slide__name {
+  font-size: clamp(48px, 6.6vw, 104px);
+  line-height: 0.9;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+.slide__note {
+  font-size: clamp(18px, 1.8vw, 24px);
+  color: var(--fg-2);
+}
+.slide__more {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pink);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 2px;
+}
+@media (hover: hover) {
+  .slide__link:hover .slide__media img {
+    translate: 0 -12px;
+    scale: 1.03;
+  }
+}
+
+@media (max-width: 900px) {
+  .slide__link {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 16px;
+  }
+  .slide__light {
+    left: 50%;
+    top: 30%;
+    width: 80%;
+    translate: -50% -50%;
+  }
+  .slide__media { height: min(42vh, 380px); }
+}
+
+/* ------------------------------------------------------------------
+   14. Intertitles
+   ------------------------------------------------------------------ */
+.intertitles {
+  position: relative;
+  z-index: 1;
+  padding-block: var(--section-y) 0;
+}
+.intertitle {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 24px;
+  min-height: 80vh;
+  padding: 40px var(--gutter);
+  text-align: center;
+}
+.intertitle blockquote p {
+  max-width: 24ch;
+  font-size: clamp(26px, 3.6vw, 52px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.intertitle figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 4px;
 }
 .quote__flavour {
@@ -975,63 +980,99 @@ button {
   color: var(--pink);
 }
 
-.quote--lead {
-  justify-content: center;
-  padding-left: 0;
-}
-.quote--lead blockquote p {
-  max-width: 26ch;
-  font-size: clamp(24px, 2.6vw, 34px);
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-}
-
-.quotes__stack {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  gap: var(--rule);
-  background: var(--line);
-}
-.quotes__stack > .quote {
-  background: var(--bg);
-  padding-right: 0;
-}
-
-@media (max-width: 900px) {
-  .quotes { grid-template-columns: 1fr; }
-  .quote { padding-inline: 0; }
-  .quote--lead blockquote p { max-width: none; }
-}
-
 /* ------------------------------------------------------------------
-   15. Pink CTA
+   15. Finale
    ------------------------------------------------------------------ */
-.cta {
+.scene__stage--pink {
   background: var(--pink);
   color: var(--bg);
-  border-bottom: var(--rule) solid var(--bg);
+  place-items: center;
 }
-.cta__inner {
+.finale {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 28px;
-  padding-top: 80px;
-  padding-bottom: 80px;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
 }
-.cta__headline {
+.finale__headline {
   max-width: 12ch;
-  font-size: clamp(40px, 7vw, 110px);
-  line-height: 0.9;
+  font-size: clamp(48px, 9.5vw, 156px);
+  line-height: 0.88;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
-.cta .btn--dark:focus-visible { outline-color: var(--bg); }
+.scene__stage--pink .btn--dark:focus-visible { outline-color: var(--bg); }
 
 /* ------------------------------------------------------------------
-   16. Shop
+   16. Ticker (the one marquee on the page)
    ------------------------------------------------------------------ */
+.ticker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  background: var(--bg);
+  color: var(--fg);
+  border-top: var(--rule) solid var(--line);
+  border-bottom: var(--rule) solid var(--line);
+}
+.ticker__track {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.ticker__row {
+  display: flex;
+  width: max-content;
+  animation: ticker 30s linear infinite;
+}
+.ticker__row.is-paused { animation-play-state: paused; }
+@media (hover: hover) {
+  .ticker:hover .ticker__row { animation-play-state: paused; }
+}
+.ticker__list {
+  display: flex;
+  flex: none;
+}
+.ticker__list li {
+  display: flex;
+  align-items: center;
+  padding: 16px 0 16px 20px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ticker__list li::after {
+  content: "•";
+  margin-left: 20px;
+  color: var(--pink);
+}
+.ticker__toggle {
+  flex: none;
+  padding: 0 16px;
+  border-left: var(--rule) solid var(--line);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background-color var(--dur) ease, color var(--dur) ease;
+}
+@media (hover: hover) {
+  .ticker__toggle:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+}
+
+/* ------------------------------------------------------------------
+   17. Shop
+   ------------------------------------------------------------------ */
+#shop { padding-top: var(--header-h); }
+
 .shop__head {
   display: flex;
   flex-wrap: wrap;
@@ -1047,17 +1088,15 @@ button {
   gap: 14px;
 }
 
-.products {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
+.products { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 
 .product {
+  --tint: var(--fg);
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding: 28px 22px 30px;
 }
-.product { --tint: var(--fg); }
 .product--berry { --tint: var(--berry); }
 .product--mango { --tint: var(--mango); }
 .product--pineapple { --tint: var(--pineapple); }
@@ -1090,9 +1129,31 @@ button {
 }
 .price--lg { font-size: 30px; }
 
+/* Fixed-aspect media frame with a cutout inside and a floor light. */
+.frame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 5 / 8;
+  overflow: clip;
+  background: radial-gradient(58% 22% at 50% 97%, color-mix(in srgb, var(--tint) 42%, transparent), transparent 76%);
+}
+.frame picture { display: contents; }
+.frame img {
+  width: auto;
+  height: 100%;
+  min-height: 0;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.55));
+  transition: transform 0.45s var(--ease-out);
+}
+@media (hover: hover) {
+  .product:hover .frame img { transform: translateY(-10px) rotate(-2deg) scale(1.03); }
+}
+
 @media (max-width: 1100px) {
-  /* Below the five-column width the grid becomes an order list:
-     render, name and size, price and Add on one row per box. */
   .products { grid-template-columns: 1fr; }
   .product {
     display: grid;
@@ -1101,7 +1162,6 @@ button {
     gap: 20px;
     padding: 18px 0;
   }
-  .product .frame { aspect-ratio: 5 / 8; }
   .product__buy {
     flex-direction: column;
     align-items: flex-end;
@@ -1140,7 +1200,6 @@ button {
   width: 100%;
   filter: drop-shadow(0 22px 20px rgba(0, 0, 0, 0.55));
 }
-
 @media (max-width: 900px) {
   .bundle { grid-template-columns: 1fr; }
   .bundle__copy { padding: 40px 0; }
@@ -1148,8 +1207,12 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   17. Footer
+   18. Footer
    ------------------------------------------------------------------ */
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
 .site-footer__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -1160,7 +1223,6 @@ button {
 .site-footer__logo img {
   height: 44px;
   width: auto;
-  mix-blend-mode: screen;
 }
 .site-footer__col {
   display: flex;
@@ -1198,7 +1260,7 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   18. Cart drawer and toast
+   19. Cart drawer and toast
    ------------------------------------------------------------------ */
 .cart-backdrop {
   position: fixed;
@@ -1243,13 +1305,11 @@ button {
   font-weight: 900;
   letter-spacing: -0.02em;
 }
-
 .cart__body {
   flex: 1;
   overflow-y: auto;
   padding: 0 var(--gutter);
 }
-
 .cart__empty {
   display: flex;
   flex-direction: column;
@@ -1259,7 +1319,6 @@ button {
   font-size: 17px;
   color: var(--fg-2);
 }
-
 .cart-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1291,7 +1350,6 @@ button {
   font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
-
 .qty {
   grid-area: qty;
   display: inline-flex;
@@ -1318,7 +1376,6 @@ button {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
-
 .cart-item__remove {
   grid-area: remove;
   justify-self: end;
@@ -1333,7 +1390,6 @@ button {
 @media (hover: hover) {
   .cart-item__remove:hover { color: var(--pink); }
 }
-
 .cart__foot {
   display: flex;
   flex-direction: column;
@@ -1350,8 +1406,7 @@ button {
 }
 .cart__foot .btn { width: 100%; }
 
-/* The dot that flies from an Add button to the cart. */
-.fly {
+.fly-dot {
   position: fixed;
   z-index: 85;
   width: 14px;
@@ -1383,16 +1438,13 @@ button {
 }
 
 /* ------------------------------------------------------------------
-   19. Motion
-   Every animation has a job. The headline rises line by line to set the
-   reading order. The sticks enter in sequence and float at different
-   phases so the product reads as objects, not a print; the stage light
-   drifts and the stage tilts toward the cursor. Stats count up to draw
-   the eye to the facts. Sections reveal cell by cell in reading order.
-   The timeline draws itself because it is a sequence. The cart dot and
-   bump acknowledge an add. The ticker carries the packaging tagline.
-   Initial hidden states live under prefers-reduced-motion: no-preference,
-   so with reduced motion everything is simply visible.
+   20. Motion
+   The film runs on three clocks. The load clock (opening card, header,
+   title lines, sticks) fires once the page is ready. The scroll clock
+   scrubs each pinned scene against the scroll position. The state clock
+   answers the viewer: hover lifts, the cart dot, the squish, the cut.
+   Hidden starting states only exist under no-preference and .js, so the
+   page is complete without either.
    ------------------------------------------------------------------ */
 @keyframes rise {
   from { opacity: 0; transform: translateY(22px); }
@@ -1403,12 +1455,12 @@ button {
   to { transform: none; }
 }
 @keyframes stick-in {
-  from { opacity: 0; transform: translateY(48px) rotate(-4deg); }
+  from { opacity: 0; transform: translateY(60px) rotate(-5deg); }
   to { opacity: 1; transform: none; }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
+  50% { transform: translateY(-10px); }
 }
 @keyframes drift {
   from { transform: translate(0, 0) scale(1); }
@@ -1417,6 +1469,19 @@ button {
 @keyframes fade-down {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: none; }
+}
+@keyframes mark {
+  0% { opacity: 0; transform: scale(0.86); }
+  45% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 4%); }
+  40% { transform: translate(5%, -2%); }
+  60% { transform: translate(-6%, -5%); }
+  80% { transform: translate(4%, 6%); }
+  100% { transform: translate(0, 0); }
 }
 @keyframes ticker {
   from { transform: translateX(0); }
@@ -1439,51 +1504,119 @@ button {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes parallax {
-  from { transform: translateY(var(--from, 30px)); }
-  to { transform: translateY(var(--to, -30px)); }
+
+/* Scrubbed shots */
+@keyframes depart {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-10vh) scale(0.94); }
 }
-@keyframes slide-x {
-  from { transform: translateX(var(--from-x, -6%)); }
-  to { transform: none; }
+@keyframes flythrough {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  65% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(var(--fs)); }
 }
-@keyframes ticker-scroll {
-  to { translate: -260px 0; }
+@keyframes glow {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.8); }
+}
+@keyframes cut-in {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes turn {
+  from { transform: rotate(-8deg) scale(0.92); }
+  to { transform: rotate(5deg) scale(1.06); }
+}
+@keyframes card-first {
+  0%, 78% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.98); }
+}
+@keyframes card-mid {
+  0% { opacity: 0; transform: translateY(30px) scale(1.03); }
+  18%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.98); }
+}
+@keyframes card-last {
+  0% { opacity: 0; transform: translateY(30px) scale(1.03); }
+  18%, 100% { opacity: 1; transform: none; }
+}
+@keyframes light-first {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes light-mid {
+  0% { opacity: 0; }
+  25%, 75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes light-last {
+  0% { opacity: 0; }
+  30%, 100% { opacity: 1; }
+}
+@keyframes pan {
+  from { transform: translateX(0); }
+  to { transform: translateX(-400vw); }
+}
+@keyframes intertitle {
+  0% { opacity: 0; transform: translateY(36px) scale(0.96); }
+  30%, 70% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-36px) scale(1.03); }
+}
+@keyframes push-in {
+  from { opacity: 0; transform: scale(1.55); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 
-  /* Page load */
-  .js .site-header { animation: fade-down 0.6s var(--ease-out) both; }
-  .js .hero__copy > * { animation: rise 0.8s var(--ease-out) both; }
-  .js .hero__copy > .eyebrow { animation-delay: 0.05s; }
-  .js .hero__copy > .display { animation: none; }
+  .grain { animation: grain 1.2s steps(6) infinite; }
+  .intro__mark { animation: mark 1.5s var(--ease-out) both; }
+
+  /* Load clock: waits for the opening card (is-ready) */
+  .js .site-header,
+  .js .title > *,
+  .js .display .line > span,
+  .js .stick { animation-play-state: paused; }
+  .is-ready .site-header,
+  .is-ready .title > *,
+  .is-ready .display .line > span,
+  .is-ready .stick { animation-play-state: running; }
+
+  .js .site-header { animation: fade-down 0.7s var(--ease-out) both; }
+  .js .title > * { animation: rise 0.8s var(--ease-out) both; }
+  .js .title > .eyebrow { animation-delay: 0.05s; }
+  .js .title > .display { animation: none; }
   .js .display .line > span { animation: line-up 0.9s var(--ease-out) both; }
   .js .display .line:nth-child(1) > span { animation-delay: 0.1s; }
   .js .display .line:nth-child(2) > span { animation-delay: 0.2s; }
   .js .display .line:nth-child(3) > span { animation-delay: 0.3s; }
-  .js .hero__copy > .lede { animation-delay: 0.45s; }
-  .js .hero__copy > .actions { animation-delay: 0.55s; }
+  .js .title > .lede { animation-delay: 0.45s; }
+  .js .title > .actions { animation-delay: 0.55s; }
+  .js .stick { animation: stick-in 1s var(--ease-out) both; }
+  .js .fly--1 .stick { animation-delay: 0.35s; }
+  .js .fly--2 .stick { animation-delay: 0.43s; }
+  .js .fly--3 .stick { animation-delay: 0.51s; }
+  .js .fly--4 .stick { animation-delay: 0.59s; }
+  .js .fly--5 .stick { animation-delay: 0.67s; }
+  .js .title .btn--primary { animation: jelly 0.7s 2.6s ease-in-out 1; }
 
-  .js .hero__stick { animation: stick-in 0.9s var(--ease-out) both; }
-  .js .hero__stick:nth-child(1) { animation-delay: 0.35s; }
-  .js .hero__stick:nth-child(2) { animation-delay: 0.43s; }
-  .js .hero__stick:nth-child(3) { animation-delay: 0.51s; }
-  .js .hero__stick:nth-child(4) { animation-delay: 0.59s; }
-  .js .hero__stick:nth-child(5) { animation-delay: 0.67s; }
+  /* Ambient clock */
+  .stick picture,
+  .jobs__stick picture { animation: float 7s ease-in-out infinite; }
+  .fly--2 picture { animation-delay: -1.4s; animation-duration: 7.6s; }
+  .fly--3 picture { animation-delay: -2.8s; animation-duration: 6.8s; }
+  .fly--4 picture { animation-delay: -4.2s; animation-duration: 7.3s; }
+  .fly--5 picture { animation-delay: -5.6s; animation-duration: 6.5s; }
+  .light--pink::before { animation: drift 18s ease-in-out infinite alternate; }
+  .light--blue::before { animation: drift 22s ease-in-out -9s infinite alternate-reverse; }
+  .light--white::before { animation: drift 26s ease-in-out -4s infinite alternate; }
 
-  /* Ambient */
-  .hero__stick picture { animation: float 7s ease-in-out infinite; }
-  .hero__stick:nth-child(2) picture { animation-delay: -1.4s; animation-duration: 7.6s; }
-  .hero__stick:nth-child(3) picture { animation-delay: -2.8s; animation-duration: 6.8s; }
-  .hero__stick:nth-child(4) picture { animation-delay: -4.2s; animation-duration: 7.3s; }
-  .hero__stick:nth-child(5) picture { animation-delay: -5.6s; animation-duration: 6.5s; }
-  .hero__media::before { animation: drift 18s ease-in-out infinite alternate; }
-  .hero__media::after { animation: drift 22s ease-in-out -9s infinite alternate-reverse; }
-  .job--liver .job__media { animation: float 7s ease-in-out infinite; }
-
-  /* Scroll reveals */
+  /* Reveals for the flat sections */
   .js .reveal {
     opacity: 0;
     transform: translateY(18px);
@@ -1508,52 +1641,8 @@ button {
   .js .reveal-cells > :nth-child(4) > * { transition-delay: 0.4s; }
   .js .reveal-cells > :nth-child(5) > * { transition-delay: 0.5s; }
 
-  /* Timeline draws in sequence: rule, then node and words per step */
-  .js .reveal-draw::before {
-    transform: scaleX(0);
-    transition: transform 1.1s var(--ease-out);
-  }
-  .js .reveal-draw.is-in::before { transform: none; }
-  .js .reveal-draw .timeline__step::before {
-    transform: scale(0);
-    transition: transform 0.45s var(--ease-out);
-  }
-  .js .reveal-draw .timeline__step > * {
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-  }
-  .js .reveal-draw.is-in .timeline__step::before { transform: none; }
-  .js .reveal-draw.is-in .timeline__step > * {
-    opacity: 1;
-    transform: none;
-  }
-  .js .reveal-draw.is-in .timeline__step:nth-child(1)::before { transition-delay: 0.25s; }
-  .js .reveal-draw.is-in .timeline__step:nth-child(2)::before { transition-delay: 0.6s; }
-  .js .reveal-draw.is-in .timeline__step:nth-child(3)::before { transition-delay: 0.95s; }
-  .js .reveal-draw.is-in .timeline__step:nth-child(1) > * { transition-delay: 0.35s; }
-  .js .reveal-draw.is-in .timeline__step:nth-child(2) > * { transition-delay: 0.7s; }
-  .js .reveal-draw.is-in .timeline__step:nth-child(3) > * { transition-delay: 1.05s; }
-
-  /* Section headings slide in ahead of their copy */
-  .js .reveal-stagger > * {
-    opacity: 0;
-    transform: translateX(-18px);
-    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-  }
-  .js .reveal-stagger.is-in > * {
-    opacity: 1;
-    transform: none;
-  }
-  .js .reveal-stagger > :nth-child(2) { transition-delay: 0.14s; }
-
-  /* The primary call to action wobbles once after the hero has settled */
-  .js .hero .btn--primary { animation: jelly 0.7s 2.4s ease-in-out 1; }
-
-  /* View change */
-  .js .view.is-entering { animation: view-in 0.55s var(--ease-out) both; }
-
-  /* Feedback */
+  /* State clock */
+  .js .view.is-entering { animation: view-in 0.6s var(--ease-out) both; }
   .cart-button.is-bumped { animation: bump 0.4s var(--ease-out); }
   .stat__value.is-counted { animation: pop 0.5s var(--ease-out); }
   .product.is-added .frame img,
@@ -1564,63 +1653,108 @@ button {
   .cart.is-opening .cart-item:nth-child(4) { animation-delay: 0.18s; }
   .cart.is-opening .cart-item:nth-child(5) { animation-delay: 0.24s; }
   .cart.is-opening .cart-item:nth-child(6) { animation-delay: 0.3s; }
-}
 
-@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
-  .js .reveal-draw::before { transform: scaleY(0); }
-}
-
-/* Scroll-linked motion. These run on the compositor against the scroll
-   position, so there is never a scroll listener. Each element keeps its
-   own timeline: the hero sticks rise at different rates as the hero
-   leaves, the bento and panel sticks glide through their cells, the
-   flavour strip arrives as a wave, the pink headline slides into place
-   and the ticker drifts with the page. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .hero { view-timeline: --hero block; }
-    .hero__stick img {
-      animation: parallax linear both;
-      animation-timeline: --hero;
-      animation-range: exit 0% exit 100%;
-      --from: 0px;
-      --to: -70px;
+  /* Scroll clock: the scenes pin and the shots scrub */
+  @supports (animation-timeline: view()) {
+    .scene {
+      height: var(--len, 280vh);
+      view-timeline: --scene block;
     }
-    .hero__stick:nth-child(2) img,
-    .hero__stick:nth-child(4) img { --to: -130px; }
-    .hero__stick:nth-child(3) img { --to: -190px; }
+    .scene--title { --len: 200vh; }
+    .scene--jobs { --len: 280vh; }
+    .scene--when { --len: 300vh; }
+    .scene--flavours { --len: 420vh; }
+    .scene--finale { --len: 200vh; }
 
-    .job__media img,
-    .panel-split__media img {
-      animation: parallax linear both;
+    .scene__stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 0;
+    }
+
+    .scene--title .title,
+    .scene--title .fly,
+    .scene--title .light,
+    .scene--jobs .scene__label,
+    .scene--jobs .jobs__stick,
+    .scene--jobs .caption,
+    .scene--jobs .light,
+    .scene--when .card,
+    .scene--when .light,
+    .scene--flavours .scene__label,
+    .scene--flavours .pan,
+    .scene--finale .finale__headline,
+    .scene--finale .finale .btn {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --scene;
+      animation-range: contain var(--in, 0%) contain var(--out, 100%);
+    }
+
+    /* Title: the copy recedes, the sticks fly past the camera, the light blooms out. */
+    .scene--title .title { animation-name: depart; --out: 60%; }
+    .scene--title .fly { animation-name: flythrough; }
+    .fly--1 { --fx: -58vw; --fy: -8vh; --fs: 1.9; }
+    .fly--2 { --fx: -28vw; --fy: -34vh; --fs: 2.4; }
+    .fly--3 { --fx: 0vw; --fy: -14vh; --fs: 3.2; }
+    .fly--4 { --fx: 28vw; --fy: -38vh; --fs: 2.4; }
+    .fly--5 { --fx: 58vw; --fy: -4vh; --fs: 1.9; }
+    .scene--title .light { animation-name: glow; --in: 20%; }
+
+    /* Three jobs: the stick turns while each job cuts in. */
+    .scene--jobs .scene__label { animation-name: cut-in; --out: 8%; }
+    .scene--jobs .jobs__stick { animation-name: turn; }
+    .scene--jobs .caption { animation-name: cut-in; }
+    .scene--jobs .caption--1 { --in: 6%; --out: 18%; }
+    .scene--jobs .caption--2 { --in: 34%; --out: 46%; }
+    .scene--jobs .caption--3 { --in: 62%; --out: 74%; }
+    .scene--jobs .light--pink { animation-name: light-first; }
+    .scene--jobs .light--blue { animation-name: light-last; }
+
+    /* When: three title cards, in turn, with the light changing colour. */
+    .scene--when .cards { display: grid; }
+    .scene--when .card {
+      grid-area: 1 / 1;
+      align-self: center;
+    }
+    .scene--when .card--1 { animation-name: card-first; --out: 36%; }
+    .scene--when .card--2 { animation-name: card-mid; --in: 32%; --out: 68%; }
+    .scene--when .card--3 { animation-name: card-last; --in: 64%; }
+    .scene--when .light--pink { animation-name: light-first; --out: 40%; }
+    .scene--when .light--white { animation-name: light-mid; --in: 30%; --out: 72%; }
+    .scene--when .light--blue { animation-name: light-last; --in: 60%; }
+
+    /* Flavours: vertical scroll pans the strip. */
+    .scene--flavours .scene__label { animation-name: cut-in; --out: 6%; }
+    .scene--flavours .pan {
+      width: 500vw;
+      overflow: visible;
+      scroll-snap-type: none;
+      animation-name: pan;
+    }
+
+    /* Intertitles pass through the centre of the screen. */
+    .intertitle blockquote,
+    .intertitle figcaption {
+      animation: intertitle linear both;
       animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-      --from: 36px;
-      --to: -36px;
+      animation-range: cover 12% cover 88%;
     }
+    .intertitle figcaption { animation-range: cover 18% cover 90%; }
 
-    .flavours { view-timeline: --flavours block; }
-    .flavour {
-      animation: parallax linear both;
-      animation-timeline: --flavours;
-      animation-range: entry 0% entry 100%;
-      --from: calc(var(--n, 0) * 22px + 10px);
-      --to: 0px;
-    }
-    .flavours > li:nth-child(2) .flavour { --n: 1; }
-    .flavours > li:nth-child(3) .flavour { --n: 2; }
-    .flavours > li:nth-child(4) .flavour { --n: 3; }
-    .flavours > li:nth-child(5) .flavour { --n: 4; }
+    /* Finale: the line pushes in on pink. */
+    .scene--finale .finale__headline { animation-name: push-in; --out: 55%; }
+    .scene--finale .finale .btn { animation-name: fade-up; --in: 45%; --out: 70%; }
+  }
 
-    .cta__headline {
-      animation: slide-x linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 90%;
-    }
-
-    .ticker__row {
-      animation: ticker 30s linear infinite, ticker-scroll linear both;
-      animation-timeline: auto, scroll(root);
+  /* On phones the three jobs crossfade in one place instead of accumulating. */
+  @supports (animation-timeline: view()) {
+    @media (max-width: 900px) {
+      .scene--jobs .caption--1 { animation-name: card-first; --in: 0%; --out: 38%; }
+      .scene--jobs .caption--2 { animation-name: card-mid; --in: 33%; --out: 70%; }
+      .scene--jobs .caption--3 { animation-name: card-last; --in: 66%; --out: 100%; }
     }
   }
 }
@@ -1633,7 +1767,9 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .hero__stage { transform: none; }
+  .stage { transform: none; }
+  .grain,
+  .intro { display: none; }
   .ticker__row {
     width: auto;
     flex-wrap: wrap;

@@ -6,9 +6,10 @@
  *   - the cart: line items per box, quantities, a subtotal, persistence in
  *     localStorage and a drawer with proper focus handling
  *   - the ticker pause control, the mobile menu and the scroll reveals
-   - motion that needs script: stats counting up, the hero stage tilting
-     toward the cursor, and the dot that flies from an Add button to the
-     cart (all skipped under prefers-reduced-motion)
+   - motion that needs script: the opening title card, the cut to black
+     between views, stats counting up, the title stage tilting toward the
+     cursor, and the dot that flies from an Add button to the cart (all
+     skipped under prefers-reduced-motion)
  *
  * No dependencies, no build step. Everything is attached with delegated
  * listeners, so new buttons only need the right data- attribute.
@@ -70,9 +71,24 @@
     return true;
   }
 
+  const cutEl = $('[data-cut]');
+
   function route(initial) {
     const hash = decodeURIComponent(location.hash.slice(1));
     const name = hash === 'shop' ? 'shop' : 'home';
+    // A view change is a cut: black for a beat, then the new view.
+    if (!initial && name !== currentView && cutEl && !reducedMotion()) {
+      cutEl.classList.add('is-on');
+      setTimeout(() => {
+        applyRoute(hash, name, initial);
+        requestAnimationFrame(() => cutEl.classList.remove('is-on'));
+      }, 170);
+      return;
+    }
+    applyRoute(hash, name, initial);
+  }
+
+  function applyRoute(hash, name, initial) {
     const changed = setView(name);
     const anchor = hash && hash !== 'home' && hash !== 'shop' && document.getElementById(hash);
 
@@ -151,7 +167,7 @@
     const dx = b.left + b.width / 2 - size / 2 - x0;
     const dy = b.top + b.height / 2 - size / 2 - y0;
     const dot = document.createElement('span');
-    dot.className = 'fly';
+    dot.className = 'fly-dot';
     dot.setAttribute('aria-hidden', 'true');
     dot.style.left = `${x0}px`;
     dot.style.top = `${y0}px`;
@@ -447,7 +463,7 @@
      Hero stage tilt (pointer devices only; writes are batched per frame)
      ------------------------------------------------------------------ */
   const tiltHost = $('[data-tilt]');
-  const stage = tiltHost && $('.hero__stage', tiltHost);
+  const stage = tiltHost && $('.stage', tiltHost);
   if (stage && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reducedMotion()) {
     let rect = null;
     let frame = 0;
@@ -478,6 +494,47 @@
       ny = 0;
       schedule();
     });
+  }
+
+  /* ------------------------------------------------------------------
+     Opening title card
+     The head script decided before first paint whether to show it (once
+     per session, only at the top of the home view, never under reduced
+     motion). Here we end it on a timer, or sooner on any input.
+     ------------------------------------------------------------------ */
+  const root = document.documentElement;
+  const introEl = $('[data-intro]');
+  let introTimer = 0;
+
+  function finishIntro() {
+    if (!root.classList.contains('has-intro')) return;
+    clearTimeout(introTimer);
+    root.classList.remove('has-intro');
+    root.classList.add('is-ready');
+    if (introEl) {
+      introEl.classList.add('is-done');
+      setTimeout(() => {
+        introEl.hidden = true;
+      }, 700);
+    }
+    try {
+      sessionStorage.setItem('sahsih-intro', '1');
+    } catch {
+      // Without storage the card simply shows again next time.
+    }
+  }
+
+  if (root.classList.contains('has-intro')) {
+    if (!introEl || getComputedStyle(introEl).display === 'none') {
+      finishIntro();
+    } else {
+      introTimer = setTimeout(finishIntro, 1900);
+      for (const type of ['pointerdown', 'keydown', 'wheel', 'touchstart']) {
+        window.addEventListener(type, finishIntro, { once: true, passive: true });
+      }
+    }
+  } else {
+    root.classList.add('is-ready');
   }
 
   /* ------------------------------------------------------------------

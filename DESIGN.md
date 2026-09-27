@@ -1,7 +1,7 @@
 ---
 version: 1.0
 name: Sahsih
-description: Design system for the Sahsih marketing site. Near-black, hot pink, one heavy grotesk, sharp corners, 2px hairlines. Values are extracted from styles/site.css and are the source of truth for any new page, section or component.
+description: Design system for the Sahsih marketing site. A scroll-driven product film on near-black with hot pink and blue stage light, one heavy grotesk at cinema scale, sharp corners, 2px hairlines. Values are extracted from styles/site.css and are the source of truth for any new page, scene or component.
 colors:
   background: "#060606"
   background-raised: "#0d0d0d"
@@ -62,7 +62,13 @@ components:
   bento-cell: "hairgrid cell, padding 40px 28px 44px; tinted cells use a radial-gradient of the accent at 16 to 18 percent over {colors.background}"
   frame: "5:8 media frame holding a transparent cutout from assets/img/cut, a drop shadow under it and a radial pool of the flavour colour on the floor; keeps labels aligned across renders of different heights"
   flavour-card: "frame plus name plus label; a permanent 12 percent radial tint of the flavour colour at the bottom, 28 percent on hover; cutout lifts 10px and rotates 2 degrees on hover"
-  hero-stage: "five stick cutouts in a shallow arc over two drifting pools of pink and blue light; sticks enter in sequence, float at different phases, and the stage tilts up to 7 degrees toward the cursor on pointer devices"
+  hero-stage: "five stick cutouts in a shallow arc over two drifting pools of pink and blue light; sticks enter in sequence, float at different phases, and the stage tilts up to 7 degrees toward the cursor on pointer devices; on scroll they fly past the camera"
+  scene: "a .scene wrapper 200 to 420vh tall with a sticky .scene__stage of 100dvh; every shot inside sets animation-name plus --in/--out percentages of the scene's contain range; without scroll-driven support or with reduced motion the scene is a plain 100vh section"
+  scene-label: "chapter title in sentence case at clamp(20px, 2.2vw, 30px), weight 800, foreground-2; never uppercase, never numbered"
+  title-card: "a single giant word (clamp(72px, 15vw, 220px), weight 900, tracking -0.05em) in pink, off-white or blue with one line of copy, centred, crossfading with the next card"
+  intertitle: "a centred quote at clamp(26px, 3.6vw, 52px), weight 700, in an 80vh frame that fades and drifts through the middle of the screen"
+  film-layer: "fixed grain (SVG noise at 5.5 percent, screen blend, stepped drift) and a vignette to 42 percent black at the corners; both pointer-events none; grain hidden under reduced motion"
+  opening-card: "black screen with the wordmark scaling from 0.86 to 1 over 1.5s, then a 0.6s fade; once per session, only at the top of the home view, skipped on any input and under reduced motion"
   timeline: "2px top hairline with 14px square nodes coloured per step; vertical with a left hairline below 720px"
   quote: "figure, curly quotes, attribution as name and city in {typography.label} plus flavour in accent"
   cart-drawer: "fixed right, 440px max, 2px {colors.foreground} left border, backdrop rgba(6,6,6,0.72); page is inert while open"
@@ -74,9 +80,9 @@ components:
 
 ## 1. Visual theme and atmosphere
 
-Night-out energy on a near-black ground. The product renders carry all the colour; the interface stays black, off-white and one hot pink. The layout is brutalist in the friendly sense: sharp corners, 2px hairlines organising content, heavy grotesk type at large sizes, and a jelly-like squash on every button. Density sits around a 5 on a 10-point scale: sections breathe, but hairline grids keep things tight.
+The home page is a short film about the product. A black title card opens it, then full-screen scenes pin while you scroll and the scroll position scrubs each shot: the title recedes and the sticks fly past the camera, one stick turns while its three jobs cut in around it, three title cards for before, during and after, a horizontal pan through the five flavours, quotes as intertitles, and a push-in on pink. Film grain and a vignette sit over everything. The interface stays black, off-white and one hot pink; product cutouts and coloured stage light carry the colour. Type runs at cinema scale: a headline is a shot, not a label. Density is a 2 on a 10-point scale inside scenes and a 5 in the flat sections (stats, panel, shop).
 
-Dials for new work: DESIGN_VARIANCE 6, MOTION_INTENSITY 8, VISUAL_DENSITY 5.
+Dials for new work: DESIGN_VARIANCE 9, MOTION_INTENSITY 10, VISUAL_DENSITY 2 (scenes) / 5 (flat sections).
 
 ## 2. Colour palette and roles
 
@@ -118,7 +124,7 @@ Copy voice: short sentences, sentence case, full stops as the rhythm device ("Te
 
 Container 1400px with 28px gutters (20px on phones). Sections start with a stacked head (headline, optional lede) and 32px below it. Every multi-column block declares its own collapse: hero and splits go single column at 900px, stats go two-up at 720px, the flavour strip becomes a horizontal scroll-snap row below 1024px, the shop grid becomes an order list below 1100px, the timeline turns vertical at 720px.
 
-Layout families on the home page, each used once: split hero, marquee, stat strip, three-cell bento, panel split, timeline, gallery strip, quote wall, full-bleed colour block. Do not add a second three-equal-columns section or a second marquee.
+Scenes on the home page, each used once: title (split, text left and sticks right), stat strip, exploded view (stick centre, captions around), quiet panel, title cards, horizontal pan, intertitles, push-in on pink, credits marquee. A new scene must be a new kind of shot, not a second copy of one of these. Never add a second marquee.
 
 ## 6. Depth and elevation
 
@@ -133,7 +139,7 @@ Do:
 - Provide a real image for any new section; the renders in `assets/img` are the palette.
 - Wrap every animation in the `prefers-reduced-motion` override, and keep motion on transform and opacity.
 - Give every animation a job. The page's motion vocabulary: headline lines rise and section headings slide in ahead of their copy (reading order), sticks enter in sequence, float, lift on hover and rise with the scroll (product presence and depth), stage light drifts and follows the cursor (lighting), stats count up and pop (attention), cells reveal in reading order and the flavour strip arrives as a scroll-linked wave (sequence), the timeline draws itself (it is a sequence), the pink headline slides into place and the ticker drifts with the page (scroll rhythm), the view fades in on a route change (state), the cart dot flies, the render squishes and the button bumps on add (feedback). A new animation must fit one of those jobs or it is decoration.
-- Scroll-linked motion uses CSS scroll-driven animations (`animation-timeline: view()` or `scroll(root)`) inside `@supports`, never a scroll listener. Elements that host a `view()` timeline must not sit inside `overflow: hidden` (use `overflow: clip`), because hidden creates a scroll container. When an element already owns `transform` through an animation, put hover or pointer offsets on the independent `translate` and `scale` properties.
+- Scroll-linked motion uses CSS scroll-driven animations (a named `view-timeline` on each `.scene`, `view()` on intertitles) inside `@supports`, never a scroll listener. Shots set `animation-name` and `--in`/`--out` as percentages of the scene's `contain` range; the shared rule supplies the timeline, linear timing and `both` fill. Elements that host a `view()` timeline must not sit inside `overflow: hidden` (use `overflow: clip`), because hidden creates a scroll container. When an element already owns `transform` through an animation, put hover or pointer offsets on the independent `translate` and `scale` properties. Three clocks: load (opening card, header, title, sticks), scroll (scenes), state (hover, cart, cut).
 - Initial hidden states go inside `@media (prefers-reduced-motion: no-preference)` and only under the `.js` class, so the page is complete without script and without motion.
 
 Don't:
@@ -141,6 +147,8 @@ Don't:
 - No cards inside cards, no rounded panels, no drop shadows, no glows.
 - No more than one eyebrow per three sections.
 - No new colour for a new CTA. If it needs attention it is pink; if it is secondary it is outlined.
+- A scene is one shot with one idea. If it needs a paragraph, it belongs in a flat section.
+- Every scene must read at scroll 0 of its pinned range: the first frame of a shot is visible, never a blank stage waiting for scroll.
 - No inline `style` attributes: add a class and a token.
 
 ## 8. Responsive behaviour
@@ -156,6 +164,6 @@ Prompts that fit this system:
 - "Build a product detail block: 5:8 `.frame` on the left, name in `.product__name`, `.price`, a `.btn.btn--primary` with `data-add`, hairlines only."
 - "Write copy for Sahsih: short sentences, full stops, second person, dry humour, no em-dashes, no filler verbs."
 
-Motion classes: `.reveal` (block fades up when it enters), `.reveal-cells` (grandchildren stagger in reading order, 0.1s apart), `.reveal-draw` (the timeline), `.reveal-count` (numbers with `data-count` count up). The script observes all four with one IntersectionObserver; never add a scroll listener.
+Motion classes for flat sections: `.reveal` (block fades up when it enters), `.reveal-cells` (grandchildren stagger in reading order, 0.1s apart), `.reveal-count` (numbers with `data-count` count up). The script observes them with one IntersectionObserver; never add a scroll listener. Scenes need no script: `.scene` plus `.scene__stage` plus shots with `animation-name` and `--in`/`--out`.
 
 Serve the site (`python3 -m http.server 8000`) and check new work at 1440, 1280x720 and 390 widths with the playwright-cli skill before calling it done, once with reduced motion emulated.
