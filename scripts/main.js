@@ -6,6 +6,9 @@
  *   - the cart: line items per box, quantities, a subtotal, persistence in
  *     localStorage and a drawer with proper focus handling
  *   - the ticker pause control, the mobile menu and the scroll reveals
+   - motion that needs script: stats counting up, the hero stage tilting
+     toward the cursor, and the dot that flies from an Add button to the
+     cart (all skipped under prefers-reduced-motion)
  *
  * No dependencies, no build step. Everything is attached with delegated
  * listeners, so new buttons only need the right data- attribute.
@@ -122,16 +125,53 @@
     renderCart();
   }
 
-  function addToCart(id) {
+  function bumpCartButton() {
+    const button = $('.cart-button');
+    if (!button) return;
+    button.classList.remove('is-bumped');
+    void button.offsetWidth; // restart the animation
+    button.classList.add('is-bumped');
+  }
+
+  // A pink dot leaves the button and lands on the cart, then the cart bumps.
+  function flyToCart(from) {
+    const to = $('.cart-button');
+    if (!from || !to || reducedMotion() || typeof from.animate !== 'function') return false;
+    const a = from.getBoundingClientRect();
+    const b = to.getBoundingClientRect();
+    const size = 14;
+    const x0 = a.left + a.width / 2 - size / 2;
+    const y0 = a.top + a.height / 2 - size / 2;
+    const dx = b.left + b.width / 2 - size / 2 - x0;
+    const dy = b.top + b.height / 2 - size / 2 - y0;
+    const dot = document.createElement('span');
+    dot.className = 'fly';
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.left = `${x0}px`;
+    dot.style.top = `${y0}px`;
+    document.body.appendChild(dot);
+    const animation = dot.animate(
+      [
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 90}px) scale(0.9)`, opacity: 1, offset: 0.55 },
+        { transform: `translate(${dx}px, ${dy}px) scale(0.35)`, opacity: 0.7 },
+      ],
+      { duration: 680, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+    );
+    animation.finished
+      .then(() => {
+        dot.remove();
+        bumpCartButton();
+      })
+      .catch(() => dot.remove());
+    return true;
+  }
+
+  function addToCart(id, from) {
     if (!CONFIG.products[id]) return;
     setQty(id, (cart[id] || 0) + 1);
     toast(`${CONFIG.products[id].name} added to cart`);
-    const button = $('.cart-button');
-    if (button) {
-      button.classList.remove('is-bumped');
-      void button.offsetWidth; // restart the animation
-      button.classList.add('is-bumped');
-    }
+    if (!flyToCart(from)) bumpCartButton();
   }
 
   /* ------------------------------------------------------------------
@@ -223,6 +263,8 @@
     lastFocus = document.activeElement;
     cartEl.hidden = false;
     backdropEl.hidden = false;
+    cartEl.classList.add('is-opening');
+    setTimeout(() => cartEl.classList.remove('is-opening'), 900);
     pageEl.setAttribute('inert', '');
     document.body.style.overflow = 'hidden';
     // Two frames so the transition runs from the off-screen position.
@@ -307,7 +349,7 @@
     );
 
     if (el) {
-      if (el.hasAttribute('data-add')) addToCart(el.dataset.add);
+      if (el.hasAttribute('data-add')) addToCart(el.dataset.add, el);
       else if (el.hasAttribute('data-open-cart')) openCart();
       else if (el.hasAttribute('data-close-cart')) closeCart();
       else if (el.hasAttribute('data-qty')) setQty(el.dataset.qty, (cart[el.dataset.qty] || 0) + Number(el.dataset.delta));
@@ -345,15 +387,39 @@
   /* ------------------------------------------------------------------
      Scroll reveals (IntersectionObserver, never a scroll listener)
      ------------------------------------------------------------------ */
-  const reveals = $$('.reveal');
+  function countUp(el) {
+    const target = Number(el.dataset.count);
+    if (!Number.isFinite(target)) return;
+    if (reducedMotion() || target === 0) {
+      el.textContent = String(target);
+      return;
+    }
+    const duration = 900;
+    const start = performance.now();
+    const tick = (now) => {
+      // A frame timestamp can precede the start time captured mid-frame.
+      const t = Math.max(0, Math.min(1, (now - start) / duration));
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  function enter(el) {
+    el.classList.add('is-in');
+    if (el.classList.contains('reveal-count')) $$('[data-count]', el).forEach(countUp);
+  }
+
+  const reveals = $$('.reveal, .reveal-cells, .reveal-draw, .reveal-count');
   if (reducedMotion() || !('IntersectionObserver' in window)) {
-    reveals.forEach((el) => el.classList.add('is-in'));
+    reveals.forEach(enter);
   } else {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-in');
+            enter(entry.target);
             observer.unobserve(entry.target);
           }
         }
@@ -361,6 +427,41 @@
       { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
     );
     reveals.forEach((el) => observer.observe(el));
+  }
+
+  /* ------------------------------------------------------------------
+     Hero stage tilt (pointer devices only; writes are batched per frame)
+     ------------------------------------------------------------------ */
+  const tiltHost = $('[data-tilt]');
+  const stage = tiltHost && $('.hero__stage', tiltHost);
+  if (stage && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reducedMotion()) {
+    let rect = null;
+    let frame = 0;
+    let nx = 0;
+    let ny = 0;
+    const apply = () => {
+      frame = 0;
+      stage.style.setProperty('--tx', `${(nx * 7).toFixed(2)}deg`);
+      stage.style.setProperty('--ty', `${(-ny * 5).toFixed(2)}deg`);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(apply);
+    };
+    tiltHost.addEventListener('pointerenter', () => {
+      rect = tiltHost.getBoundingClientRect();
+    });
+    tiltHost.addEventListener('pointermove', (event) => {
+      if (!rect) rect = tiltHost.getBoundingClientRect();
+      nx = (event.clientX - rect.left) / rect.width - 0.5;
+      ny = (event.clientY - rect.top) / rect.height - 0.5;
+      schedule();
+    });
+    tiltHost.addEventListener('pointerleave', () => {
+      rect = null;
+      nx = 0;
+      ny = 0;
+      schedule();
+    });
   }
 
   /* ------------------------------------------------------------------

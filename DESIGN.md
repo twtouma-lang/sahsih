@@ -60,8 +60,9 @@ components:
   hairgrid: "CSS grid with 2px gaps; the grid background is {colors.line} and cells are {colors.background}, so gaps read as hairlines; 2px top and bottom border"
   stat-tile: "value in {typography.stat}, label in {typography.label}, padding 36px 24px, first cell flush left"
   bento-cell: "hairgrid cell, padding 40px 28px 44px; tinted cells use a radial-gradient of the accent at 16 to 18 percent over {colors.background}"
-  frame: "5:8 media frame, image contained, 2px {colors.line} border on the image; keeps labels aligned across renders of different heights"
-  flavour-card: "frame plus name plus label; a permanent 12 percent radial tint of the flavour colour at the bottom, 28 percent on hover; image lifts 6px on hover"
+  frame: "5:8 media frame holding a transparent cutout from assets/img/cut, a drop shadow under it and a radial pool of the flavour colour on the floor; keeps labels aligned across renders of different heights"
+  flavour-card: "frame plus name plus label; a permanent 12 percent radial tint of the flavour colour at the bottom, 28 percent on hover; cutout lifts 10px and rotates 2 degrees on hover"
+  hero-stage: "five stick cutouts in a shallow arc over two drifting pools of pink and blue light; sticks enter in sequence, float at different phases, and the stage tilts up to 7 degrees toward the cursor on pointer devices"
   timeline: "2px top hairline with 14px square nodes coloured per step; vertical with a left hairline below 720px"
   quote: "figure, curly quotes, attribution as name and city in {typography.label} plus flavour in accent"
   cart-drawer: "fixed right, 440px max, 2px {colors.foreground} left border, backdrop rgba(6,6,6,0.72); page is inert while open"
@@ -75,7 +76,7 @@ components:
 
 Night-out energy on a near-black ground. The product renders carry all the colour; the interface stays black, off-white and one hot pink. The layout is brutalist in the friendly sense: sharp corners, 2px hairlines organising content, heavy grotesk type at large sizes, and a jelly-like squash on every button. Density sits around a 5 on a 10-point scale: sections breathe, but hairline grids keep things tight.
 
-Dials for new work: DESIGN_VARIANCE 6, MOTION_INTENSITY 5, VISUAL_DENSITY 5.
+Dials for new work: DESIGN_VARIANCE 6, MOTION_INTENSITY 7, VISUAL_DENSITY 5.
 
 ## 2. Colour palette and roles
 
@@ -108,7 +109,7 @@ Copy voice: short sentences, sentence case, full stops as the rhythm device ("Te
 - **Buttons** are rectangles with a 2px border, uppercase 13px labels, 52px tall. Primary is pink, secondary is outlined, and the dark variant exists only on the pink CTA block. Hover inverts to off-white and squashes to `scale(1.04, 0.94)`; active is `scale(0.97)`. Labels never wrap.
 - **Header** is 66px, sticky, black with a hairline below. Nav links are 12px uppercase; the current view is pink. The cart button is outlined with a count badge that turns pink when the cart has items. Below 900px the nav collapses behind a text "Menu" button into a full-width panel.
 - **Hairline grids** replace cards. Any group of cells is a `.hairgrid`: grid gaps show the line colour, cells are black. Tint a cell with a radial gradient of pink or blue when it needs weight.
-- **Frames** are 5:8 boxes with the render contained inside and a hairline border on the image itself.
+- **Frames** are 5:8 boxes with a transparent cutout of the render contained inside (`assets/img/cut`, made by `tools/build-images.py --cutouts`), a drop shadow, and a pool of the flavour colour on the floor. Never put a border on a cutout.
 - **Quotes** use real curly quotation marks, a name and city label, and the flavour in pink.
 - **Cart drawer** slides from the right over a dark backdrop, traps focus by making the page inert, closes on Escape, backdrop click or the Close button, and returns focus to the opener.
 - **Toast** is an inverted block at the bottom left announced through `aria-live="polite"`.
@@ -121,7 +122,7 @@ Layout families on the home page, each used once: split hero, marquee, stat stri
 
 ## 6. Depth and elevation
 
-There are no shadows. Depth comes from hairlines, tinted cells and the single inverted CTA block. The cart drawer and mobile menu sit above the page with a solid black ground and a 2px edge rather than a shadow. Image borders are 2px line colour, or 2px off-white when the render is the focal point of its section.
+Shadows exist only under product cutouts (`drop-shadow(0 18px 16px rgba(0,0,0,.55))`), where they read as an object standing on the floor. UI elements have no shadows. Depth comes from hairlines, tinted cells and the single inverted CTA block. The cart drawer and mobile menu sit above the page with a solid black ground and a 2px edge rather than a shadow. Image borders are 2px line colour, or 2px off-white when the render is the focal point of its section.
 
 ## 7. Do's and don'ts
 
@@ -131,6 +132,8 @@ Do:
 - Use hairline grids and negative space instead of cards.
 - Provide a real image for any new section; the renders in `assets/img` are the palette.
 - Wrap every animation in the `prefers-reduced-motion` override, and keep motion on transform and opacity.
+- Give every animation a job. The page's motion vocabulary: headline lines rise (reading order), sticks enter in sequence and float (product presence), stage light drifts (lighting), stats count up (attention), cells reveal in reading order (sequence), the timeline draws itself (it is a sequence), the cart dot flies and the button bumps (feedback). A new animation must fit one of those jobs or it is decoration.
+- Initial hidden states go inside `@media (prefers-reduced-motion: no-preference)` and only under the `.js` class, so the page is complete without script and without motion.
 
 Don't:
 - No em-dashes, no middle-dot metadata strips, no section-number eyebrows, no "01 / 03" labels.
@@ -152,4 +155,6 @@ Prompts that fit this system:
 - "Build a product detail block: 5:8 `.frame` on the left, name in `.product__name`, `.price`, a `.btn.btn--primary` with `data-add`, hairlines only."
 - "Write copy for Sahsih: short sentences, full stops, second person, dry humour, no em-dashes, no filler verbs."
 
-Serve the site (`python3 -m http.server 8000`) and check new work at 1440, 1280x720 and 390 widths with the playwright-cli skill before calling it done.
+Motion classes: `.reveal` (block fades up when it enters), `.reveal-cells` (grandchildren stagger in reading order, 0.1s apart), `.reveal-draw` (the timeline), `.reveal-count` (numbers with `data-count` count up). The script observes all four with one IntersectionObserver; never add a scroll listener.
+
+Serve the site (`python3 -m http.server 8000`) and check new work at 1440, 1280x720 and 390 widths with the playwright-cli skill before calling it done, once with reduced motion emulated.

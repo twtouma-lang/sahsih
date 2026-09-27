@@ -180,6 +180,15 @@ button {
   font-size: clamp(38px, 5.4vw, 76px);
   line-height: 0.95;
 }
+/* Each headline line is clipped so it can rise into view. The padding
+   keeps descenders (the q in Squeeze) clear of the clip edge. */
+.display .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.display .line > span { display: block; }
 
 .headline {
   max-width: 22ch;
@@ -359,7 +368,6 @@ button {
   transition: background-color var(--dur) ease, color var(--dur) ease;
 }
 .cart-button.has-items .cart-button__count { background: var(--pink); }
-.cart-button.is-bumped { animation: bump 0.4s var(--ease-out); }
 @media (hover: hover) {
   .cart-button:hover,
   .menu-button:hover {
@@ -421,20 +429,58 @@ button {
 }
 
 .hero__media {
+  position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
-  padding: 32px 0 32px 32px;
+  padding: 48px 0 40px 16px;
   border-left: var(--rule) solid var(--line);
   overflow: hidden;
 }
-/* Size the <picture>, not just the <img>: a centred grid item shrinks to
-   fit, and an unloaded image inside it has no width to fit, so the space
-   would not be reserved and the page would jump when it loads. */
-.hero__media picture {
-  width: 100%;
-  max-width: 760px;
+
+/* Stage light: two soft pools of the brand colours behind the sticks.
+   They drift slowly so the product reads as lit, not pasted on. */
+.hero__media::before,
+.hero__media::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 72%;
+  aspect-ratio: 1;
+  pointer-events: none;
 }
-.hero__media img { width: 100%; }
+.hero__media::before {
+  left: -18%;
+  bottom: -28%;
+  background: radial-gradient(closest-side, rgba(255, 77, 224, 0.34), transparent);
+}
+.hero__media::after {
+  right: -18%;
+  top: -34%;
+  background: radial-gradient(closest-side, rgba(63, 108, 255, 0.3), transparent);
+}
+
+/* Five cutouts in a shallow arc. The stage tilts a few degrees toward
+   the cursor (set as --tx/--ty by the script; zero without a pointer). */
+.hero__stage {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  gap: 1.5%;
+  width: 100%;
+  max-width: 780px;
+  transform: perspective(1200px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+}
+.hero__stick { min-width: 0; }
+.hero__stick:nth-child(2),
+.hero__stick:nth-child(4) { margin-bottom: 7%; }
+.hero__stick:nth-child(3) { margin-bottom: 14%; }
+.hero__stick img {
+  width: 100%;
+  filter: drop-shadow(0 26px 22px rgba(0, 0, 0, 0.6));
+}
 
 .actions {
   display: flex;
@@ -449,10 +495,11 @@ button {
     padding: 40px 0 44px;
   }
   .hero__media {
-    padding: 28px 0;
+    padding: 36px 0 28px;
     border-left: 0;
     border-top: var(--rule) solid var(--line);
   }
+  .hero__stage { gap: 3%; }
 }
 @media (max-width: 480px) {
   .actions { width: 100%; }
@@ -615,7 +662,7 @@ button {
 .job--liver {
   grid-row: 1 / 3;
   padding-left: 0;
-  padding-bottom: 0;
+  padding-bottom: 28px;
   background:
     radial-gradient(120% 70% at 100% 100%, rgba(255, 77, 224, 0.16), transparent 62%),
     var(--bg);
@@ -625,7 +672,10 @@ button {
   margin-top: 28px;
   align-self: flex-end;
 }
-.job--liver .job__media img { border: var(--rule) solid var(--fg); }
+.job--liver .job__media {
+  background: radial-gradient(60% 20% at 50% 98%, rgba(255, 77, 224, 0.45), transparent 76%);
+}
+.job--liver .job__media img { filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.55)); }
 
 .job--hydration {
   background:
@@ -659,9 +709,12 @@ button {
   width: 100%;
   max-width: 300px;
 }
+.panel-split__media picture {
+  background: radial-gradient(60% 18% at 50% 98%, rgba(143, 226, 63, 0.4), transparent 76%);
+}
 .panel-split__media img {
   width: 100%;
-  border: var(--rule) solid var(--fg);
+  filter: drop-shadow(0 22px 20px rgba(0, 0, 0, 0.55));
 }
 
 .panel-split__copy {
@@ -712,7 +765,16 @@ button {
   gap: 32px;
   margin-top: 8px;
   padding: 44px 0 var(--section-y);
-  border-top: var(--rule) solid var(--line);
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--rule);
+  background: var(--line);
+  transform-origin: left;
 }
 
 .timeline__step {
@@ -725,7 +787,7 @@ button {
 .timeline__step::before {
   content: "";
   position: absolute;
-  top: -52px;
+  top: -50px;
   left: 0;
   width: 14px;
   height: 14px;
@@ -754,8 +816,14 @@ button {
     gap: 36px;
     margin-top: 0;
     padding: 8px 0 var(--section-y) 30px;
-    border-top: 0;
-    border-left: var(--rule) solid var(--line);
+  }
+  .timeline::before {
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: var(--rule);
+    height: auto;
+    transform-origin: top;
   }
   .timeline__step::before {
     top: 10px;
@@ -816,7 +884,8 @@ button {
 
 @media (hover: hover) {
   .flavour:hover::before { opacity: 1; }
-  .flavour:hover .frame img { transform: translateY(-6px) scale(1.02); }
+  .flavour:hover .frame img,
+  .product:hover .frame img { transform: translateY(-10px) rotate(-2deg) scale(1.03); }
 }
 
 /* Fixed-aspect media frame so labels line up across renders of
@@ -836,8 +905,13 @@ button {
   min-height: 0;
   max-width: 100%;
   object-fit: contain;
-  border: var(--rule) solid var(--line);
-  transition: transform 0.35s var(--ease-out);
+  filter: drop-shadow(0 18px 16px rgba(0, 0, 0, 0.55));
+  transition: transform 0.45s var(--ease-out);
+}
+/* A pool of the flavour colour on the floor under each cutout. */
+.flavour .frame,
+.product .frame {
+  background: radial-gradient(58% 22% at 50% 97%, color-mix(in srgb, var(--tint) 42%, transparent), transparent 76%);
 }
 
 @media (max-width: 1023px) {
@@ -972,6 +1046,13 @@ button {
   gap: 18px;
   padding: 28px 22px 30px;
 }
+.product { --tint: var(--fg); }
+.product--berry { --tint: var(--berry); }
+.product--mango { --tint: var(--mango); }
+.product--pineapple { --tint: var(--pineapple); }
+.product--watermelon { --tint: var(--watermelon); }
+.product--citrus { --tint: var(--citrus); }
+
 .product__meta {
   display: flex;
   flex-direction: column;
@@ -1040,8 +1121,14 @@ button {
   place-items: center;
   padding: 36px 0 36px 36px;
 }
-.bundle__media picture { width: 100%; }
-.bundle__media img { width: 100%; }
+.bundle__media picture {
+  width: 100%;
+  background: radial-gradient(70% 18% at 50% 96%, rgba(255, 77, 224, 0.3), transparent 76%);
+}
+.bundle__media img {
+  width: 100%;
+  filter: drop-shadow(0 22px 20px rgba(0, 0, 0, 0.55));
+}
 
 @media (max-width: 900px) {
   .bundle { grid-template-columns: 1fr; }
@@ -1250,6 +1337,16 @@ button {
 }
 .cart__foot .btn { width: 100%; }
 
+/* The dot that flies from an Add button to the cart. */
+.fly {
+  position: fixed;
+  z-index: 85;
+  width: 14px;
+  height: 14px;
+  background: var(--pink);
+  pointer-events: none;
+}
+
 .toast {
   position: fixed;
   left: var(--gutter);
@@ -1274,48 +1371,144 @@ button {
 
 /* ------------------------------------------------------------------
    19. Motion
-   Every animation has a job: the hero staggers in to establish reading
-   order, the sticks float to read as product rather than a flat image,
-   the ticker carries the packaging tagline, reveals sequence sections as
-   they arrive, and the cart bump acknowledges an add. All of it collapses
-   under prefers-reduced-motion.
+   Every animation has a job. The headline rises line by line to set the
+   reading order. The sticks enter in sequence and float at different
+   phases so the product reads as objects, not a print; the stage light
+   drifts and the stage tilts toward the cursor. Stats count up to draw
+   the eye to the facts. Sections reveal cell by cell in reading order.
+   The timeline draws itself because it is a sequence. The cart dot and
+   bump acknowledge an add. The ticker carries the packaging tagline.
+   Initial hidden states live under prefers-reduced-motion: no-preference,
+   so with reduced motion everything is simply visible.
    ------------------------------------------------------------------ */
 @keyframes rise {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
 }
+@keyframes line-up {
+  from { transform: translateY(112%); }
+  to { transform: none; }
+}
+@keyframes stick-in {
+  from { opacity: 0; transform: translateY(48px) rotate(-4deg); }
+  to { opacity: 1; transform: none; }
+}
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(9%, -7%) scale(1.12); }
+}
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes ticker {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 @keyframes bump {
-  50% { transform: scale(1.08, 0.92); }
-}
-
-.js .hero__copy > * { animation: rise 0.8s var(--ease-out) both; }
-.js .hero__copy > :nth-child(1) { animation-delay: 0.05s; }
-.js .hero__copy > :nth-child(2) { animation-delay: 0.12s; }
-.js .hero__copy > :nth-child(3) { animation-delay: 0.2s; }
-.js .hero__copy > :nth-child(4) { animation-delay: 0.28s; }
-.js .hero__media { animation: rise 1s 0.2s var(--ease-out) both; }
-.hero__media img { animation: float 8s ease-in-out 1.2s infinite; }
-
-.js .reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
-}
-.js .reveal.is-in {
-  opacity: 1;
-  transform: none;
+  50% { transform: scale(1.1, 0.9); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
+
+  /* Page load */
+  .js .site-header { animation: fade-down 0.6s var(--ease-out) both; }
+  .js .hero__copy > * { animation: rise 0.8s var(--ease-out) both; }
+  .js .hero__copy > .eyebrow { animation-delay: 0.05s; }
+  .js .hero__copy > .display { animation: none; }
+  .js .display .line > span { animation: line-up 0.9s var(--ease-out) both; }
+  .js .display .line:nth-child(1) > span { animation-delay: 0.1s; }
+  .js .display .line:nth-child(2) > span { animation-delay: 0.2s; }
+  .js .display .line:nth-child(3) > span { animation-delay: 0.3s; }
+  .js .hero__copy > .lede { animation-delay: 0.45s; }
+  .js .hero__copy > .actions { animation-delay: 0.55s; }
+
+  .js .hero__stick { animation: stick-in 0.9s var(--ease-out) both; }
+  .js .hero__stick:nth-child(1) { animation-delay: 0.35s; }
+  .js .hero__stick:nth-child(2) { animation-delay: 0.43s; }
+  .js .hero__stick:nth-child(3) { animation-delay: 0.51s; }
+  .js .hero__stick:nth-child(4) { animation-delay: 0.59s; }
+  .js .hero__stick:nth-child(5) { animation-delay: 0.67s; }
+
+  /* Ambient */
+  .hero__stick picture { animation: float 7s ease-in-out infinite; }
+  .hero__stick:nth-child(2) picture { animation-delay: -1.4s; animation-duration: 7.6s; }
+  .hero__stick:nth-child(3) picture { animation-delay: -2.8s; animation-duration: 6.8s; }
+  .hero__stick:nth-child(4) picture { animation-delay: -4.2s; animation-duration: 7.3s; }
+  .hero__stick:nth-child(5) picture { animation-delay: -5.6s; animation-duration: 6.5s; }
+  .hero__media::before { animation: drift 18s ease-in-out infinite alternate; }
+  .hero__media::after { animation: drift 22s ease-in-out -9s infinite alternate-reverse; }
+  .job--liver .job__media { animation: float 7s ease-in-out infinite; }
+
+  /* Scroll reveals */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+  }
+  .js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  .js .reveal-cells > * > * {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .js .reveal-cells.is-in > * > * {
+    opacity: 1;
+    transform: none;
+  }
+  .js .reveal-cells > :nth-child(1) > * { transition-delay: 0.1s; }
+  .js .reveal-cells > :nth-child(2) > * { transition-delay: 0.2s; }
+  .js .reveal-cells > :nth-child(3) > * { transition-delay: 0.3s; }
+  .js .reveal-cells > :nth-child(4) > * { transition-delay: 0.4s; }
+  .js .reveal-cells > :nth-child(5) > * { transition-delay: 0.5s; }
+
+  /* Timeline draws in sequence: rule, then node and words per step */
+  .js .reveal-draw::before {
+    transform: scaleX(0);
+    transition: transform 1.1s var(--ease-out);
+  }
+  .js .reveal-draw.is-in::before { transform: none; }
+  .js .reveal-draw .timeline__step::before {
+    transform: scale(0);
+    transition: transform 0.45s var(--ease-out);
+  }
+  .js .reveal-draw .timeline__step > * {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .js .reveal-draw.is-in .timeline__step::before { transform: none; }
+  .js .reveal-draw.is-in .timeline__step > * {
+    opacity: 1;
+    transform: none;
+  }
+  .js .reveal-draw.is-in .timeline__step:nth-child(1)::before { transition-delay: 0.25s; }
+  .js .reveal-draw.is-in .timeline__step:nth-child(2)::before { transition-delay: 0.6s; }
+  .js .reveal-draw.is-in .timeline__step:nth-child(3)::before { transition-delay: 0.95s; }
+  .js .reveal-draw.is-in .timeline__step:nth-child(1) > * { transition-delay: 0.35s; }
+  .js .reveal-draw.is-in .timeline__step:nth-child(2) > * { transition-delay: 0.7s; }
+  .js .reveal-draw.is-in .timeline__step:nth-child(3) > * { transition-delay: 1.05s; }
+
+  /* Feedback */
+  .cart-button.is-bumped { animation: bump 0.4s var(--ease-out); }
+  .cart.is-opening .cart-item { animation: rise 0.45s var(--ease-out) both; }
+  .cart.is-opening .cart-item:nth-child(2) { animation-delay: 0.06s; }
+  .cart.is-opening .cart-item:nth-child(3) { animation-delay: 0.12s; }
+  .cart.is-opening .cart-item:nth-child(4) { animation-delay: 0.18s; }
+  .cart.is-opening .cart-item:nth-child(5) { animation-delay: 0.24s; }
+  .cart.is-opening .cart-item:nth-child(6) { animation-delay: 0.3s; }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .js .reveal-draw::before { transform: scaleY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1326,10 +1519,7 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .js .reveal {
-    opacity: 1;
-    transform: none;
-  }
+  .hero__stage { transform: none; }
   .ticker__row {
     width: auto;
     flex-wrap: wrap;

@@ -27,7 +27,6 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
 <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" imagesrcset="assets/img/hero-sticks.avif" type="image/avif">
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="stylesheet" href="styles/site.css">
 
@@ -100,19 +99,51 @@
       <section class="hero container" aria-labelledby="hero-title">
         <div class="hero__copy">
           <p class="eyebrow">Replenish. Rebalance. Feel good.</p>
-          <h1 id="hero-title" class="display" tabindex="-1">Tear it.<br>Squeeze it.<br>Carry on.</h1>
+          <h1 id="hero-title" class="display" tabindex="-1"><span class="line"><span>Tear it. </span></span><span class="line"><span>Squeeze it. </span></span><span class="line"><span>Carry on.</span></span></h1>
           <p class="lede">A 15&nbsp;g jelly stick with milk thistle, electrolytes and B vitamins. Five flavours, no water, no chalky tablets.</p>
           <div class="actions">
             <a class="btn btn--primary" href="#shop">Shop the sticks</a>
             <a class="btn btn--outline" href="#science">What's in it</a>
           </div>
         </div>
-        <div class="hero__media">
-          <picture>
-            <source srcset="assets/img/hero-sticks.avif" type="image/avif">
-            <source srcset="assets/img/hero-sticks.webp" type="image/webp">
-            <img src="assets/img/hero-sticks.png" alt="Five Sahsih jelly sticks in a row: berry, mango, pineapple, watermelon and citrus, each with its fruit splashing behind it" width="1100" height="380" fetchpriority="high" decoding="async">
-          </picture>
+        <div class="hero__media" data-tilt>
+          <div class="hero__stage" role="img" aria-label="Five Sahsih jelly sticks: berry, mango, pineapple, watermelon and citrus, each with its fruit splashing behind it">
+            <div class="hero__stick">
+              <picture>
+                <source srcset="assets/img/cut/stick-berry.avif" type="image/avif">
+                <source srcset="assets/img/cut/stick-berry.webp" type="image/webp">
+                <img src="assets/img/cut/stick-berry.png" alt="" width="240" height="408" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <div class="hero__stick">
+              <picture>
+                <source srcset="assets/img/cut/stick-mango.avif" type="image/avif">
+                <source srcset="assets/img/cut/stick-mango.webp" type="image/webp">
+                <img src="assets/img/cut/stick-mango.png" alt="" width="240" height="429" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <div class="hero__stick">
+              <picture>
+                <source srcset="assets/img/cut/stick-pineapple.avif" type="image/avif">
+                <source srcset="assets/img/cut/stick-pineapple.webp" type="image/webp">
+                <img src="assets/img/cut/stick-pineapple.png" alt="" width="240" height="453" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <div class="hero__stick">
+              <picture>
+                <source srcset="assets/img/cut/stick-watermelon.avif" type="image/avif">
+                <source srcset="assets/img/cut/stick-watermelon.webp" type="image/webp">
+                <img src="assets/img/cut/stick-watermelon.png" alt="" width="240" height="422" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <div class="hero__stick">
+              <picture>
+                <source srcset="assets/img/cut/stick-citrus.avif" type="image/avif">
+                <source srcset="assets/img/cut/stick-citrus.webp" type="image/webp">
+                <img src="assets/img/cut/stick-citrus.png" alt="" width="240" height="383" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -131,11 +162,11 @@
       </section>
 
       <section class="container" aria-label="At a glance">
-        <ul class="stats hairgrid">
-          <li class="stat"><span class="stat__value">15&nbsp;g</span><span class="stat__label">Per stick</span></li>
-          <li class="stat"><span class="stat__value">10</span><span class="stat__label">Sticks per box</span></li>
-          <li class="stat"><span class="stat__value">5</span><span class="stat__label">Flavours</span></li>
-          <li class="stat"><span class="stat__value stat__value--blue">0</span><span class="stat__label">Glasses of water required</span></li>
+        <ul class="stats hairgrid reveal-count">
+          <li class="stat"><span class="stat__value"><span data-count="15">15</span>&nbsp;g</span><span class="stat__label">Per stick</span></li>
+          <li class="stat"><span class="stat__value"><span data-count="10">10</span></span><span class="stat__label">Sticks per box</span></li>
+          <li class="stat"><span class="stat__value"><span data-count="5">5</span></span><span class="stat__label">Flavours</span></li>
+          <li class="stat"><span class="stat__value stat__value--blue"><span data-count="0">0</span></span><span class="stat__label">Glasses of water required</span></li>
         </ul>
       </section>
 
@@ -144,15 +175,15 @@
           <h2 id="science-title" class="headline">Three jobs, one stick.</h2>
           <p class="lede">A big night hits your liver, your fluids and salts, and your B vitamins. Each stick is built around those three.</p>
         </div>
-        <div class="jobs hairgrid reveal">
+        <div class="jobs hairgrid reveal reveal-cells">
           <article class="job job--liver">
             <h3>Liver support</h3>
             <p class="job__ingredient">Milk thistle</p>
             <p class="job__body">The organ doing the actual cleanup gets the headline ingredient. Milk thistle is the classic botanical for it, and it's in every stick.</p>
             <picture class="job__media">
-              <source srcset="assets/img/stick-berry.avif" type="image/avif">
-              <source srcset="assets/img/stick-berry.webp" type="image/webp">
-              <img src="assets/img/stick-berry.png" alt="A Sahsih berry jelly stick" width="240" height="408" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/stick-berry.avif" type="image/avif">
+              <source srcset="assets/img/cut/stick-berry.webp" type="image/webp">
+              <img src="assets/img/cut/stick-berry.png" alt="A Sahsih berry jelly stick" width="240" height="408" loading="lazy" decoding="async">
             </picture>
           </article>
           <article class="job job--hydration">
@@ -172,14 +203,14 @@
         <div class="panel-split hairgrid reveal">
           <div class="panel-split__media">
             <picture>
-              <source srcset="assets/img/stick-citrus.avif" type="image/avif">
-              <source srcset="assets/img/stick-citrus.webp" type="image/webp">
-              <img src="assets/img/stick-citrus.png" alt="A Sahsih citrus jelly stick" width="240" height="383" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/stick-citrus.avif" type="image/avif">
+              <source srcset="assets/img/cut/stick-citrus.webp" type="image/webp">
+              <img src="assets/img/cut/stick-citrus.png" alt="A Sahsih citrus jelly stick" width="240" height="383" loading="lazy" decoding="async">
             </picture>
           </div>
           <div class="panel-split__copy">
             <h2 id="panel-title" class="headline">Short panel.<br>On purpose.</h2>
-            <dl class="panel">
+            <dl class="panel reveal-cells">
               <div class="panel__row"><dt>Milk thistle</dt><dd>Liver support</dd></div>
               <div class="panel__row"><dt>Electrolytes</dt><dd>Hydration</dd></div>
               <div class="panel__row"><dt>Vitamins B1, B6 and B12</dt><dd>Energy metabolism</dd></div>
@@ -193,7 +224,7 @@
         <div class="section__head reveal">
           <h2 id="when-title" class="headline">Pocket-sized, so timing is up to you.</h2>
         </div>
-        <ol class="timeline reveal">
+        <ol class="timeline reveal-draw">
           <li class="timeline__step timeline__step--pink">
             <h3 class="timeline__word">Before</h3>
             <p>One stick on the way out. It fits in the pocket that isn't holding your phone.</p>
@@ -213,14 +244,14 @@
         <div class="section__head reveal">
           <h2 id="flavours-title" class="headline">Pick a personality.</h2>
         </div>
-        <ul class="flavours reveal">
+        <ul class="flavours reveal reveal-cells">
           <li>
             <a class="flavour flavour--berry" href="#shop">
               <span class="frame">
                 <picture>
-                  <source srcset="assets/img/stick-berry.avif" type="image/avif">
-                  <source srcset="assets/img/stick-berry.webp" type="image/webp">
-                  <img src="assets/img/stick-berry.png" alt="" width="240" height="408" loading="lazy" decoding="async">
+                  <source srcset="assets/img/cut/stick-berry.avif" type="image/avif">
+                  <source srcset="assets/img/cut/stick-berry.webp" type="image/webp">
+                  <img src="assets/img/cut/stick-berry.png" alt="" width="240" height="408" loading="lazy" decoding="async">
                 </picture>
               </span>
               <span class="flavour__name">Berry</span>
@@ -231,9 +262,9 @@
             <a class="flavour flavour--mango" href="#shop">
               <span class="frame">
                 <picture>
-                  <source srcset="assets/img/stick-mango.avif" type="image/avif">
-                  <source srcset="assets/img/stick-mango.webp" type="image/webp">
-                  <img src="assets/img/stick-mango.png" alt="" width="240" height="429" loading="lazy" decoding="async">
+                  <source srcset="assets/img/cut/stick-mango.avif" type="image/avif">
+                  <source srcset="assets/img/cut/stick-mango.webp" type="image/webp">
+                  <img src="assets/img/cut/stick-mango.png" alt="" width="240" height="429" loading="lazy" decoding="async">
                 </picture>
               </span>
               <span class="flavour__name">Mango</span>
@@ -244,9 +275,9 @@
             <a class="flavour flavour--pineapple" href="#shop">
               <span class="frame">
                 <picture>
-                  <source srcset="assets/img/stick-pineapple.avif" type="image/avif">
-                  <source srcset="assets/img/stick-pineapple.webp" type="image/webp">
-                  <img src="assets/img/stick-pineapple.png" alt="" width="240" height="453" loading="lazy" decoding="async">
+                  <source srcset="assets/img/cut/stick-pineapple.avif" type="image/avif">
+                  <source srcset="assets/img/cut/stick-pineapple.webp" type="image/webp">
+                  <img src="assets/img/cut/stick-pineapple.png" alt="" width="240" height="453" loading="lazy" decoding="async">
                 </picture>
               </span>
               <span class="flavour__name">Pineapple</span>
@@ -257,9 +288,9 @@
             <a class="flavour flavour--watermelon" href="#shop">
               <span class="frame">
                 <picture>
-                  <source srcset="assets/img/stick-watermelon.avif" type="image/avif">
-                  <source srcset="assets/img/stick-watermelon.webp" type="image/webp">
-                  <img src="assets/img/stick-watermelon.png" alt="" width="240" height="422" loading="lazy" decoding="async">
+                  <source srcset="assets/img/cut/stick-watermelon.avif" type="image/avif">
+                  <source srcset="assets/img/cut/stick-watermelon.webp" type="image/webp">
+                  <img src="assets/img/cut/stick-watermelon.png" alt="" width="240" height="422" loading="lazy" decoding="async">
                 </picture>
               </span>
               <span class="flavour__name">Watermelon</span>
@@ -270,9 +301,9 @@
             <a class="flavour flavour--citrus" href="#shop">
               <span class="frame">
                 <picture>
-                  <source srcset="assets/img/stick-citrus.avif" type="image/avif">
-                  <source srcset="assets/img/stick-citrus.webp" type="image/webp">
-                  <img src="assets/img/stick-citrus.png" alt="" width="240" height="383" loading="lazy" decoding="async">
+                  <source srcset="assets/img/cut/stick-citrus.avif" type="image/avif">
+                  <source srcset="assets/img/cut/stick-citrus.webp" type="image/webp">
+                  <img src="assets/img/cut/stick-citrus.png" alt="" width="240" height="383" loading="lazy" decoding="async">
                 </picture>
               </span>
               <span class="flavour__name">Citrus</span>
@@ -286,7 +317,7 @@
         <div class="section__head reveal">
           <h2 id="reviews-title" class="headline">Reviewed by the tired.</h2>
         </div>
-        <div class="quotes hairgrid reveal">
+        <div class="quotes hairgrid reveal reveal-cells">
           <figure class="quote quote--lead">
             <blockquote><p>“I have a drawer of sachets I never open. This one I actually take, because it takes four seconds and tastes like a sweet.”</p></blockquote>
             <figcaption><span class="quote__who">Priya, London</span><span class="quote__flavour">Citrus</span></figcaption>
@@ -326,13 +357,13 @@
         <a class="btn btn--outline" href="#home">Back home</a>
       </div>
 
-      <ul class="products hairgrid" aria-label="Boxes">
-        <li class="product">
+      <ul class="products hairgrid reveal reveal-cells" aria-label="Boxes">
+        <li class="product product--berry">
           <span class="frame">
             <picture>
-              <source srcset="assets/img/box-berry.avif" type="image/avif">
-              <source srcset="assets/img/box-berry.webp" type="image/webp">
-              <img src="assets/img/box-berry.png" alt="" width="300" height="457" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/box-berry.avif" type="image/avif">
+              <source srcset="assets/img/cut/box-berry.webp" type="image/webp">
+              <img src="assets/img/cut/box-berry.png" alt="" width="300" height="457" loading="lazy" decoding="async">
             </picture>
           </span>
           <div class="product__meta">
@@ -344,12 +375,12 @@
             <button type="button" class="btn btn--primary btn--sm" data-add="berry">Add<span class="visually-hidden"> Berry box to cart</span></button>
           </div>
         </li>
-        <li class="product">
+        <li class="product product--mango">
           <span class="frame">
             <picture>
-              <source srcset="assets/img/box-mango.avif" type="image/avif">
-              <source srcset="assets/img/box-mango.webp" type="image/webp">
-              <img src="assets/img/box-mango.png" alt="" width="300" height="497" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/box-mango.avif" type="image/avif">
+              <source srcset="assets/img/cut/box-mango.webp" type="image/webp">
+              <img src="assets/img/cut/box-mango.png" alt="" width="300" height="497" loading="lazy" decoding="async">
             </picture>
           </span>
           <div class="product__meta">
@@ -361,12 +392,12 @@
             <button type="button" class="btn btn--primary btn--sm" data-add="mango">Add<span class="visually-hidden"> Mango box to cart</span></button>
           </div>
         </li>
-        <li class="product">
+        <li class="product product--pineapple">
           <span class="frame">
             <picture>
-              <source srcset="assets/img/box-pineapple.avif" type="image/avif">
-              <source srcset="assets/img/box-pineapple.webp" type="image/webp">
-              <img src="assets/img/box-pineapple.png" alt="" width="300" height="511" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/box-pineapple.avif" type="image/avif">
+              <source srcset="assets/img/cut/box-pineapple.webp" type="image/webp">
+              <img src="assets/img/cut/box-pineapple.png" alt="" width="300" height="511" loading="lazy" decoding="async">
             </picture>
           </span>
           <div class="product__meta">
@@ -378,12 +409,12 @@
             <button type="button" class="btn btn--primary btn--sm" data-add="pineapple">Add<span class="visually-hidden"> Pineapple box to cart</span></button>
           </div>
         </li>
-        <li class="product">
+        <li class="product product--watermelon">
           <span class="frame">
             <picture>
-              <source srcset="assets/img/box-watermelon.avif" type="image/avif">
-              <source srcset="assets/img/box-watermelon.webp" type="image/webp">
-              <img src="assets/img/box-watermelon.png" alt="" width="300" height="493" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/box-watermelon.avif" type="image/avif">
+              <source srcset="assets/img/cut/box-watermelon.webp" type="image/webp">
+              <img src="assets/img/cut/box-watermelon.png" alt="" width="300" height="493" loading="lazy" decoding="async">
             </picture>
           </span>
           <div class="product__meta">
@@ -395,12 +426,12 @@
             <button type="button" class="btn btn--primary btn--sm" data-add="watermelon">Add<span class="visually-hidden"> Watermelon box to cart</span></button>
           </div>
         </li>
-        <li class="product">
+        <li class="product product--citrus">
           <span class="frame">
             <picture>
-              <source srcset="assets/img/box-citrus.avif" type="image/avif">
-              <source srcset="assets/img/box-citrus.webp" type="image/webp">
-              <img src="assets/img/box-citrus.png" alt="" width="300" height="471" loading="lazy" decoding="async">
+              <source srcset="assets/img/cut/box-citrus.avif" type="image/avif">
+              <source srcset="assets/img/cut/box-citrus.webp" type="image/webp">
+              <img src="assets/img/cut/box-citrus.png" alt="" width="300" height="471" loading="lazy" decoding="async">
             </picture>
           </span>
           <div class="product__meta">
@@ -425,9 +456,9 @@
         </div>
         <div class="bundle__media">
           <picture>
-            <source srcset="assets/img/all-boxes.avif" type="image/avif">
-            <source srcset="assets/img/all-boxes.webp" type="image/webp">
-            <img src="assets/img/all-boxes.png" alt="All five Sahsih boxes lined up: berry, mango, pineapple, watermelon and citrus" width="900" height="290" loading="lazy" decoding="async">
+            <source srcset="assets/img/cut/all-boxes.avif" type="image/avif">
+            <source srcset="assets/img/cut/all-boxes.webp" type="image/webp">
+            <img src="assets/img/cut/all-boxes.png" alt="All five Sahsih boxes lined up: berry, mango, pineapple, watermelon and citrus" width="900" height="290" loading="lazy" decoding="async">
           </picture>
         </div>
       </section>

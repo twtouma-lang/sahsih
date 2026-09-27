@@ -32,6 +32,7 @@ scripts/
   main.js             Routing, cart, drawer, menu, ticker control, reveals
 assets/
   img/                Product renders as PNG plus WebP and AVIF siblings, OG card
+  img/cut/            Transparent cutouts of the renders (what the page shows)
   fonts/              Archivo woff2 subsets (latin, latin-ext, vietnamese)
 tools/
   build-images.py     Regenerates the WebP/AVIF siblings and the OG card
@@ -56,6 +57,9 @@ delegated click listener in `scripts/main.js`:
 | `data-menu` | The mobile menu toggle. |
 | `data-ticker-toggle` | Pause and play control for the ticker. |
 | `class="reveal"` | Fades the block in when it enters the viewport (IntersectionObserver). |
+| `class="reveal-cells"`, `reveal-draw`, `reveal-count` | Staggered cells, the self-drawing timeline, and counting stats. Same observer. |
+| `data-tilt` | The hero stage tilts toward the cursor on pointer devices. |
+| `data-count="15"` | A number that counts up when its `reveal-count` block enters. |
 
 Actions are real `<button>` elements and navigation uses real `<a>` elements,
 so keyboard and screen-reader behaviour comes for free.
@@ -88,11 +92,25 @@ order lines. To connect a real checkout, replace `orderMailto()` in
 
 ## Images
 
-Source renders are PNG. `tools/build-images.py` writes a WebP and an AVIF
-next to each one (about a tenth and a fifteenth of the PNG weight) and the
-markup uses `<picture>` to serve the smallest format the browser supports. It
-also composes `assets/img/og.jpg`, the 1200x630 social card, from the logo
-and hero renders. Requires Pillow 11 or newer.
+Source renders are PNG with a studio background. The page shows transparent
+cutouts of them from `assets/img/cut/`, so the sticks and boxes sit on the
+black ground under their own coloured floor light and can move independently.
+
+`tools/build-images.py` writes a WebP and an AVIF next to every PNG (about a
+tenth and a fifteenth of the PNG weight) and the markup uses `<picture>` to
+serve the smallest format the browser supports. It also composes
+`assets/img/og.jpg`, the 1200x630 social card. Requires Pillow 11 or newer.
+
+`tools/build-images.py --cutouts` regenerates the cutouts with BiRefNet
+(`pip install rembg onnxruntime`; the model downloads on first use and each
+image takes about a minute on CPU). Run it after replacing a render.
+
+## Motion
+
+Every animation collapses under `prefers-reduced-motion`, and the page is
+complete without script: hidden starting states only apply under the `.js`
+class inside a `no-preference` media query. The motion vocabulary and the
+rule for adding to it are in `DESIGN.md`, section 7.
 
 ## Sharing a single file
 
