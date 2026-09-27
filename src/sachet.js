@@ -19,6 +19,7 @@ import {
 import leafSvg from '@phosphor-icons/core/assets/bold/leaf-bold.svg';
 import dropSvg from '@phosphor-icons/core/assets/bold/drop-bold.svg';
 import lightningSvg from '@phosphor-icons/core/assets/bold/lightning-bold.svg';
+import { tintRamp } from './tint.js';
 
 export const DIM = {
   W: 1, // width
@@ -146,13 +147,8 @@ function icon(name, color) {
   return iconCache.get(key);
 }
 
-const hexToRgb = (hex) => {
-  const c = new Color(hex);
-  return [c.r * 255, c.g * 255, c.b * 255];
-};
-
-/* Gradient-map the glossy wordmark into the flavour's colours,
-   keeping its highlights and shading. */
+/* Recolour the glossy wordmark into the flavour, keeping its highlights
+   and shading (same curve as the page logo, see tint.js). */
 function tintLogo(logo, flavour, width) {
   const h = Math.round((logo.naturalHeight / logo.naturalWidth) * width);
   const c = document.createElement('canvas');
@@ -162,29 +158,13 @@ function tintLogo(logo, flavour, width) {
   ctx.drawImage(logo, 0, 0, width, h);
   const img = ctx.getImageData(0, 0, width, h);
   const d = img.data;
-  const deep = hexToRgb(flavour.deep);
-  const mid = hexToRgb(flavour.accent);
-  const light = hexToRgb(flavour.light);
+  const ramp = tintRamp(flavour);
   for (let i = 0; i < d.length; i += 4) {
     if (d[i + 3] === 0) continue;
-    const l = Math.min(1, (0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]) / 255 * 1.25);
-    let r;
-    let g;
-    let b;
-    if (l < 0.55) {
-      const t = l / 0.55;
-      r = deep[0] + (mid[0] - deep[0]) * t;
-      g = deep[1] + (mid[1] - deep[1]) * t;
-      b = deep[2] + (mid[2] - deep[2]) * t;
-    } else {
-      const t = (l - 0.55) / 0.45;
-      r = mid[0] + (light[0] - mid[0]) * t;
-      g = mid[1] + (light[1] - mid[1]) * t;
-      b = mid[2] + (light[2] - mid[2]) * t;
-    }
-    d[i] = r;
-    d[i + 1] = g;
-    d[i + 2] = b;
+    const [r, g, b] = ramp((0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2]) / 255);
+    d[i] = r * 255;
+    d[i + 1] = g * 255;
+    d[i + 2] = b * 255;
   }
   ctx.putImageData(img, 0, 0);
   return c;

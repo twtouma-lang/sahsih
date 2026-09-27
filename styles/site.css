@@ -72,7 +72,10 @@
   --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   --page-w: 100vw; /* set to the real client width by the script */
-  --wm: calc((var(--page-w) - 2 * var(--gutter)) / 5.06); /* SAHSIH spans the page */
+  /* The logo spans the page, capped so it never fills a short screen. */
+  --logo-aspect: 3.5818; /* 2364 x 660, see tools/build-logo.py */
+  --logo-w: min(calc(var(--page-w) - 2 * var(--gutter)), calc(58vh * var(--logo-aspect)));
+  --logo-h: calc(var(--logo-w) / var(--logo-aspect));
   --container: 1440px;
   --gutter: clamp(20px, 3vw, 44px);
   --bar-h: 68px;
@@ -86,7 +89,10 @@
 }
 
 @media (max-width: 899px) {
-  :root { --bar-h: 58px; }
+  :root {
+    --bar-h: 58px;
+    --logo-w: calc(var(--page-w) - 24px);
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -237,21 +243,31 @@ main:focus { outline: none; }
 .wordmark {
   position: relative;
   z-index: 1;
-  margin: 0;
-  font-size: var(--wm);
-  font-stretch: 125%;
-  font-weight: 900;
-  line-height: 0.78;
-  letter-spacing: -0.02em;
-  text-align: center;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--accent);
-  text-shadow: 0 0 80px color-mix(in srgb, var(--accent) 45%, transparent);
+  width: var(--logo-w);
+  margin-inline: auto;
   pointer-events: none;
   user-select: none;
 }
-.wordmark .char { display: inline-block; }
+.wordmark__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--logo-aspect);
+  overflow: visible;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 0 70px color-mix(in srgb, var(--accent) 38%, transparent));
+}
+/* Every flavour except the original berry-pink gets the logo recoloured,
+   the same way the real packaging tints it per flavour. */
+.is-tinted .wordmark__art {
+  filter: url(#logo-tint) drop-shadow(0 0 70px color-mix(in srgb, var(--accent) 38%, transparent));
+}
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 
 /* ------------------------------------------------------------------
    4. Buttons
@@ -624,10 +640,9 @@ button.slot:focus-visible { outline-offset: -6px; }
 
 .wordmark--hero {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 44%;
-  translate: 0 -50%;
+  left: 50%;
+  top: 43%;
+  translate: -50% -50%;
 }
 
 .slot--hero {
@@ -839,7 +854,7 @@ button.slot:focus-visible { outline-offset: -6px; }
   }
   .wordmark--hero {
     align-self: center;
-    margin-inline: calc(-1 * var(--gutter));
+    justify-self: center;
   }
   .slot--hero {
     justify-self: center;
@@ -1644,8 +1659,8 @@ html:not(.has-3d) .callout-lines { display: none; }
   min-height: 0;
   align-self: center;
   width: min(22vw, 30vh);
-  /* The sachet's foot rests on the tops of the letters. */
-  margin-bottom: calc(var(--wm) * -0.08);
+  /* The sachet stands in front of the logo, planted in its lower half. */
+  margin-bottom: calc(var(--logo-h) * -0.42);
 }
 .wordmark--footer { flex: none; }
 .footer__grid {
@@ -1897,12 +1912,16 @@ html:not(.has-3d) .callout-lines { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Transitions off outright. A near-zero duration would make every
+     element transition every property, including the inherited accent
+     colour, and Chrome can then skip repainting some of them. Nothing in
+     the script waits for transitionend. */
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
 }

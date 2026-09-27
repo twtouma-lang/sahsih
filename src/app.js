@@ -14,6 +14,7 @@ import Lenis from 'lenis';
 import { CONFIG, flavourById, packById } from './config.js';
 import { createCart, describe, lineKey, money } from './cart.js';
 import { paintBackdrop } from './backdrop.js';
+import { tintTables } from './tint.js';
 
 gsap.registerPlugin(ScrollTrigger);
 if (window.__SAHSIH_DEBUG) window.__sahsih = { gsap, ScrollTrigger };
@@ -83,6 +84,31 @@ if (finePointer) {
    ------------------------------------------------------------------ */
 let flavour = CONFIG.defaultFlavour;
 
+/* The logo keeps its original pink and blue for the default flavour and
+   is recoloured for the others, the same way the printed packs are. */
+function tintLogo(f) {
+  const original = f.id === CONFIG.defaultFlavour;
+  root.classList.toggle('is-tinted', !original);
+  if (original) return;
+  const [r, g, b] = tintTables(f);
+  const set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('tableValues', v);
+  };
+  set('tint-r', r);
+  set('tint-g', g);
+  set('tint-b', b);
+}
+
+function wobbleLogo() {
+  if (reduced) return;
+  gsap.fromTo(
+    '.wordmark__art',
+    { scaleX: 1.06, scaleY: 0.86 },
+    { scaleX: 1, scaleY: 1, duration: 1.1, ease: 'elastic.out(1, 0.35)', overwrite: 'auto' }
+  );
+}
+
 function setFlavour(id) {
   const f = flavourById(id);
   if (!f) return;
@@ -91,6 +117,8 @@ function setFlavour(id) {
   root.style.setProperty('--accent', f.accent);
   root.style.setProperty('--accent-light', f.light);
   root.dataset.flavour = f.id;
+  tintLogo(f);
+  if (changed) wobbleLogo();
   $$('.swatch').forEach((el) => el.setAttribute('aria-pressed', String(el.dataset.flavour === f.id)));
   $$('.flavour-row').forEach((el) => el.classList.toggle('is-current', el.dataset.flavour === f.id));
   $$('input[name="flavour"]').forEach((el) => {
@@ -312,19 +340,6 @@ function paint() {
 }
 paint();
 
-// Split the hero wordmark into letters for the entrance.
-const wordmark = $('[data-wordmark]');
-if (wordmark) {
-  const text = wordmark.textContent.trim();
-  wordmark.textContent = '';
-  for (const ch of text) {
-    const s = document.createElement('span');
-    s.className = 'char';
-    s.textContent = ch;
-    wordmark.appendChild(s);
-  }
-}
-
 function countUp() {
   $$('[data-count]').forEach((el, i) => {
     const to = Number(el.dataset.count);
@@ -350,7 +365,7 @@ function intro() {
   const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
   tl.from('.bar', { yPercent: -100, autoAlpha: 0, duration: 0.9 }, 0)
     .from('.hero__bg', { autoAlpha: 0, duration: 1.4, ease: 'power2.out' }, 0)
-    .from('[data-wordmark] .char', { yPercent: 70, autoAlpha: 0, duration: 1.1, stagger: 0.06 }, 0.1)
+    .from('[data-wordmark] .wordmark__art', { yPercent: -35, scaleY: 1.3, scaleX: 0.82, autoAlpha: 0, duration: 1.5, ease: 'elastic.out(1, 0.45)' }, 0.1)
     .from('.hero__title .line > span', { yPercent: 110, duration: 1, stagger: 0.09 }, 0.35)
     .from('.hud__panel', { x: 40, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, 0.45)
     .from('.swatch', { scale: 0, duration: 0.6, stagger: 0.06, ease: 'back.out(2.2)', clearProps: 'transform' }, 0.6)
@@ -384,7 +399,8 @@ mm.add(
     if (motion) {
       gsap
         .timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
-        .to('[data-wordmark]', { yPercent: desktop ? -40 : -20, scale: 0.9, autoAlpha: 0.15, ease: 'none' }, 0)
+        // Animate the art, not its wrapper: the wrapper's CSS translate centres it.
+        .to('[data-wordmark] .wordmark__art', { yPercent: desktop ? -40 : -20, scale: 0.9, autoAlpha: 0.15, ease: 'none' }, 0)
         .to('.hero__bokeh--near', { yPercent: -14, ease: 'none' }, 0)
         .to('.hero__bokeh--far', { yPercent: -5, ease: 'none' }, 0)
         .to('.hud', { y: -140, autoAlpha: 0, ease: 'none' }, 0)

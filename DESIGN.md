@@ -23,7 +23,7 @@ colors:
 typography:
   display-family: '"Archivo" variable, weight 100 to 900, width 62 to 125 percent, self-hosted'
   mono-family: '"JetBrains Mono" variable, weight 100 to 800, self-hosted'
-  wordmark: "Archivo 900 at 125% width, uppercase, font-size = (page width minus gutters) / 5.06 so SAHSIH spans the page, line-height 0.78"
+  wordmark: "not type: the original glossy sahsih logo (assets/img/logo), spanning the page width minus gutters, capped at 58vh tall"
   hero-title: "Archivo 900 at 62% width, clamp(72px, 10.4vw, 188px), line-height 0.84, uppercase, cut off by the fold"
   h-cond: "Archivo 900 at 62% width, clamp(52px, 7.6vw, 132px), line-height 0.86, uppercase"
   flavour-name: "Archivo 900 at 62% width, clamp(44px, 5.2vw, 88px)"
@@ -57,13 +57,14 @@ components:
   cart-drawer: "right drawer, 460px max, accent left border; page is inert while open; Escape, backdrop or the close button closes it and focus returns"
   toast: "skewed accent block, mono uppercase, bottom left, 2.6s"
   grain: "fixed SVG fractal noise at 7 percent, screen blend, stepped drift; hidden from reduced motion by the global override"
+  logo-wordmark: "the real bubble logo as an SVG: an EDSR-upscaled texture of the original artwork clipped by its traced vector outline, so edges stay sharp at any size; recoloured per flavour through an SVG filter using the shared curve in src/tint.js (original pink and blue for Berry); drops in with an elastic squash and wobbles when the flavour changes"
 ---
 
 # Sahsih design system
 
 ## 1. Visual theme and atmosphere
 
-An energy-drink launch at 2am. Near-black ground, one product dominating the screen, loud type, technical HUD details, film grain. The 3D sachet is the hero object on every screen: it revolves, leans toward the cursor, squishes when squeezed, and travels down the page to sit beside each section's content. The accent colour is whichever flavour is selected, so the whole page is pink for Berry, orange for Mango, and so on.
+An energy-drink launch at 2am. Near-black ground, one product dominating the screen, the real glossy bubble logo huge behind it, loud type, technical HUD details, film grain. The 3D sachet is the hero object on every screen: it revolves, leans toward the cursor, squishes when squeezed, and travels down the page to sit beside each section's content. The accent colour is whichever flavour is selected, so the whole page is pink for Berry, orange for Mango, and so on.
 
 Dials: DESIGN_VARIANCE 8, MOTION_INTENSITY 9, VISUAL_DENSITY 4.
 
@@ -85,7 +86,7 @@ Black text on every flavour accent passes AA (lowest is Berry at 7.1:1). Off-whi
 
 ## 3. Typography rules
 
-One family, Archivo, used at two ends of its width axis: 125% for the SAHSIH wordmark, 62% for every headline. JetBrains Mono sets small uppercase labels, HUD text and tags. No third family. Headlines are uppercase, weight 900, tight leading (0.84 to 0.9). Body copy is sentence case at 16 to 17px. Numbers that change (HUD, prices, cart) use tabular figures.
+One family, Archivo, set condensed (62% width) for every headline. The big SAHSIH is never typeset: it is always the original logo artwork, recoloured to the flavour. JetBrains Mono sets small uppercase labels, HUD text and tags. No third family. Headlines are uppercase, weight 900, tight leading (0.84 to 0.9). Body copy is sentence case at 16 to 17px. Numbers that change (HUD, prices, cart) use tabular figures.
 
 Copy voice: short, dry, a bit cheeky. Full stops as rhythm. No em-dashes. Health copy names and describes ingredients; it never claims an effect. The ingredient panel stays marked "to be confirmed before launch".
 
@@ -118,6 +119,7 @@ Do:
 
 Don't:
 - No rounded cards, no drop-shadowed UI, no gradient text, no emoji.
+- Never typeset SAHSIH as the brand mark; use the logo (the `#logo-art` sprite in `index.html`).
 - No scroll event listeners; ScrollTrigger and Lenis only.
 - No medical claims in copy.
 - No second 3D object; the stage renders one sachet.

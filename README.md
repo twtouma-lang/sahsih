@@ -38,6 +38,7 @@ src/
   stage.js              Three.js renderer, lights, glow, spin/squeeze/wobble springs
   sachet.js             Sachet geometry, label textures, material and shader deformation
   backdrop.js           The hero's night scene (bokeh lights on a wet street)
+  tint.js               The colour curve that recolours the logo per flavour
   cart.js               Cart lines, persistence, drawer, email order
 scripts/                Built bundles (committed). stage.js loads after first paint.
 styles/
@@ -45,12 +46,26 @@ styles/
   site.css              Layout, components, layers, responsive and reduced-motion rules
 assets/
   img/cut/              Transparent product renders and wordmark used by the page
+  img/logo/             High-resolution logo texture and its traced outline
   img/                  Source renders, favicon, OG card
   fonts/                Variable woff2 files
 tools/
   build-images.py       WebP/AVIF siblings, cutouts (--cutouts), OG card
+  build-logo.py         Rebuilds the high-resolution logo from the original artwork
   build-standalone.py   One self-contained HTML file for sharing
 ```
+
+## The big logo
+
+The giant SAHSIH in the hero and footer is the original glossy logo, not
+text. `tools/build-logo.py` upscales the 659 px artwork 4x with OpenCV's
+EDSR model and traces its outline with potrace; the page draws the texture
+clipped by that outline, so the edges stay sharp on any screen. For every
+flavour except Berry an SVG filter recolours it with the same curve the 3D
+label uses (`src/tint.js`), keeping its highlights and shading. Re-run
+`python3 tools/build-logo.py path/to/EDSR_x4.pb` if the logo changes, then
+paste `assets/img/logo/logo-path.txt` into the `#logo-clip` path in
+`index.html`.
 
 ## How the 3D works
 
