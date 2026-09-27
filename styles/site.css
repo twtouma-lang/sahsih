@@ -184,7 +184,7 @@ button {
    keeps descenders (the q in Squeeze) clear of the clip edge. */
 .display .line {
   display: block;
-  overflow: hidden;
+  overflow: clip;
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
@@ -435,7 +435,7 @@ button {
   place-items: center;
   padding: 48px 0 40px 16px;
   border-left: var(--rule) solid var(--line);
-  overflow: hidden;
+  overflow: clip;
 }
 
 /* Stage light: two soft pools of the brand colours behind the sticks.
@@ -453,11 +453,15 @@ button {
   left: -18%;
   bottom: -28%;
   background: radial-gradient(closest-side, rgba(255, 77, 224, 0.34), transparent);
+  translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -28px);
+  transition: translate 0.8s var(--ease-out);
 }
 .hero__media::after {
   right: -18%;
   top: -34%;
   background: radial-gradient(closest-side, rgba(63, 108, 255, 0.3), transparent);
+  translate: calc(var(--px, 0) * 30px) calc(var(--py, 0) * 22px);
+  transition: translate 0.8s var(--ease-out);
 }
 
 /* Five cutouts in a shallow arc. The stage tilts a few degrees toward
@@ -480,6 +484,13 @@ button {
 .hero__stick img {
   width: 100%;
   filter: drop-shadow(0 26px 22px rgba(0, 0, 0, 0.6));
+  transition: translate 0.5s var(--ease-out), scale 0.5s var(--ease-out);
+}
+@media (hover: hover) {
+  .hero__stick:hover img {
+    translate: 0 -14px;
+    scale: 1.05;
+  }
 }
 
 .actions {
@@ -526,7 +537,7 @@ button {
 .ticker__row {
   display: flex;
   width: max-content;
-  animation: ticker 28s linear infinite;
+  animation: ticker 30s linear infinite;
 }
 .ticker__row.is-paused { animation-play-state: paused; }
 @media (hover: hover) {
@@ -645,7 +656,7 @@ button {
   flex-direction: column;
   gap: 12px;
   padding: 40px 28px 44px;
-  overflow: hidden;
+  overflow: clip;
 }
 .job h3 {
   font-size: 24px;
@@ -896,7 +907,7 @@ button {
   width: 100%;
   min-height: 0;
   aspect-ratio: 5 / 8;
-  overflow: hidden;
+  overflow: clip;
 }
 .frame picture { display: contents; }
 .frame img {
@@ -1194,6 +1205,8 @@ button {
   inset: 0;
   z-index: 90;
   background: rgba(6, 6, 6, 0.72);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -1407,10 +1420,35 @@ button {
 }
 @keyframes ticker {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to { transform: translateX(-33.3333%); }
 }
 @keyframes bump {
   50% { transform: scale(1.1, 0.9); }
+}
+@keyframes jelly {
+  0%, 100% { transform: none; }
+  30% { transform: scale(1.07, 0.91); }
+  55% { transform: scale(0.95, 1.06); }
+  78% { transform: scale(1.02, 0.98); }
+}
+@keyframes pop {
+  40% { transform: scale(1.14, 0.88); }
+  70% { transform: scale(0.97, 1.03); }
+}
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes parallax {
+  from { transform: translateY(var(--from, 30px)); }
+  to { transform: translateY(var(--to, -30px)); }
+}
+@keyframes slide-x {
+  from { transform: translateX(var(--from-x, -6%)); }
+  to { transform: none; }
+}
+@keyframes ticker-scroll {
+  to { translate: -260px 0; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1497,8 +1535,29 @@ button {
   .js .reveal-draw.is-in .timeline__step:nth-child(2) > * { transition-delay: 0.7s; }
   .js .reveal-draw.is-in .timeline__step:nth-child(3) > * { transition-delay: 1.05s; }
 
+  /* Section headings slide in ahead of their copy */
+  .js .reveal-stagger > * {
+    opacity: 0;
+    transform: translateX(-18px);
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .js .reveal-stagger.is-in > * {
+    opacity: 1;
+    transform: none;
+  }
+  .js .reveal-stagger > :nth-child(2) { transition-delay: 0.14s; }
+
+  /* The primary call to action wobbles once after the hero has settled */
+  .js .hero .btn--primary { animation: jelly 0.7s 2.4s ease-in-out 1; }
+
+  /* View change */
+  .js .view.is-entering { animation: view-in 0.55s var(--ease-out) both; }
+
   /* Feedback */
   .cart-button.is-bumped { animation: bump 0.4s var(--ease-out); }
+  .stat__value.is-counted { animation: pop 0.5s var(--ease-out); }
+  .product.is-added .frame img,
+  .bundle.is-added .bundle__media img { animation: jelly 0.6s ease-in-out 1; }
   .cart.is-opening .cart-item { animation: rise 0.45s var(--ease-out) both; }
   .cart.is-opening .cart-item:nth-child(2) { animation-delay: 0.06s; }
   .cart.is-opening .cart-item:nth-child(3) { animation-delay: 0.12s; }
@@ -1509,6 +1568,61 @@ button {
 
 @media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
   .js .reveal-draw::before { transform: scaleY(0); }
+}
+
+/* Scroll-linked motion. These run on the compositor against the scroll
+   position, so there is never a scroll listener. Each element keeps its
+   own timeline: the hero sticks rise at different rates as the hero
+   leaves, the bento and panel sticks glide through their cells, the
+   flavour strip arrives as a wave, the pink headline slides into place
+   and the ticker drifts with the page. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero { view-timeline: --hero block; }
+    .hero__stick img {
+      animation: parallax linear both;
+      animation-timeline: --hero;
+      animation-range: exit 0% exit 100%;
+      --from: 0px;
+      --to: -70px;
+    }
+    .hero__stick:nth-child(2) img,
+    .hero__stick:nth-child(4) img { --to: -130px; }
+    .hero__stick:nth-child(3) img { --to: -190px; }
+
+    .job__media img,
+    .panel-split__media img {
+      animation: parallax linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+      --from: 36px;
+      --to: -36px;
+    }
+
+    .flavours { view-timeline: --flavours block; }
+    .flavour {
+      animation: parallax linear both;
+      animation-timeline: --flavours;
+      animation-range: entry 0% entry 100%;
+      --from: calc(var(--n, 0) * 22px + 10px);
+      --to: 0px;
+    }
+    .flavours > li:nth-child(2) .flavour { --n: 1; }
+    .flavours > li:nth-child(3) .flavour { --n: 2; }
+    .flavours > li:nth-child(4) .flavour { --n: 3; }
+    .flavours > li:nth-child(5) .flavour { --n: 4; }
+
+    .cta__headline {
+      animation: slide-x linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+
+    .ticker__row {
+      animation: ticker 30s linear infinite, ticker-scroll linear both;
+      animation-timeline: auto, scroll(root);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

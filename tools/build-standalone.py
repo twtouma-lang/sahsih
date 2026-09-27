@@ -108,7 +108,9 @@ def as_fragment(html: str) -> str:
     extra = (
         "<style>\n"
         ".site-header { top: env(safe-area-inset-top, 0px); }\n"
-        ".js .reveal { opacity: 1; transform: none; }\n"
+        ".js .reveal, .js .reveal-cells > * > *, .js .reveal-stagger > *,\n"
+        ".js .reveal-draw .timeline__step > * { opacity: 1; transform: none; }\n"
+        ".js .reveal-draw::before, .js .reveal-draw .timeline__step::before { transform: none; }\n"
         "</style>"
     )
     return f"<title>Sahsih</title>\n{styles}\n{extra}\n{body}\n"

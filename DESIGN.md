@@ -76,7 +76,7 @@ components:
 
 Night-out energy on a near-black ground. The product renders carry all the colour; the interface stays black, off-white and one hot pink. The layout is brutalist in the friendly sense: sharp corners, 2px hairlines organising content, heavy grotesk type at large sizes, and a jelly-like squash on every button. Density sits around a 5 on a 10-point scale: sections breathe, but hairline grids keep things tight.
 
-Dials for new work: DESIGN_VARIANCE 6, MOTION_INTENSITY 7, VISUAL_DENSITY 5.
+Dials for new work: DESIGN_VARIANCE 6, MOTION_INTENSITY 8, VISUAL_DENSITY 5.
 
 ## 2. Colour palette and roles
 
@@ -132,7 +132,8 @@ Do:
 - Use hairline grids and negative space instead of cards.
 - Provide a real image for any new section; the renders in `assets/img` are the palette.
 - Wrap every animation in the `prefers-reduced-motion` override, and keep motion on transform and opacity.
-- Give every animation a job. The page's motion vocabulary: headline lines rise (reading order), sticks enter in sequence and float (product presence), stage light drifts (lighting), stats count up (attention), cells reveal in reading order (sequence), the timeline draws itself (it is a sequence), the cart dot flies and the button bumps (feedback). A new animation must fit one of those jobs or it is decoration.
+- Give every animation a job. The page's motion vocabulary: headline lines rise and section headings slide in ahead of their copy (reading order), sticks enter in sequence, float, lift on hover and rise with the scroll (product presence and depth), stage light drifts and follows the cursor (lighting), stats count up and pop (attention), cells reveal in reading order and the flavour strip arrives as a scroll-linked wave (sequence), the timeline draws itself (it is a sequence), the pink headline slides into place and the ticker drifts with the page (scroll rhythm), the view fades in on a route change (state), the cart dot flies, the render squishes and the button bumps on add (feedback). A new animation must fit one of those jobs or it is decoration.
+- Scroll-linked motion uses CSS scroll-driven animations (`animation-timeline: view()` or `scroll(root)`) inside `@supports`, never a scroll listener. Elements that host a `view()` timeline must not sit inside `overflow: hidden` (use `overflow: clip`), because hidden creates a scroll container. When an element already owns `transform` through an animation, put hover or pointer offsets on the independent `translate` and `scale` properties.
 - Initial hidden states go inside `@media (prefers-reduced-motion: no-preference)` and only under the `.js` class, so the page is complete without script and without motion.
 
 Don't:

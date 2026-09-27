@@ -51,9 +51,15 @@
 
   function setView(name) {
     if (currentView === name) return false;
+    const previous = currentView;
     currentView = name;
     for (const [key, el] of Object.entries(views)) {
-      if (el) el.hidden = key !== name;
+      if (!el) continue;
+      el.hidden = key !== name;
+      if (key === name && previous !== null) {
+        el.classList.add('is-entering');
+        el.addEventListener('animationend', () => el.classList.remove('is-entering'), { once: true });
+      }
     }
     $$('.site-nav a').forEach((link) => {
       const target = link.getAttribute('href').slice(1);
@@ -171,6 +177,13 @@
     if (!CONFIG.products[id]) return;
     setQty(id, (cart[id] || 0) + 1);
     toast(`${CONFIG.products[id].name} added to cart`);
+    const card = from && from.closest('.product, .bundle');
+    if (card) {
+      card.classList.remove('is-added');
+      void card.offsetWidth;
+      card.classList.add('is-added');
+      card.addEventListener('animationend', () => card.classList.remove('is-added'), { once: true });
+    }
     if (!flyToCart(from)) bumpCartButton();
   }
 
@@ -402,6 +415,7 @@
       const eased = 1 - Math.pow(1 - t, 3);
       el.textContent = String(Math.round(target * eased));
       if (t < 1) requestAnimationFrame(tick);
+      else if (el.parentElement) el.parentElement.classList.add('is-counted');
     };
     requestAnimationFrame(tick);
   }
@@ -411,7 +425,7 @@
     if (el.classList.contains('reveal-count')) $$('[data-count]', el).forEach(countUp);
   }
 
-  const reveals = $$('.reveal, .reveal-cells, .reveal-draw, .reveal-count');
+  const reveals = $$('.reveal, .reveal-cells, .reveal-draw, .reveal-count, .reveal-stagger');
   if (reducedMotion() || !('IntersectionObserver' in window)) {
     reveals.forEach(enter);
   } else {
@@ -443,6 +457,8 @@
       frame = 0;
       stage.style.setProperty('--tx', `${(nx * 7).toFixed(2)}deg`);
       stage.style.setProperty('--ty', `${(-ny * 5).toFixed(2)}deg`);
+      tiltHost.style.setProperty('--px', nx.toFixed(3));
+      tiltHost.style.setProperty('--py', ny.toFixed(3));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(apply);
