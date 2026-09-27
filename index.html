@@ -1,345 +1,488 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sahsih — Tear it. Squeeze it. Carry on.</title>
-<meta name="description" content="Sahsih is a 15 g hangover jelly stick: milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. Five flavours, no water.">
+<title>Sahsih | Tear it. Squeeze it. Carry on.</title>
+<meta name="description" content="Sahsih is a 15 g hangover jelly stick. Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. Five flavours, no water.">
 <meta name="theme-color" content="#060606">
+<meta name="color-scheme" content="dark">
 
+<!-- Social cards need absolute URLs. The origin below assumes the production
+     domain matches the contact email; change it if the site lives elsewhere. -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Sahsih — Tear it. Squeeze it. Carry on.">
+<meta property="og:site_name" content="Sahsih">
+<meta property="og:title" content="Sahsih | Tear it. Squeeze it. Carry on.">
 <meta property="og:description" content="A 15 g hangover jelly stick. Milk thistle, electrolytes, B vitamins. Five flavours, no water.">
-<meta property="og:image" content="assets/img/hero-sticks.png">
+<meta property="og:image" content="https://sahsih.com/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Sahsih wordmark above five jelly sticks in berry, mango, pineapple, watermelon and citrus.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sahsih | Tear it. Squeeze it. Carry on.">
+<meta name="twitter:description" content="A 15 g hangover jelly stick. Milk thistle, electrolytes, B vitamins. Five flavours, no water.">
+<meta name="twitter:image" content="https://sahsih.com/assets/img/og.jpg">
 
-<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
 <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" imagesrcset="assets/img/hero-sticks.avif" type="image/avif">
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="stylesheet" href="styles/site.css">
 
+<script>document.documentElement.classList.replace('no-js', 'js');</script>
 <script src="scripts/main.js" defer></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": "Sahsih",
+      "url": "https://sahsih.com/",
+      "email": "hello@sahsih.com",
+      "logo": "https://sahsih.com/assets/img/sahsih-logo.png"
+    },
+    {
+      "@type": "Product",
+      "name": "Sahsih Hangover Jelly Sticks",
+      "description": "A 15 g hangover jelly stick with milk thistle, electrolytes and B vitamins. Ten sticks per box, five flavours.",
+      "image": "https://sahsih.com/assets/img/all-boxes.png",
+      "brand": { "@type": "Brand", "name": "Sahsih" },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "USD",
+        "lowPrice": "24",
+        "highPrice": "105",
+        "offerCount": "6"
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
-  <div style="background:#060606;min-height:100vh;overflow-x:hidden">
+<a class="skip-link" href="#content">Skip to content</a>
 
-    <header style="position:sticky;top:0;z-index:50;background:#060606;border-bottom:2px solid rgba(243,242,242,0.2)">
-      <div style="max-width:1400px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:32px">
-        <img src="assets/img/sahsih-logo.png" alt="Sahsih" style="height:38px;width:auto;mix-blend-mode:screen;cursor:pointer;flex:none" data-on-click="goHome">
-        <nav style="display:flex;gap:28px;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-left:auto">
-          <span style="cursor:pointer;color:#f3f2f2" class="hv-01" data-on-click="goHome">Home</span>
-          <span style="cursor:pointer;color:#f3f2f2" class="hv-01" data-on-click="goShop">Shop</span>
-          <a href="#science" style="color:#f3f2f2" class="hv-01">Science</a>
-          <a href="#when" style="color:#f3f2f2" class="hv-01">When to take it</a>
-        </nav>
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border:2px solid #f3f2f2;font-size:12px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;color:#f3f2f2" class="hv-02" data-on-click="goShop">Cart (<span data-bind="cartCount">0</span>)</div>
-      </div>
-    </header>
+<div class="page" id="page">
 
+  <header class="site-header">
+    <div class="container site-header__bar">
+      <a class="site-header__logo" href="#home" aria-label="Sahsih home">
+        <picture>
+          <source srcset="assets/img/sahsih-logo.avif" type="image/avif">
+          <source srcset="assets/img/sahsih-logo.webp" type="image/webp">
+          <img src="assets/img/sahsih-logo.png" alt="Sahsih" width="659" height="300" decoding="async">
+        </picture>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#science">Science</a>
+        <a href="#when">When to take it</a>
+      </nav>
+      <button type="button" class="cart-button" data-open-cart aria-haspopup="dialog" aria-controls="cart">
+        Cart <span class="cart-button__count" data-bind="cartCount">0</span>
+      </button>
+      <button type="button" class="menu-button" data-menu aria-expanded="false" aria-controls="site-nav">Menu</button>
+    </div>
+  </header>
 
-    <main id="view-home" class="view">
+  <div id="content" tabindex="-1">
 
-      <section style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:72px 40px 72px 0;display:flex;flex-direction:column;align-items:flex-start;gap:28px;min-width:0">
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#ff4de0">Replenish · Rebalance · Feel Good</div>
-            <h1 style="margin:0;font-size:clamp(44px,6.4vw,92px);line-height:0.92;font-weight:900;letter-spacing:-0.03em;text-wrap:balance">Tear it.<br>Squeeze it.<br>Carry on.</h1>
-            <p style="margin:0;max-width:44ch;font-size:18px;line-height:1.5;color:#d7d3d3;text-wrap:pretty">Sahsih is a 15&nbsp;g hangover jelly stick. Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. Five flavours, no water, no chalky tablets, no excuses.</p>
-            <div style="display:flex;flex-wrap:wrap;gap:12px">
-              <div style="display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;padding:16px 26px;background:#ff4de0;color:#060606;font-size:13px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-03" data-on-click="goShop">Shop the sticks →</div>
-              <a href="#science" style="display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;padding:16px 26px;border:2px solid #f3f2f2;color:#f3f2f2;font-size:13px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;transition:transform .16s ease" class="hv-04">What's in it</a>
-            </div>
+    <!-- ============================================================ -->
+    <!-- Home view                                                     -->
+    <!-- ============================================================ -->
+    <main id="home" class="view" aria-label="Home">
+
+      <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero__copy">
+          <p class="eyebrow">Replenish. Rebalance. Feel good.</p>
+          <h1 id="hero-title" class="display" tabindex="-1">Tear it.<br>Squeeze it.<br>Carry on.</h1>
+          <p class="lede">A 15&nbsp;g jelly stick with milk thistle, electrolytes and B vitamins. Five flavours, no water, no chalky tablets.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#shop">Shop the sticks</a>
+            <a class="btn btn--outline" href="#science">What's in it</a>
           </div>
-          <div style="border-left:2px solid rgba(243,242,242,0.2);display:flex;align-items:center;justify-content:center;padding:40px;min-width:0;overflow:hidden">
-            <img src="assets/img/hero-sticks.png" alt="Sahsih jelly sticks in five flavours" style="width:100%;max-width:660px;height:auto;display:block;animation:wobble 7s ease-in-out infinite">
+        </div>
+        <div class="hero__media">
+          <picture>
+            <source srcset="assets/img/hero-sticks.avif" type="image/avif">
+            <source srcset="assets/img/hero-sticks.webp" type="image/webp">
+            <img src="assets/img/hero-sticks.png" alt="Five Sahsih jelly sticks in a row: berry, mango, pineapple, watermelon and citrus, each with its fruit splashing behind it" width="1100" height="380" fetchpriority="high" decoding="async">
+          </picture>
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Product highlights">
+        <div class="ticker__track">
+          <div class="ticker__row" data-ticker>
+            <ul class="ticker__list">
+              <li>Replenish</li><li>Rebalance</li><li>Feel good</li><li>15&nbsp;g stick</li><li>10 per box</li><li>No water needed</li>
+            </ul>
+            <ul class="ticker__list" aria-hidden="true">
+              <li>Replenish</li><li>Rebalance</li><li>Feel good</li><li>15&nbsp;g stick</li><li>10 per box</li><li>No water needed</li>
+            </ul>
+          </div>
+        </div>
+        <button type="button" class="ticker__toggle" data-ticker-toggle aria-pressed="false">Pause</button>
+      </section>
+
+      <section class="container" aria-label="At a glance">
+        <ul class="stats hairgrid">
+          <li class="stat"><span class="stat__value">15&nbsp;g</span><span class="stat__label">Per stick</span></li>
+          <li class="stat"><span class="stat__value">10</span><span class="stat__label">Sticks per box</span></li>
+          <li class="stat"><span class="stat__value">5</span><span class="stat__label">Flavours</span></li>
+          <li class="stat"><span class="stat__value stat__value--blue">0</span><span class="stat__label">Glasses of water required</span></li>
+        </ul>
+      </section>
+
+      <section id="science" class="section container" aria-labelledby="science-title">
+        <div class="section__head reveal">
+          <h2 id="science-title" class="headline">Three jobs, one stick.</h2>
+          <p class="lede">A big night hits your liver, your fluids and salts, and your B vitamins. Each stick is built around those three.</p>
+        </div>
+        <div class="jobs hairgrid reveal">
+          <article class="job job--liver">
+            <h3>Liver support</h3>
+            <p class="job__ingredient">Milk thistle</p>
+            <p class="job__body">The organ doing the actual cleanup gets the headline ingredient. Milk thistle is the classic botanical for it, and it's in every stick.</p>
+            <picture class="job__media">
+              <source srcset="assets/img/stick-berry.avif" type="image/avif">
+              <source srcset="assets/img/stick-berry.webp" type="image/webp">
+              <img src="assets/img/stick-berry.png" alt="A Sahsih berry jelly stick" width="240" height="408" loading="lazy" decoding="async">
+            </picture>
+          </article>
+          <article class="job job--hydration">
+            <h3>Hydration</h3>
+            <p class="job__ingredient">Electrolytes</p>
+            <p class="job__body">Water alone doesn't fix a night out. Electrolytes are what you actually lost, and a jelly delivers them without a pint of liquid you can't face.</p>
+          </article>
+          <article class="job job--vitamins">
+            <h3>B vitamins</h3>
+            <p class="job__ingredient">B1, B6, B12</p>
+            <p class="job__body">The three that empty out fastest. Topping them back up is the least glamorous and most useful thing in the formula.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" aria-labelledby="panel-title">
+        <div class="panel-split hairgrid reveal">
+          <div class="panel-split__media">
+            <picture>
+              <source srcset="assets/img/stick-citrus.avif" type="image/avif">
+              <source srcset="assets/img/stick-citrus.webp" type="image/webp">
+              <img src="assets/img/stick-citrus.png" alt="A Sahsih citrus jelly stick" width="240" height="383" loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="panel-split__copy">
+            <h2 id="panel-title" class="headline">Short panel.<br>On purpose.</h2>
+            <dl class="panel">
+              <div class="panel__row"><dt>Milk thistle</dt><dd>Liver support</dd></div>
+              <div class="panel__row"><dt>Electrolytes</dt><dd>Hydration</dd></div>
+              <div class="panel__row"><dt>Vitamins B1, B6 and B12</dt><dd>Energy metabolism</dd></div>
+            </dl>
+            <p class="note">Full quantitative panel and allergen statement to be confirmed before launch.</p>
           </div>
         </div>
       </section>
 
-      <section style="border-bottom:2px solid rgba(243,242,242,0.2);overflow:hidden;background:#ff4de0">
-        <div style="display:flex;width:200%;animation:ticker 26s linear infinite">
-          <div style="display:flex;gap:40px;width:50%;padding:12px 20px;font-size:13px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;color:#060606;white-space:nowrap">
-            <span>Replenish</span><span>•</span><span>Rebalance</span><span>•</span><span>Feel good</span><span>•</span><span>15 g stick</span><span>•</span><span>10 per box</span><span>•</span><span>No water needed</span><span>•</span>
-          </div>
-          <div style="display:flex;gap:40px;width:50%;padding:12px 20px;font-size:13px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;color:#060606;white-space:nowrap">
-            <span>Replenish</span><span>•</span><span>Rebalance</span><span>•</span><span>Feel good</span><span>•</span><span>15 g stick</span><span>•</span><span>10 per box</span><span>•</span><span>No water needed</span><span>•</span>
+      <section id="when" class="section container" aria-labelledby="when-title">
+        <div class="section__head reveal">
+          <h2 id="when-title" class="headline">Pocket-sized, so timing is up to you.</h2>
+        </div>
+        <ol class="timeline reveal">
+          <li class="timeline__step timeline__step--pink">
+            <h3 class="timeline__word">Before</h3>
+            <p>One stick on the way out. It fits in the pocket that isn't holding your phone.</p>
+          </li>
+          <li class="timeline__step">
+            <h3 class="timeline__word">During</h3>
+            <p>Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>
+          </li>
+          <li class="timeline__step timeline__step--blue">
+            <h3 class="timeline__word">After</h3>
+            <p>Bedside, or the morning after, whichever version of you gets there first.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section container" aria-labelledby="flavours-title">
+        <div class="section__head reveal">
+          <h2 id="flavours-title" class="headline">Pick a personality.</h2>
+        </div>
+        <ul class="flavours reveal">
+          <li>
+            <a class="flavour flavour--berry" href="#shop">
+              <span class="frame">
+                <picture>
+                  <source srcset="assets/img/stick-berry.avif" type="image/avif">
+                  <source srcset="assets/img/stick-berry.webp" type="image/webp">
+                  <img src="assets/img/stick-berry.png" alt="" width="240" height="408" loading="lazy" decoding="async">
+                </picture>
+              </span>
+              <span class="flavour__name">Berry</span>
+              <span class="flavour__note">Deep and jammy</span>
+            </a>
+          </li>
+          <li>
+            <a class="flavour flavour--mango" href="#shop">
+              <span class="frame">
+                <picture>
+                  <source srcset="assets/img/stick-mango.avif" type="image/avif">
+                  <source srcset="assets/img/stick-mango.webp" type="image/webp">
+                  <img src="assets/img/stick-mango.png" alt="" width="240" height="429" loading="lazy" decoding="async">
+                </picture>
+              </span>
+              <span class="flavour__name">Mango</span>
+              <span class="flavour__note">Thick and golden</span>
+            </a>
+          </li>
+          <li>
+            <a class="flavour flavour--pineapple" href="#shop">
+              <span class="frame">
+                <picture>
+                  <source srcset="assets/img/stick-pineapple.avif" type="image/avif">
+                  <source srcset="assets/img/stick-pineapple.webp" type="image/webp">
+                  <img src="assets/img/stick-pineapple.png" alt="" width="240" height="453" loading="lazy" decoding="async">
+                </picture>
+              </span>
+              <span class="flavour__name">Pineapple</span>
+              <span class="flavour__note">Sharp and tropical</span>
+            </a>
+          </li>
+          <li>
+            <a class="flavour flavour--watermelon" href="#shop">
+              <span class="frame">
+                <picture>
+                  <source srcset="assets/img/stick-watermelon.avif" type="image/avif">
+                  <source srcset="assets/img/stick-watermelon.webp" type="image/webp">
+                  <img src="assets/img/stick-watermelon.png" alt="" width="240" height="422" loading="lazy" decoding="async">
+                </picture>
+              </span>
+              <span class="flavour__name">Watermelon</span>
+              <span class="flavour__note">Light and cooling</span>
+            </a>
+          </li>
+          <li>
+            <a class="flavour flavour--citrus" href="#shop">
+              <span class="frame">
+                <picture>
+                  <source srcset="assets/img/stick-citrus.avif" type="image/avif">
+                  <source srcset="assets/img/stick-citrus.webp" type="image/webp">
+                  <img src="assets/img/stick-citrus.png" alt="" width="240" height="383" loading="lazy" decoding="async">
+                </picture>
+              </span>
+              <span class="flavour__name">Citrus</span>
+              <span class="flavour__note">Clean and bright</span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section container" aria-labelledby="reviews-title">
+        <div class="section__head reveal">
+          <h2 id="reviews-title" class="headline">Reviewed by the tired.</h2>
+        </div>
+        <div class="quotes hairgrid reveal">
+          <figure class="quote quote--lead">
+            <blockquote><p>“I have a drawer of sachets I never open. This one I actually take, because it takes four seconds and tastes like a sweet.”</p></blockquote>
+            <figcaption><span class="quote__who">Priya, London</span><span class="quote__flavour">Citrus</span></figcaption>
+          </figure>
+          <div class="quotes__stack">
+            <figure class="quote">
+              <blockquote><p>“Took one at the bar and one on the bus. I made my 9am. That is the entire review.”</p></blockquote>
+              <figcaption><span class="quote__who">Marcus, Berlin</span><span class="quote__flavour">Mango</span></figcaption>
+            </figure>
+            <figure class="quote">
+              <blockquote><p>“Bought a box for a hen weekend and came home with none. Watermelon went first.”</p></blockquote>
+              <figcaption><span class="quote__who">Ana, Lisbon</span><span class="quote__flavour">Watermelon</span></figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
-      <section style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:36px 24px 36px 0"><div style="font-size:clamp(34px,4vw,54px);font-weight:900;letter-spacing:-0.03em;line-height:1">15 g</div><div style="margin-top:8px;font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Per stick</div></div>
-          <div style="padding:36px 24px;border-left:2px solid rgba(243,242,242,0.2)"><div style="font-size:clamp(34px,4vw,54px);font-weight:900;letter-spacing:-0.03em;line-height:1">10</div><div style="margin-top:8px;font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Sticks per box</div></div>
-          <div style="padding:36px 24px;border-left:2px solid rgba(243,242,242,0.2)"><div style="font-size:clamp(34px,4vw,54px);font-weight:900;letter-spacing:-0.03em;line-height:1">5</div><div style="margin-top:8px;font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Flavours</div></div>
-          <div style="padding:36px 0 36px 24px;border-left:2px solid rgba(243,242,242,0.2)"><div style="font-size:clamp(34px,4vw,54px);font-weight:900;letter-spacing:-0.03em;line-height:1;color:#3f6cff">0</div><div style="margin-top:8px;font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Glasses of water required</div></div>
-        </div>
-      </section>
-
-      <section id="science" style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="padding:64px 0 32px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#3f6cff">How it works</div>
-          <h2 style="margin:0;font-size:clamp(32px,4.4vw,60px);line-height:1;font-weight:900;letter-spacing:-0.03em;max-width:22ch">Three jobs, one stick.</h2>
-          <p style="margin:0;max-width:52ch;font-size:17px;line-height:1.5;color:#d7d3d3;text-wrap:pretty">A big night takes three things off you: your liver works overtime, your fluids and salts go out the window, and your B vitamins go with them. Each Sahsih stick is built around those three.</p>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));border-top:2px solid rgba(243,242,242,0.2);border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:40px 28px 44px 0;display:flex;flex-direction:column;gap:14px;transition:background .2s ease" class="hv-05">
-            <div style="font-size:12px;font-weight:900;letter-spacing:0.2em;color:#ff4de0">01</div>
-            <h3 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-0.01em">Liver support</h3>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Milk thistle</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">The organ doing the actual cleanup gets the headline ingredient. Milk thistle is the classic botanical for it, and it's in every stick.</p>
-          </div>
-          <div style="padding:40px 28px 44px;display:flex;flex-direction:column;gap:14px;border-left:2px solid rgba(243,242,242,0.2);transition:background .2s ease" class="hv-06">
-            <div style="font-size:12px;font-weight:900;letter-spacing:0.2em;color:#3f6cff">02</div>
-            <h3 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-0.01em">Hydration</h3>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Electrolytes</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">Water alone doesn't fix a night out. Electrolytes are what your body actually lost, and a jelly delivers them without a pint of liquid you can't face.</p>
-          </div>
-          <div style="padding:40px 0 44px 28px;display:flex;flex-direction:column;gap:14px;border-left:2px solid rgba(243,242,242,0.2);transition:background .2s ease" class="hv-05">
-            <div style="font-size:12px;font-weight:900;letter-spacing:0.2em;color:#ff4de0">03</div>
-            <h3 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-0.01em">B vitamins</h3>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">B1, B6, B12</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">The three that empty out fastest. Topping them back up is the least glamorous and most useful thing in the formula.</p>
-          </div>
-        </div>
-      </section>
-
-      <section style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:64px 40px 64px 0;display:flex;flex-direction:column;align-items:flex-start;gap:20px;min-width:0">
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#ff4de0">Ingredients</div>
-            <h2 style="margin:0;font-size:clamp(32px,4.4vw,60px);line-height:1;font-weight:900;letter-spacing:-0.03em">Short panel.<br>On purpose.</h2>
-            <table style="width:100%;border-collapse:collapse;text-align:left">
-              <thead>
-                <tr>
-                  <th style="padding:12px 12px 12px 0;border-bottom:2px solid #f3f2f2;font-size:11px;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Ingredient</th>
-                  <th style="padding:12px;border-bottom:2px solid #f3f2f2;font-size:11px;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:#9b9797">Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td style="padding:16px 12px 16px 0;border-bottom:2px solid rgba(243,242,242,0.14);font-size:17px;font-weight:700">Milk thistle</td><td style="padding:16px;border-bottom:2px solid rgba(243,242,242,0.14);font-size:16px;color:#d7d3d3">Liver support</td></tr>
-                <tr><td style="padding:16px 12px 16px 0;border-bottom:2px solid rgba(243,242,242,0.14);font-size:17px;font-weight:700">Electrolytes</td><td style="padding:16px;border-bottom:2px solid rgba(243,242,242,0.14);font-size:16px;color:#d7d3d3">Hydration</td></tr>
-                <tr><td style="padding:16px 12px 16px 0;border-bottom:2px solid rgba(243,242,242,0.14);font-size:17px;font-weight:700">Vitamin B1</td><td style="padding:16px;border-bottom:2px solid rgba(243,242,242,0.14);font-size:16px;color:#d7d3d3">Energy metabolism</td></tr>
-                <tr><td style="padding:16px 12px 16px 0;border-bottom:2px solid rgba(243,242,242,0.14);font-size:17px;font-weight:700">Vitamin B6</td><td style="padding:16px;border-bottom:2px solid rgba(243,242,242,0.14);font-size:16px;color:#d7d3d3">Energy metabolism</td></tr>
-                <tr><td style="padding:16px 12px 16px 0;border-bottom:2px solid rgba(243,242,242,0.14);font-size:17px;font-weight:700">Vitamin B12</td><td style="padding:16px;border-bottom:2px solid rgba(243,242,242,0.14);font-size:16px;color:#d7d3d3">Energy metabolism</td></tr>
-              </tbody>
-            </table>
-            <p style="margin:0;font-size:13px;line-height:1.5;color:#9b9797;max-width:48ch">Full quantitative panel and allergen statement to be confirmed before launch.</p>
-          </div>
-          <div style="border-left:2px solid rgba(243,242,242,0.2);display:flex;align-items:center;justify-content:center;padding:48px;min-width:0">
-            <img src="assets/img/stick-berry.png" alt="Sahsih berry flavour jelly stick" style="width:100%;max-width:300px;height:auto;display:block;border:2px solid #f3f2f2;animation:bob 6s ease-in-out infinite">
-          </div>
-        </div>
-      </section>
-
-      <section id="when" style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="padding:64px 0 32px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#3f6cff">When to take it</div>
-          <h2 style="margin:0;font-size:clamp(32px,4.4vw,60px);line-height:1;font-weight:900;letter-spacing:-0.03em;max-width:20ch">Pocket-sized, so timing is up to you.</h2>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));border-top:2px solid rgba(243,242,242,0.2);border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:40px 28px 48px 0;display:flex;flex-direction:column;gap:12px">
-            <div style="font-size:clamp(40px,5vw,64px);font-weight:900;line-height:1;letter-spacing:-0.04em;color:#ff4de0">Before</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">One stick on the way out. It fits in the pocket that isn't holding your phone.</p>
-          </div>
-          <div style="padding:40px 28px 48px;display:flex;flex-direction:column;gap:12px;border-left:2px solid rgba(243,242,242,0.2)">
-            <div style="font-size:clamp(40px,5vw,64px);font-weight:900;line-height:1;letter-spacing:-0.04em;color:#f3f2f2">During</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>
-          </div>
-          <div style="padding:40px 0 48px 28px;display:flex;flex-direction:column;gap:12px;border-left:2px solid rgba(243,242,242,0.2)">
-            <div style="font-size:clamp(40px,5vw,64px);font-weight:900;line-height:1;letter-spacing:-0.04em;color:#3f6cff">After</div>
-            <p style="margin:0;font-size:16px;line-height:1.55;color:#d7d3d3">Bedside, or the morning after, whichever version of you gets there first.</p>
-          </div>
-        </div>
-      </section>
-
-      <section style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="padding:64px 0 28px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px">
-          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px">
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#ff4de0">Five flavours</div>
-            <h2 style="margin:0;font-size:clamp(32px,4.4vw,60px);line-height:1;font-weight:900;letter-spacing:-0.03em">Pick a personality.</h2>
-          </div>
-          <div style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #f3f2f2;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;color:#f3f2f2" class="hv-07" data-on-click="goShop">See all boxes →</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border-top:2px solid rgba(243,242,242,0.2);border-bottom:2px solid rgba(243,242,242,0.2)">
-
-            <div style="padding:28px 20px 32px;border-left:2px solid rgba(243,242,242,0.2);display:flex;flex-direction:column;gap:16px;cursor:pointer;transition:background .2s ease" class="hv-08" data-on-click="goShop">
-              <img src="assets/img/stick-berry.png" alt="Berry" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-09">
-              <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em">Berry</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Deep and jammy</div>
-            </div>
-
-            <div style="padding:28px 20px 32px;border-left:2px solid rgba(243,242,242,0.2);display:flex;flex-direction:column;gap:16px;cursor:pointer;transition:background .2s ease" class="hv-08" data-on-click="goShop">
-              <img src="assets/img/stick-mango.png" alt="Mango" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-09">
-              <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em">Mango</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Thick and golden</div>
-            </div>
-
-            <div style="padding:28px 20px 32px;border-left:2px solid rgba(243,242,242,0.2);display:flex;flex-direction:column;gap:16px;cursor:pointer;transition:background .2s ease" class="hv-08" data-on-click="goShop">
-              <img src="assets/img/stick-pineapple.png" alt="Pineapple" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-09">
-              <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em">Pineapple</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Sharp, tropical</div>
-            </div>
-
-            <div style="padding:28px 20px 32px;border-left:2px solid rgba(243,242,242,0.2);display:flex;flex-direction:column;gap:16px;cursor:pointer;transition:background .2s ease" class="hv-08" data-on-click="goShop">
-              <img src="assets/img/stick-watermelon.png" alt="Watermelon" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-09">
-              <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em">Watermelon</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Light, cooling</div>
-            </div>
-
-            <div style="padding:28px 20px 32px;border-left:2px solid rgba(243,242,242,0.2);display:flex;flex-direction:column;gap:16px;cursor:pointer;transition:background .2s ease" class="hv-08" data-on-click="goShop">
-              <img src="assets/img/stick-citrus.png" alt="Citrus" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-09">
-              <div style="font-size:15px;font-weight:800;letter-spacing:-0.01em">Citrus</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Clean and bright</div>
-            </div>
-
-        </div>
-      </section>
-
-      <section style="max-width:1400px;margin:0 auto;padding:0 28px">
-        <div style="padding:64px 0 28px;display:flex;flex-direction:column;align-items:flex-start;gap:16px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#3f6cff">What people say</div>
-          <h2 style="margin:0;font-size:clamp(32px,4.4vw,60px);line-height:1;font-weight:900;letter-spacing:-0.03em">Reviewed by the tired.</h2>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));border-top:2px solid rgba(243,242,242,0.2);border-bottom:2px solid rgba(243,242,242,0.2)">
-          <div style="padding:40px 28px 44px 0;display:flex;flex-direction:column;gap:20px">
-            <div style="font-size:20px;line-height:1.4;font-weight:600;text-wrap:pretty">“I have a drawer of sachets I never open. This one I actually take, because it takes four seconds and tastes like a sweet.”</div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Priya · Citrus · London</div>
-          </div>
-          <div style="padding:40px 28px 44px;display:flex;flex-direction:column;gap:20px;border-left:2px solid rgba(243,242,242,0.2)">
-            <div style="font-size:20px;line-height:1.4;font-weight:600;text-wrap:pretty">“Took one at the bar and one on the bus. I made my 9am. That is the entire review.”</div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Marcus · Mango · Berlin</div>
-          </div>
-          <div style="padding:40px 0 44px 28px;display:flex;flex-direction:column;gap:20px;border-left:2px solid rgba(243,242,242,0.2)">
-            <div style="font-size:20px;line-height:1.4;font-weight:600;text-wrap:pretty">“Bought a box for a hen weekend and came home with none. Watermelon went first.”</div>
-            <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">Ana · Watermelon · Lisbon</div>
-          </div>
-        </div>
-      </section>
-
-      <section style="background:#ff4de0;border-bottom:2px solid #060606">
-        <div style="max-width:1400px;margin:0 auto;padding:80px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:28px">
-          <h2 style="margin:0;font-size:clamp(40px,7vw,110px);line-height:0.9;font-weight:900;letter-spacing:-0.04em;color:#060606;max-width:18ch">Go out like you mean it.</h2>
-          <div style="display:inline-flex;align-items:center;justify-content:flex-start;gap:10px;padding:18px 30px;background:#060606;color:#f3f2f2;font-size:13px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease" class="hv-10" data-on-click="goShop">Shop Sahsih →</div>
+      <section class="cta" aria-labelledby="cta-title">
+        <div class="container cta__inner reveal">
+          <h2 id="cta-title" class="cta__headline">Go out like you mean it.</h2>
+          <a class="btn btn--dark" href="#shop">Shop the sticks</a>
         </div>
       </section>
 
     </main>
 
+    <!-- ============================================================ -->
+    <!-- Shop view (shown at #shop)                                    -->
+    <!-- ============================================================ -->
+    <main id="shop" class="view container" aria-label="Shop" hidden>
 
-
-    <main id="view-shop" class="view" hidden style="max-width:1400px;margin:0 auto;padding:0 28px">
-      <div style="padding:56px 0 32px;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;border-bottom:2px solid rgba(243,242,242,0.2)">
-        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:14px">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#ff4de0">Shop</div>
-          <h1 style="margin:0;font-size:clamp(38px,5.4vw,76px);line-height:0.95;font-weight:900;letter-spacing:-0.03em">Boxes of ten.</h1>
-          <p style="margin:0;max-width:46ch;font-size:16px;line-height:1.5;color:#d7d3d3">Every box holds 10 × 15&nbsp;g sticks — 150&nbsp;g total. Dietary supplement.</p>
+      <div class="shop__head">
+        <div>
+          <h1 class="display display--sm" tabindex="-1">Boxes of ten.</h1>
+          <p class="lede">Every box holds 10&nbsp;×&nbsp;15&nbsp;g sticks, 150&nbsp;g in total. Dietary supplement.</p>
         </div>
-        <div style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border:2px solid #f3f2f2;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;color:#f3f2f2" class="hv-07" data-on-click="goHome">← Back home</div>
+        <a class="btn btn--outline" href="#home">Back home</a>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));border-bottom:2px solid rgba(243,242,242,0.2)">
-
-          <div style="border-left:2px solid rgba(243,242,242,0.2);padding:28px 22px 30px;display:flex;flex-direction:column;gap:18px;transition:background .2s ease" class="hv-08">
-            <img src="assets/img/box-berry.png" alt="Berry" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-11">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em">Berry</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">10 × 15 g · 150 g</div>
-            </div>
-            <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em"><span data-bind="boxPrice">$24</span></div>
-              <div style="display:inline-flex;align-items:center;padding:12px 18px;background:#ff4de0;color:#060606;font-size:11px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-12" data-on-click="addBox" data-flavour="berry">Add</div>
-            </div>
+      <ul class="products hairgrid" aria-label="Boxes">
+        <li class="product">
+          <span class="frame">
+            <picture>
+              <source srcset="assets/img/box-berry.avif" type="image/avif">
+              <source srcset="assets/img/box-berry.webp" type="image/webp">
+              <img src="assets/img/box-berry.png" alt="" width="300" height="457" loading="lazy" decoding="async">
+            </picture>
+          </span>
+          <div class="product__meta">
+            <h2 class="product__name">Berry</h2>
+            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
           </div>
-
-          <div style="border-left:2px solid rgba(243,242,242,0.2);padding:28px 22px 30px;display:flex;flex-direction:column;gap:18px;transition:background .2s ease" class="hv-08">
-            <img src="assets/img/box-mango.png" alt="Mango" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-11">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em">Mango</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">10 × 15 g · 150 g</div>
-            </div>
-            <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em"><span data-bind="boxPrice">$24</span></div>
-              <div style="display:inline-flex;align-items:center;padding:12px 18px;background:#ff4de0;color:#060606;font-size:11px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-12" data-on-click="addBox" data-flavour="mango">Add</div>
-            </div>
+          <div class="product__buy">
+            <span class="price" data-price="berry">$24</span>
+            <button type="button" class="btn btn--primary btn--sm" data-add="berry">Add<span class="visually-hidden"> Berry box to cart</span></button>
           </div>
-
-          <div style="border-left:2px solid rgba(243,242,242,0.2);padding:28px 22px 30px;display:flex;flex-direction:column;gap:18px;transition:background .2s ease" class="hv-08">
-            <img src="assets/img/box-pineapple.png" alt="Pineapple" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-11">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em">Pineapple</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">10 × 15 g · 150 g</div>
-            </div>
-            <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em"><span data-bind="boxPrice">$24</span></div>
-              <div style="display:inline-flex;align-items:center;padding:12px 18px;background:#ff4de0;color:#060606;font-size:11px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-12" data-on-click="addBox" data-flavour="pineapple">Add</div>
-            </div>
+        </li>
+        <li class="product">
+          <span class="frame">
+            <picture>
+              <source srcset="assets/img/box-mango.avif" type="image/avif">
+              <source srcset="assets/img/box-mango.webp" type="image/webp">
+              <img src="assets/img/box-mango.png" alt="" width="300" height="497" loading="lazy" decoding="async">
+            </picture>
+          </span>
+          <div class="product__meta">
+            <h2 class="product__name">Mango</h2>
+            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
           </div>
-
-          <div style="border-left:2px solid rgba(243,242,242,0.2);padding:28px 22px 30px;display:flex;flex-direction:column;gap:18px;transition:background .2s ease" class="hv-08">
-            <img src="assets/img/box-watermelon.png" alt="Watermelon" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-11">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em">Watermelon</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">10 × 15 g · 150 g</div>
-            </div>
-            <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em"><span data-bind="boxPrice">$24</span></div>
-              <div style="display:inline-flex;align-items:center;padding:12px 18px;background:#ff4de0;color:#060606;font-size:11px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-12" data-on-click="addBox" data-flavour="watermelon">Add</div>
-            </div>
+          <div class="product__buy">
+            <span class="price" data-price="mango">$24</span>
+            <button type="button" class="btn btn--primary btn--sm" data-add="mango">Add<span class="visually-hidden"> Mango box to cart</span></button>
           </div>
-
-          <div style="border-left:2px solid rgba(243,242,242,0.2);padding:28px 22px 30px;display:flex;flex-direction:column;gap:18px;transition:background .2s ease" class="hv-08">
-            <img src="assets/img/box-citrus.png" alt="Citrus" style="width:100%;height:auto;display:block;border:2px solid rgba(243,242,242,0.3);transition:transform .2s ease" class="hv-11">
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <div style="font-size:20px;font-weight:800;letter-spacing:-0.01em">Citrus</div>
-              <div style="font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#9b9797">10 × 15 g · 150 g</div>
-            </div>
-            <div style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px">
-              <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em"><span data-bind="boxPrice">$24</span></div>
-              <div style="display:inline-flex;align-items:center;padding:12px 18px;background:#ff4de0;color:#060606;font-size:11px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-12" data-on-click="addBox" data-flavour="citrus">Add</div>
-            </div>
+        </li>
+        <li class="product">
+          <span class="frame">
+            <picture>
+              <source srcset="assets/img/box-pineapple.avif" type="image/avif">
+              <source srcset="assets/img/box-pineapple.webp" type="image/webp">
+              <img src="assets/img/box-pineapple.png" alt="" width="300" height="511" loading="lazy" decoding="async">
+            </picture>
+          </span>
+          <div class="product__meta">
+            <h2 class="product__name">Pineapple</h2>
+            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
           </div>
+          <div class="product__buy">
+            <span class="price" data-price="pineapple">$24</span>
+            <button type="button" class="btn btn--primary btn--sm" data-add="pineapple">Add<span class="visually-hidden"> Pineapple box to cart</span></button>
+          </div>
+        </li>
+        <li class="product">
+          <span class="frame">
+            <picture>
+              <source srcset="assets/img/box-watermelon.avif" type="image/avif">
+              <source srcset="assets/img/box-watermelon.webp" type="image/webp">
+              <img src="assets/img/box-watermelon.png" alt="" width="300" height="493" loading="lazy" decoding="async">
+            </picture>
+          </span>
+          <div class="product__meta">
+            <h2 class="product__name">Watermelon</h2>
+            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
+          </div>
+          <div class="product__buy">
+            <span class="price" data-price="watermelon">$24</span>
+            <button type="button" class="btn btn--primary btn--sm" data-add="watermelon">Add<span class="visually-hidden"> Watermelon box to cart</span></button>
+          </div>
+        </li>
+        <li class="product">
+          <span class="frame">
+            <picture>
+              <source srcset="assets/img/box-citrus.avif" type="image/avif">
+              <source srcset="assets/img/box-citrus.webp" type="image/webp">
+              <img src="assets/img/box-citrus.png" alt="" width="300" height="471" loading="lazy" decoding="async">
+            </picture>
+          </span>
+          <div class="product__meta">
+            <h2 class="product__name">Citrus</h2>
+            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
+          </div>
+          <div class="product__buy">
+            <span class="price" data-price="citrus">$24</span>
+            <button type="button" class="btn btn--primary btn--sm" data-add="citrus">Add<span class="visually-hidden"> Citrus box to cart</span></button>
+          </div>
+        </li>
+      </ul>
 
-      </div>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));border-bottom:2px solid rgba(243,242,242,0.2)">
-        <div style="padding:56px 40px 56px 0;display:flex;flex-direction:column;align-items:flex-start;gap:20px;min-width:0">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.24em;text-transform:uppercase;color:#3f6cff">Bundle</div>
-          <h2 style="margin:0;font-size:clamp(30px,3.6vw,50px);line-height:1;font-weight:900;letter-spacing:-0.03em">The Full Set</h2>
-          <p style="margin:0;max-width:44ch;font-size:16px;line-height:1.5;color:#d7d3d3">All five flavours, 50 sticks, one box that solves birthdays, hen weekends and your own poor planning.</p>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
-            <div style="font-size:30px;font-weight:900;letter-spacing:-0.02em"><span data-bind="bundlePrice">$105</span></div>
-            <div style="display:inline-flex;align-items:center;padding:16px 26px;background:#ff4de0;color:#060606;font-size:12px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:transform .16s ease,background .16s ease" class="hv-13" data-on-click="addBundle">Add the set</div>
+      <section class="bundle hairgrid" aria-labelledby="bundle-title">
+        <div class="bundle__copy">
+          <h2 id="bundle-title" class="headline headline--sm">The Full Set</h2>
+          <p class="lede">All five flavours, 50 sticks, one box that solves birthdays, hen weekends and your own poor planning.</p>
+          <div class="bundle__buy">
+            <span class="price price--lg" data-price="bundle">$105</span>
+            <button type="button" class="btn btn--primary" data-add="bundle">Add the set</button>
           </div>
         </div>
-        <div style="border-left:2px solid rgba(243,242,242,0.2);padding:36px;display:flex;align-items:center;min-width:0;overflow:hidden">
-          <img src="assets/img/all-boxes.png" alt="All five Sahsih boxes" style="width:100%;height:auto;display:block">
+        <div class="bundle__media">
+          <picture>
+            <source srcset="assets/img/all-boxes.avif" type="image/avif">
+            <source srcset="assets/img/all-boxes.webp" type="image/webp">
+            <img src="assets/img/all-boxes.png" alt="All five Sahsih boxes lined up: berry, mango, pineapple, watermelon and citrus" width="900" height="290" loading="lazy" decoding="async">
+          </picture>
         </div>
-      </div>
+      </section>
+
     </main>
 
+  </div><!-- /#content -->
 
-    <footer style="max-width:1400px;margin:0 auto;padding:0 28px">
-      <div style="padding:56px 0 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;align-items:start">
-        <img src="assets/img/sahsih-logo.png" alt="Sahsih" style="height:44px;width:auto;mix-blend-mode:screen">
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:#9b9797">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#f3f2f2">Product</div>
-          <span style="cursor:pointer" class="hv-01" data-on-click="goShop">Shop all</span>
-          <a href="#science" style="color:#9b9797" class="hv-01">Science</a>
-          <a href="#when" style="color:#9b9797" class="hv-01">When to take it</a>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;color:#9b9797">
-          <div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:#f3f2f2">Contact</div>
-          <span>hello@sahsih.com</span>
-          <span>Wholesale enquiries</span>
-        </div>
-        <p style="margin:0;font-size:12px;line-height:1.5;color:#605d5d;text-wrap:pretty">Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>
+  <footer class="site-footer container">
+    <div class="site-footer__grid">
+      <picture class="site-footer__logo">
+        <source srcset="assets/img/sahsih-logo.avif" type="image/avif">
+        <source srcset="assets/img/sahsih-logo.webp" type="image/webp">
+        <img src="assets/img/sahsih-logo.png" alt="Sahsih" width="659" height="300" loading="lazy" decoding="async">
+      </picture>
+      <nav class="site-footer__col" aria-label="Product">
+        <h2 class="site-footer__title">Product</h2>
+        <a href="#shop">Shop</a>
+        <a href="#science">Science</a>
+        <a href="#when">When to take it</a>
+      </nav>
+      <div class="site-footer__col">
+        <h2 class="site-footer__title">Contact</h2>
+        <a href="mailto:hello@sahsih.com">hello@sahsih.com</a>
+        <a href="mailto:hello@sahsih.com?subject=Wholesale%20enquiry">Wholesale enquiries</a>
       </div>
-      <div style="border-top:2px solid rgba(243,242,242,0.2);padding:20px 0 40px;font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#605d5d">© 2026 Sahsih</div>
-    </footer>
+      <p class="site-footer__legal">Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>
+    </div>
+    <p class="site-footer__copy">© 2026 Sahsih</p>
+  </footer>
 
+</div><!-- /#page -->
+
+<!-- Cart drawer. Lives outside #page so the page can be made inert while it is open. -->
+<div class="cart-backdrop" data-close-cart hidden></div>
+<div id="cart" class="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+  <div class="cart__head">
+    <h2 id="cart-title">Your cart</h2>
+    <button type="button" class="btn btn--outline btn--sm" data-close-cart>Close</button>
   </div>
+  <div class="cart__body">
+    <div class="cart__empty" data-cart-empty>
+      <p>Your cart is empty.</p>
+      <a class="btn btn--primary" href="#shop">Shop the sticks</a>
+    </div>
+    <ul class="cart__items" data-cart-items hidden></ul>
+  </div>
+  <div class="cart__foot" data-cart-foot hidden>
+    <p class="cart__subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
+    <a class="btn btn--primary" href="mailto:hello@sahsih.com" data-cart-order>Order by email</a>
+    <p class="note">Online checkout isn't live yet. Send your order by email and we'll take it from there.</p>
+  </div>
+</div>
+
+<div class="toast" role="status" aria-live="polite" data-toast></div>
+
 </body>
 </html>

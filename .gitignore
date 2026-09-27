@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build / tooling output
+dist/
+.cache/
+*.log
+
+# Editor + OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.*
+
+# Tooling output
+.playwright-cli/
+__pycache__/

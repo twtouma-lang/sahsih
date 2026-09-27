@@ -1,6 +1,7 @@
 [build]
   publish = "."
 
+# Fingerprint-free assets: fonts and renders change rarely, so cache them hard.
 [[headers]]
   for = "/assets/fonts/*"
   [headers.values]
@@ -10,3 +11,22 @@
   for = "/assets/img/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Styles and scripts are not fingerprinted, so let them revalidate.
+[[headers]]
+  for = "/styles/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/scripts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
