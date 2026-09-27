@@ -2,13 +2,13 @@
 <html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sahsih | Tear it. Squeeze it. Carry on.</title>
 <meta name="description" content="Sahsih is a 15 g hangover jelly stick. Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. Five flavours, no water.">
 <meta name="theme-color" content="#060606">
 <meta name="color-scheme" content="dark">
 
-<!-- Social cards need absolute URLs. The origin below assumes the production
+<!-- Social cards need absolute URLs. The origin assumes the production
      domain matches the contact email; change it if the site lives elsewhere. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sahsih">
@@ -26,25 +26,13 @@
 <link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
-<link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="stylesheet" href="styles/site.css">
 
-<script>
-(function () {
-  var root = document.documentElement;
-  root.classList.replace('no-js', 'js');
-  var ready = true;
-  try {
-    var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var seen = sessionStorage.getItem('sahsih-intro') === '1';
-    var atTop = !location.hash || location.hash === '#home';
-    ready = still || seen || !atTop;
-  } catch (e) { ready = true; }
-  root.classList.add(ready ? 'is-ready' : 'has-intro');
-})();
-</script>
-<script src="scripts/main.js" defer></script>
+<script>document.documentElement.classList.replace('no-js', 'js');</script>
+<script src="scripts/app.js" defer></script>
 
 <script type="application/ld+json">
 {
@@ -60,7 +48,7 @@
     {
       "@type": "Product",
       "name": "Sahsih Hangover Jelly Sticks",
-      "description": "A 15 g hangover jelly stick with milk thistle, electrolytes and B vitamins. Ten sticks per box, five flavours.",
+      "description": "A 15 g jelly stick with milk thistle, electrolytes and B vitamins. Ten sticks per box, five flavours.",
       "image": "https://sahsih.com/assets/img/all-boxes.png",
       "brand": { "@type": "Brand", "name": "Sahsih" },
       "offers": {
@@ -68,7 +56,7 @@
         "priceCurrency": "USD",
         "lowPrice": "24",
         "highPrice": "105",
-        "offerCount": "6"
+        "offerCount": "11"
       }
     }
   ]
@@ -76,401 +64,354 @@
 </script>
 </head>
 <body>
-<a class="skip-link" href="#content">Skip to content</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
+<!-- The 3D stage: one fixed canvas the sachet lives on. It sits above
+     backgrounds and giant wordmarks, below text and controls. -->
+<canvas class="stage" id="stage" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
-<div class="vignette" aria-hidden="true"></div>
-<div class="cut" data-cut aria-hidden="true"></div>
-<div class="intro" data-intro aria-hidden="true">
-  <picture class="intro__mark">
-    <source srcset="assets/img/cut/sahsih-logo.avif" type="image/avif">
-    <source srcset="assets/img/cut/sahsih-logo.webp" type="image/webp">
-    <img src="assets/img/cut/sahsih-logo.png" alt="" width="659" height="300" fetchpriority="high" decoding="async">
-  </picture>
-</div>
 
 <div class="page" id="page">
 
-  <header class="site-header site-header--glass">
-    <div class="container site-header__bar">
-      <a class="site-header__logo" href="#home" aria-label="Sahsih home">
-        <picture>
-          <source srcset="assets/img/cut/sahsih-logo.avif" type="image/avif">
-          <source srcset="assets/img/cut/sahsih-logo.webp" type="image/webp">
-          <img src="assets/img/cut/sahsih-logo.png" alt="Sahsih" width="659" height="300" decoding="async">
-        </picture>
-      </a>
-      <nav class="site-nav" id="site-nav" aria-label="Primary">
-        <a href="#home">Home</a>
-        <a href="#shop">Shop</a>
-        <a href="#science">Science</a>
-        <a href="#when">When to take it</a>
-      </nav>
-      <button type="button" class="cart-button" data-open-cart aria-haspopup="dialog" aria-controls="cart">
-        Cart <span class="cart-button__count" data-bind="cartCount">0</span>
+  <header class="bar">
+    <a class="brand" href="#top" aria-label="Sahsih, back to the top">
+      <img class="brand__logo" src="assets/img/cut/sahsih-logo.webp" alt="" width="659" height="300" decoding="async">
+      <span class="brand__tag">No.01</span>
+      <span class="brand__meta">Hangover jelly stick / 15&nbsp;g / No water</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="#flavours">Flavours</a>
+      <a href="#science">Science</a>
+      <a href="#when">When to take</a>
+      <a href="#shop">Shop</a>
+    </nav>
+    <div class="bar__actions">
+      <a class="btn btn--skew btn--sm bar__cta" href="#shop"><span>Shop now</span></a>
+      <button type="button" class="cart-btn" data-open-cart aria-haspopup="dialog" aria-controls="cart" aria-label="Cart, 0 items">
+        <svg class="icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path fill="currentColor" d="M243.86,197.65l-14.25-120A20.06,20.06,0,0,0,209.67,60H179.83A52,52,0,0,0,76.17,60H46.33A20.06,20.06,0,0,0,26.39,77.65l-14.25,120A20,20,0,0,0,32.08,220H223.92a20,20,0,0,0,19.94-22.35ZM128,36a28,28,0,0,1,27.71,24H100.29A28,28,0,0,1,128,36ZM36.5,196,49.81,84H76v20a12,12,0,0,0,24,0V84h56v20a12,12,0,0,0,24,0V84h26.19L219.5,196Z"/></svg>
+        <span class="cart-btn__count" data-bind="cartCount">0</span>
       </button>
-      <button type="button" class="menu-button" data-menu aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <button type="button" class="menu-btn" data-menu aria-expanded="false" aria-controls="nav">Menu</button>
     </div>
   </header>
 
-  <div id="content" tabindex="-1">
+  <main id="main" tabindex="-1">
 
     <!-- ============================================================ -->
-    <!-- Home view                                                     -->
+    <!-- Hero                                                          -->
     <!-- ============================================================ -->
-    <main id="home" class="view" aria-label="Home">
+    <section class="hero" id="top" data-section="hero" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true">
+        <canvas class="hero__bokeh hero__bokeh--far" data-bokeh="far"></canvas>
+        <canvas class="hero__bokeh hero__bokeh--near" data-bokeh="near"></canvas>
+        <div class="hero__haze"></div>
+        <div class="grid-lines"></div>
+      </div>
 
-      <!-- Scene: title. Pinned; the title recedes and the sticks fly past the camera as you scroll. -->
-      <section class="scene scene--title" aria-labelledby="hero-title">
-        <div class="scene__stage" data-tilt>
-          <div class="light light--pink" aria-hidden="true"></div>
-          <div class="light light--blue" aria-hidden="true"></div>
-          <div class="title">
-            <p class="eyebrow">Replenish. Rebalance. Feel good.</p>
-            <h1 id="hero-title" class="display" tabindex="-1"><span class="line"><span>Tear it. </span></span><span class="line"><span>Squeeze it. </span></span><span class="line"><span>Carry on.</span></span></h1>
-            <p class="lede">A 15&nbsp;g jelly stick with milk thistle, electrolytes and B vitamins. Five flavours, no water, no chalky tablets.</p>
-            <div class="actions">
-              <a class="btn btn--primary" href="#shop">Shop the sticks</a>
-              <a class="btn btn--outline" href="#science">What's in it</a>
-            </div>
-          </div>
-          <div class="stage" role="img" aria-label="Five Sahsih jelly sticks: berry, mango, pineapple, watermelon and citrus, each with its fruit splashing behind it">
-            <div class="fly fly--1"><div class="stick"><picture><source srcset="assets/img/cut/stick-berry.avif" type="image/avif"><source srcset="assets/img/cut/stick-berry.webp" type="image/webp"><img src="assets/img/cut/stick-berry.png" alt="" width="240" height="408" fetchpriority="high" decoding="async"></picture></div></div>
-            <div class="fly fly--2"><div class="stick"><picture><source srcset="assets/img/cut/stick-mango.avif" type="image/avif"><source srcset="assets/img/cut/stick-mango.webp" type="image/webp"><img src="assets/img/cut/stick-mango.png" alt="" width="240" height="429" fetchpriority="high" decoding="async"></picture></div></div>
-            <div class="fly fly--3"><div class="stick"><picture><source srcset="assets/img/cut/stick-pineapple.avif" type="image/avif"><source srcset="assets/img/cut/stick-pineapple.webp" type="image/webp"><img src="assets/img/cut/stick-pineapple.png" alt="" width="240" height="453" fetchpriority="high" decoding="async"></picture></div></div>
-            <div class="fly fly--4"><div class="stick"><picture><source srcset="assets/img/cut/stick-watermelon.avif" type="image/avif"><source srcset="assets/img/cut/stick-watermelon.webp" type="image/webp"><img src="assets/img/cut/stick-watermelon.png" alt="" width="240" height="422" fetchpriority="high" decoding="async"></picture></div></div>
-            <div class="fly fly--5"><div class="stick"><picture><source srcset="assets/img/cut/stick-citrus.avif" type="image/avif"><source srcset="assets/img/cut/stick-citrus.webp" type="image/webp"><img src="assets/img/cut/stick-citrus.png" alt="" width="240" height="383" fetchpriority="high" decoding="async"></picture></div></div>
-          </div>
+      <p class="wordmark wordmark--hero" aria-hidden="true" data-wordmark>SAHSIH</p>
+
+      <button type="button" class="slot slot--hero" data-slot="hero" data-tilt="-0.14" data-glow="0.62" aria-label="Squeeze the stick">
+        <img class="slot__poster" data-poster src="assets/img/cut/stick-berry.webp" alt="" width="240" height="408" decoding="async">
+      </button>
+
+      <dl class="hud">
+        <div class="hud__panel" data-hud>
+          <dt>Weight</dt>
+          <dd><span class="hud__value" data-count="15" data-count-from="0">15</span><span class="hud__unit">g</span></dd>
         </div>
-      </section>
-
-      <section class="container band" aria-label="At a glance">
-        <ul class="stats hairgrid reveal-count">
-          <li class="stat"><span class="stat__value"><span data-count="15">15</span>&nbsp;g</span><span class="stat__label">Per stick</span></li>
-          <li class="stat"><span class="stat__value"><span data-count="10">10</span></span><span class="stat__label">Sticks per box</span></li>
-          <li class="stat"><span class="stat__value"><span data-count="5">5</span></span><span class="stat__label">Flavours</span></li>
-          <li class="stat"><span class="stat__value stat__value--blue"><span data-count="0">0</span></span><span class="stat__label">Glasses of water required</span></li>
-        </ul>
-      </section>
-
-      <!-- Scene: three jobs. Pinned; the stick turns while each job cuts in around it. -->
-      <section class="scene scene--jobs" id="science" aria-labelledby="science-title">
-        <div class="scene__stage">
-          <div class="light light--pink" aria-hidden="true"></div>
-          <div class="light light--blue" aria-hidden="true"></div>
-          <h2 id="science-title" class="scene__label">Three jobs, one stick.</h2>
-          <div class="jobs">
-            <div class="jobs__stick"><picture><source srcset="assets/img/cut/stick-berry.avif" type="image/avif"><source srcset="assets/img/cut/stick-berry.webp" type="image/webp"><img src="assets/img/cut/stick-berry.png" alt="A Sahsih berry jelly stick" width="240" height="408" loading="lazy" decoding="async"></picture></div>
-            <article class="caption caption--1">
-              <h3>Liver support</h3>
-              <p class="caption__ingredient">Milk thistle</p>
-              <p class="caption__body">The organ doing the actual cleanup gets the headline ingredient. Milk thistle is the classic botanical for it, and it's in every stick.</p>
-            </article>
-            <article class="caption caption--2">
-              <h3>Hydration</h3>
-              <p class="caption__ingredient">Electrolytes</p>
-              <p class="caption__body">Water alone doesn't fix a night out. Electrolytes are what you actually lost, and a jelly delivers them without a pint of liquid you can't face.</p>
-            </article>
-            <article class="caption caption--3">
-              <h3>B vitamins</h3>
-              <p class="caption__ingredient">B1, B6, B12</p>
-              <p class="caption__body">The three that empty out fastest. Topping them back up is the least glamorous and most useful thing in the formula.</p>
-            </article>
-          </div>
+        <div class="hud__panel" data-hud>
+          <dt>Water needed</dt>
+          <dd><span class="hud__value" data-count="0" data-count-from="500">0</span><span class="hud__unit">ml</span></dd>
         </div>
-      </section>
-
-      <section class="container panel-block" aria-labelledby="panel-title">
-        <div class="panel-block__inner reveal">
-          <h2 id="panel-title" class="headline headline--sm">Short panel. On purpose.</h2>
-          <dl class="panel reveal-cells">
-            <div class="panel__row"><dt>Milk thistle</dt><dd>Liver support</dd></div>
-            <div class="panel__row"><dt>Electrolytes</dt><dd>Hydration</dd></div>
-            <div class="panel__row"><dt>Vitamins B1, B6 and B12</dt><dd>Energy metabolism</dd></div>
-          </dl>
-          <p class="note">Full quantitative panel and allergen statement to be confirmed before launch.</p>
+        <div class="hud__panel" data-hud>
+          <dt>Flavours</dt>
+          <dd><span class="hud__value" data-count="5" data-count-from="0">5</span></dd>
         </div>
-      </section>
+      </dl>
 
-      <!-- Scene: when. Pinned; three title cards, one after another. -->
-      <section class="scene scene--when" id="when" aria-labelledby="when-title">
-        <div class="scene__stage">
-          <div class="light light--pink" aria-hidden="true"></div>
-          <div class="light light--white" aria-hidden="true"></div>
-          <div class="light light--blue" aria-hidden="true"></div>
-          <h2 id="when-title" class="scene__label">Pocket-sized, so timing is up to you.</h2>
-          <ol class="cards">
-            <li class="card card--1">
-              <h3 class="card__word">Before</h3>
-              <p>One stick on the way out. It fits in the pocket that isn't holding your phone.</p>
+      <div class="swatches" role="group" aria-label="Choose a flavour">
+          <button type="button" class="swatch swatch--berry" data-flavour="berry" aria-pressed="true"><span class="visually-hidden">Berry</span></button>
+          <button type="button" class="swatch swatch--mango" data-flavour="mango" aria-pressed="false"><span class="visually-hidden">Mango</span></button>
+          <button type="button" class="swatch swatch--pineapple" data-flavour="pineapple" aria-pressed="false"><span class="visually-hidden">Pineapple</span></button>
+          <button type="button" class="swatch swatch--watermelon" data-flavour="watermelon" aria-pressed="false"><span class="visually-hidden">Watermelon</span></button>
+          <button type="button" class="swatch swatch--citrus" data-flavour="citrus" aria-pressed="false"><span class="visually-hidden">Citrus</span></button>
+      </div>
+
+      <h1 class="hero__title" id="hero-title"><span class="line"><span>Tear it.</span></span> <span class="line"><span>Squeeze it.</span></span> <span class="line"><span>Carry on.</span></span></h1>
+
+      <div class="hero__intro">
+        <p>Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. 15&nbsp;g, five flavours, no water.</p>
+        <div class="actions">
+          <a class="btn btn--skew" href="#flavours"><span>Shop the flavours &rarr;</span></a>
+          <a class="btn btn--ghost" href="#science"><span>How it works</span></a>
+        </div>
+      </div>
+
+      <p class="hero__hint" aria-hidden="true"><span>Scroll</span> / <span>Squeeze the stick</span></p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Flavours                                                      -->
+    <!-- ============================================================ -->
+    <section class="flavours" id="flavours" data-section="flavours" aria-labelledby="flavours-title">
+      <div class="grid-lines" aria-hidden="true"></div>
+      <div class="wrap flavours__grid">
+        <div class="flavours__copy" data-reveal>
+          <p class="tag" data-reveal-item>02 / Flavours</p>
+          <h2 class="h-cond" id="flavours-title" data-reveal-item>Five flavours. Pick a personality.</h2>
+          <p class="lede" data-reveal-item>Hover to try one on. Every stick is the same 15&nbsp;g, the same three ingredients, a different mood.</p>
+          <ul class="flavour-list">
+            <li data-reveal-item>
+              <button type="button" class="flavour-row flavour-row--berry" data-flavour="berry" data-go="shop">
+                <span class="flavour-row__chip" aria-hidden="true"></span>
+                <span class="flavour-row__name">Berry</span>
+                <span class="flavour-row__note">Deep and jammy</span>
+                <span class="flavour-row__go" aria-hidden="true">Shop &rarr;</span>
+              </button>
             </li>
-            <li class="card card--2">
-              <h3 class="card__word">During</h3>
-              <p>Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>
+            <li data-reveal-item>
+              <button type="button" class="flavour-row flavour-row--mango" data-flavour="mango" data-go="shop">
+                <span class="flavour-row__chip" aria-hidden="true"></span>
+                <span class="flavour-row__name">Mango</span>
+                <span class="flavour-row__note">Thick and golden</span>
+                <span class="flavour-row__go" aria-hidden="true">Shop &rarr;</span>
+              </button>
             </li>
-            <li class="card card--3">
-              <h3 class="card__word">After</h3>
-              <p>Bedside, or the morning after, whichever version of you gets there first.</p>
+            <li data-reveal-item>
+              <button type="button" class="flavour-row flavour-row--pineapple" data-flavour="pineapple" data-go="shop">
+                <span class="flavour-row__chip" aria-hidden="true"></span>
+                <span class="flavour-row__name">Pineapple</span>
+                <span class="flavour-row__note">Sharp, tropical</span>
+                <span class="flavour-row__go" aria-hidden="true">Shop &rarr;</span>
+              </button>
+            </li>
+            <li data-reveal-item>
+              <button type="button" class="flavour-row flavour-row--watermelon" data-flavour="watermelon" data-go="shop">
+                <span class="flavour-row__chip" aria-hidden="true"></span>
+                <span class="flavour-row__name">Watermelon</span>
+                <span class="flavour-row__note">Light, cooling</span>
+                <span class="flavour-row__go" aria-hidden="true">Shop &rarr;</span>
+              </button>
+            </li>
+            <li data-reveal-item>
+              <button type="button" class="flavour-row flavour-row--citrus" data-flavour="citrus" data-go="shop">
+                <span class="flavour-row__chip" aria-hidden="true"></span>
+                <span class="flavour-row__name">Citrus</span>
+                <span class="flavour-row__note">Clean and bright</span>
+                <span class="flavour-row__go" aria-hidden="true">Shop &rarr;</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div class="slot-col">
+          <div class="slot slot--flavours" data-slot="flavours" data-tilt="0.12" data-glow="0.7">
+            <img class="slot__poster" data-poster src="assets/img/cut/stick-berry.webp" alt="" width="240" height="408" decoding="async">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- Science                                                       -->
+    <!-- ============================================================ -->
+    <section class="science" id="science" data-section="science" aria-labelledby="science-title">
+      <div class="grid-lines grid-lines--dense" aria-hidden="true"></div>
+      <div class="science__stage">
+        <div class="science__head" data-reveal>
+          <p class="tag" data-reveal-item>03 / Science</p>
+          <h2 class="h-cond" id="science-title" data-reveal-item>Three jobs.<br> One stick.</h2>
+        </div>
+
+        <div class="slot slot--science" data-slot="science" data-face="1" data-glow="0.85" data-fill="0.94">
+          <img class="slot__poster" data-poster src="assets/img/cut/stick-berry.webp" alt="" width="240" height="408" decoding="async">
+        </div>
+
+        <svg class="callout-lines" aria-hidden="true" focusable="false">
+          <path class="callout-line" data-line="0" d=""></path>
+          <path class="callout-line" data-line="1" d=""></path>
+          <path class="callout-line" data-line="2" d=""></path>
+          <circle class="callout-dot" data-dot="0" r="5" cx="-20" cy="-20"></circle>
+          <circle class="callout-dot" data-dot="1" r="5" cx="-20" cy="-20"></circle>
+          <circle class="callout-dot" data-dot="2" r="5" cx="-20" cy="-20"></circle>
+        </svg>
+
+        <ol class="callouts">
+          <li class="callout callout--0" data-callout="0">
+            <p class="callout__index">01 / Botanical</p>
+            <h3 class="callout__title">Milk thistle</h3>
+            <p class="callout__body">A flowering plant with a long history in herbal traditions. The headline ingredient in every stick.</p>
+          </li>
+          <li class="callout callout--1" data-callout="1">
+            <p class="callout__index">02 / Mineral salts</p>
+            <h3 class="callout__title">Electrolytes</h3>
+            <p class="callout__body">Salts such as sodium and potassium, the same family you find in sports drinks. Here in a jelly, not a pint of liquid.</p>
+          </li>
+          <li class="callout callout--2" data-callout="2">
+            <p class="callout__index">03 / B1, B6, B12</p>
+            <h3 class="callout__title">B vitamins</h3>
+            <p class="callout__body">Three B vitamins in every stick. The least glamorous line on the panel, and the one you skipped with breakfast.</p>
+          </li>
+        </ol>
+
+        <p class="science__note">Full quantitative panel and allergen statement to be confirmed before launch.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- When to take                                                  -->
+    <!-- ============================================================ -->
+    <section class="when" id="when" data-section="when" aria-labelledby="when-title">
+      <div class="grid-lines" aria-hidden="true"></div>
+      <div class="when__stage">
+        <div class="when__head" data-reveal>
+          <p class="tag" data-reveal-item>04 / When to take</p>
+          <h2 class="h-cond" id="when-title" data-reveal-item>Pocket-sized. Timing is up to you.</h2>
+        </div>
+        <div class="timeline">
+          <div class="timeline__rail" aria-hidden="true"><div class="timeline__fill"></div></div>
+          <div class="slot slot--when" data-slot="when" data-tilt="0" data-spin="1.8" data-glow="0.6"></div>
+          <ol class="steps">
+            <li class="step is-on" data-step="0">
+              <span class="step__node" aria-hidden="true"></span>
+              <p class="step__when">Before</p>
+              <h3 class="step__title">On the go</h3>
+              <p class="step__body">One stick on the way out. It fits in the pocket that isn't holding your phone.</p>
+            </li>
+            <li class="step" data-step="1">
+              <span class="step__node" aria-hidden="true"></span>
+              <p class="step__when">During</p>
+              <h3 class="step__title">Between rounds</h3>
+              <p class="step__body">Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>
+            </li>
+            <li class="step" data-step="2">
+              <span class="step__node" aria-hidden="true"></span>
+              <p class="step__when">After</p>
+              <h3 class="step__title">The morning after</h3>
+              <p class="step__body">Bedside, or the morning after, whichever version of you gets there first.</p>
             </li>
           </ol>
         </div>
-      </section>
-
-      <!-- Scene: flavours. Pinned; vertical scroll pans the five sticks across. -->
-      <section class="scene scene--flavours" aria-labelledby="flavours-title">
-        <div class="scene__stage">
-          <h2 id="flavours-title" class="scene__label">Pick a personality.</h2>
-          <ul class="pan">
-          <li class="slide slide--berry">
-            <a class="slide__link" href="#shop">
-              <span class="slide__light"></span>
-              <picture class="slide__media"><source srcset="assets/img/cut/stick-berry.avif" type="image/avif"><source srcset="assets/img/cut/stick-berry.webp" type="image/webp"><img src="assets/img/cut/stick-berry.png" alt="" width="240" height="408" loading="lazy" decoding="async"></picture>
-              <span class="slide__copy">
-                <span class="slide__name">Berry</span>
-                <span class="slide__note">Deep and jammy</span>
-                <span class="slide__more">Shop the sticks</span>
-              </span>
-            </a>
-          </li>
-          <li class="slide slide--mango">
-            <a class="slide__link" href="#shop">
-              <span class="slide__light"></span>
-              <picture class="slide__media"><source srcset="assets/img/cut/stick-mango.avif" type="image/avif"><source srcset="assets/img/cut/stick-mango.webp" type="image/webp"><img src="assets/img/cut/stick-mango.png" alt="" width="240" height="429" loading="lazy" decoding="async"></picture>
-              <span class="slide__copy">
-                <span class="slide__name">Mango</span>
-                <span class="slide__note">Thick and golden</span>
-                <span class="slide__more">Shop the sticks</span>
-              </span>
-            </a>
-          </li>
-          <li class="slide slide--pineapple">
-            <a class="slide__link" href="#shop">
-              <span class="slide__light"></span>
-              <picture class="slide__media"><source srcset="assets/img/cut/stick-pineapple.avif" type="image/avif"><source srcset="assets/img/cut/stick-pineapple.webp" type="image/webp"><img src="assets/img/cut/stick-pineapple.png" alt="" width="240" height="453" loading="lazy" decoding="async"></picture>
-              <span class="slide__copy">
-                <span class="slide__name">Pineapple</span>
-                <span class="slide__note">Sharp and tropical</span>
-                <span class="slide__more">Shop the sticks</span>
-              </span>
-            </a>
-          </li>
-          <li class="slide slide--watermelon">
-            <a class="slide__link" href="#shop">
-              <span class="slide__light"></span>
-              <picture class="slide__media"><source srcset="assets/img/cut/stick-watermelon.avif" type="image/avif"><source srcset="assets/img/cut/stick-watermelon.webp" type="image/webp"><img src="assets/img/cut/stick-watermelon.png" alt="" width="240" height="422" loading="lazy" decoding="async"></picture>
-              <span class="slide__copy">
-                <span class="slide__name">Watermelon</span>
-                <span class="slide__note">Light and cooling</span>
-                <span class="slide__more">Shop the sticks</span>
-              </span>
-            </a>
-          </li>
-          <li class="slide slide--citrus">
-            <a class="slide__link" href="#shop">
-              <span class="slide__light"></span>
-              <picture class="slide__media"><source srcset="assets/img/cut/stick-citrus.avif" type="image/avif"><source srcset="assets/img/cut/stick-citrus.webp" type="image/webp"><img src="assets/img/cut/stick-citrus.png" alt="" width="240" height="383" loading="lazy" decoding="async"></picture>
-              <span class="slide__copy">
-                <span class="slide__name">Citrus</span>
-                <span class="slide__note">Clean and bright</span>
-                <span class="slide__more">Shop the sticks</span>
-              </span>
-            </a>
-          </li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- Quotes as intertitles. -->
-      <section class="intertitles" aria-labelledby="reviews-title">
-        <h2 id="reviews-title" class="scene__label container">Reviewed by the tired.</h2>
-        <figure class="intertitle">
-          <blockquote><p>“I have a drawer of sachets I never open. This one I actually take, because it takes four seconds and tastes like a sweet.”</p></blockquote>
-          <figcaption><span class="quote__who">Priya, London</span><span class="quote__flavour">Citrus</span></figcaption>
-        </figure>
-        <figure class="intertitle">
-          <blockquote><p>“Took one at the bar and one on the bus. I made my 9am. That is the entire review.”</p></blockquote>
-          <figcaption><span class="quote__who">Marcus, Berlin</span><span class="quote__flavour">Mango</span></figcaption>
-        </figure>
-        <figure class="intertitle">
-          <blockquote><p>“Bought a box for a hen weekend and came home with none. Watermelon went first.”</p></blockquote>
-          <figcaption><span class="quote__who">Ana, Lisbon</span><span class="quote__flavour">Watermelon</span></figcaption>
-        </figure>
-      </section>
-
-      <!-- Scene: finale. Pinned; the line pushes in on pink. -->
-      <section class="scene scene--finale" aria-labelledby="cta-title">
-        <div class="scene__stage scene__stage--pink">
-          <div class="finale">
-            <h2 id="cta-title" class="finale__headline">Go out like you mean it.</h2>
-            <a class="btn btn--dark" href="#shop">Shop the sticks</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Credits strip: the one marquee on the page. -->
-      <section class="ticker" aria-label="Product highlights">
-        <div class="ticker__track">
-          <div class="ticker__row" data-ticker>
-            <ul class="ticker__list">
-              <li>Replenish</li><li>Rebalance</li><li>Feel good</li><li>15&nbsp;g stick</li><li>10 per box</li><li>No water needed</li>
-            </ul>
-            <ul class="ticker__list" aria-hidden="true">
-              <li>Replenish</li><li>Rebalance</li><li>Feel good</li><li>15&nbsp;g stick</li><li>10 per box</li><li>No water needed</li>
-            </ul>
-            <ul class="ticker__list" aria-hidden="true">
-              <li>Replenish</li><li>Rebalance</li><li>Feel good</li><li>15&nbsp;g stick</li><li>10 per box</li><li>No water needed</li>
-            </ul>
-          </div>
-        </div>
-        <button type="button" class="ticker__toggle" data-ticker-toggle aria-pressed="false">Pause</button>
-      </section>
-
-    </main>
-
-    <!-- ============================================================ -->
-    <!-- Shop view (shown at #shop)                                    -->
-    <!-- ============================================================ -->
-    <main id="shop" class="view container" aria-label="Shop" hidden>
-
-      <div class="shop__head">
-        <div>
-          <h1 class="display display--sm" tabindex="-1">Boxes of ten.</h1>
-          <p class="lede">Every box holds 10&nbsp;×&nbsp;15&nbsp;g sticks, 150&nbsp;g in total. Dietary supplement.</p>
-        </div>
-        <a class="btn btn--outline" href="#home">Back home</a>
       </div>
+    </section>
 
-      <ul class="products hairgrid reveal reveal-cells" aria-label="Boxes">
-        <li class="product product--berry">
-          <span class="frame">
-            <picture>
-              <source srcset="assets/img/cut/box-berry.avif" type="image/avif">
-              <source srcset="assets/img/cut/box-berry.webp" type="image/webp">
-              <img src="assets/img/cut/box-berry.png" alt="" width="300" height="457" loading="lazy" decoding="async">
-            </picture>
-          </span>
-          <div class="product__meta">
-            <h2 class="product__name">Berry</h2>
-            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
-          </div>
-          <div class="product__buy">
-            <span class="price" data-price="berry">$24</span>
-            <button type="button" class="btn btn--primary btn--sm" data-add="berry">Add<span class="visually-hidden"> Berry box to cart</span></button>
-          </div>
-        </li>
-        <li class="product product--mango">
-          <span class="frame">
-            <picture>
-              <source srcset="assets/img/cut/box-mango.avif" type="image/avif">
-              <source srcset="assets/img/cut/box-mango.webp" type="image/webp">
-              <img src="assets/img/cut/box-mango.png" alt="" width="300" height="497" loading="lazy" decoding="async">
-            </picture>
-          </span>
-          <div class="product__meta">
-            <h2 class="product__name">Mango</h2>
-            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
-          </div>
-          <div class="product__buy">
-            <span class="price" data-price="mango">$24</span>
-            <button type="button" class="btn btn--primary btn--sm" data-add="mango">Add<span class="visually-hidden"> Mango box to cart</span></button>
-          </div>
-        </li>
-        <li class="product product--pineapple">
-          <span class="frame">
-            <picture>
-              <source srcset="assets/img/cut/box-pineapple.avif" type="image/avif">
-              <source srcset="assets/img/cut/box-pineapple.webp" type="image/webp">
-              <img src="assets/img/cut/box-pineapple.png" alt="" width="300" height="511" loading="lazy" decoding="async">
-            </picture>
-          </span>
-          <div class="product__meta">
-            <h2 class="product__name">Pineapple</h2>
-            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
-          </div>
-          <div class="product__buy">
-            <span class="price" data-price="pineapple">$24</span>
-            <button type="button" class="btn btn--primary btn--sm" data-add="pineapple">Add<span class="visually-hidden"> Pineapple box to cart</span></button>
-          </div>
-        </li>
-        <li class="product product--watermelon">
-          <span class="frame">
-            <picture>
-              <source srcset="assets/img/cut/box-watermelon.avif" type="image/avif">
-              <source srcset="assets/img/cut/box-watermelon.webp" type="image/webp">
-              <img src="assets/img/cut/box-watermelon.png" alt="" width="300" height="493" loading="lazy" decoding="async">
-            </picture>
-          </span>
-          <div class="product__meta">
-            <h2 class="product__name">Watermelon</h2>
-            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
-          </div>
-          <div class="product__buy">
-            <span class="price" data-price="watermelon">$24</span>
-            <button type="button" class="btn btn--primary btn--sm" data-add="watermelon">Add<span class="visually-hidden"> Watermelon box to cart</span></button>
-          </div>
-        </li>
-        <li class="product product--citrus">
-          <span class="frame">
-            <picture>
-              <source srcset="assets/img/cut/box-citrus.avif" type="image/avif">
-              <source srcset="assets/img/cut/box-citrus.webp" type="image/webp">
-              <img src="assets/img/cut/box-citrus.png" alt="" width="300" height="471" loading="lazy" decoding="async">
-            </picture>
-          </span>
-          <div class="product__meta">
-            <h2 class="product__name">Citrus</h2>
-            <p class="product__size">10&nbsp;×&nbsp;15&nbsp;g</p>
-          </div>
-          <div class="product__buy">
-            <span class="price" data-price="citrus">$24</span>
-            <button type="button" class="btn btn--primary btn--sm" data-add="citrus">Add<span class="visually-hidden"> Citrus box to cart</span></button>
-          </div>
-        </li>
-      </ul>
-
-      <section class="bundle hairgrid" aria-labelledby="bundle-title">
-        <div class="bundle__copy">
-          <h2 id="bundle-title" class="headline headline--sm">The Full Set</h2>
-          <p class="lede">All five flavours, 50 sticks, one box that solves birthdays, hen weekends and your own poor planning.</p>
-          <div class="bundle__buy">
-            <span class="price price--lg" data-price="bundle">$105</span>
-            <button type="button" class="btn btn--primary" data-add="bundle">Add the set</button>
+    <!-- ============================================================ -->
+    <!-- Shop                                                          -->
+    <!-- ============================================================ -->
+    <section class="shop" id="shop" data-section="shop" aria-labelledby="shop-title">
+      <div class="grid-lines" aria-hidden="true"></div>
+      <div class="wrap shop__grid">
+        <div class="slot-col slot-col--left">
+          <div class="slot slot--shop" data-slot="shop" data-tilt="-0.1" data-glow="0.75">
+            <img class="slot__poster" data-poster src="assets/img/cut/stick-berry.webp" alt="" width="240" height="408" decoding="async">
           </div>
         </div>
-        <div class="bundle__media">
-          <picture>
-            <source srcset="assets/img/cut/all-boxes.avif" type="image/avif">
-            <source srcset="assets/img/cut/all-boxes.webp" type="image/webp">
-            <img src="assets/img/cut/all-boxes.png" alt="All five Sahsih boxes lined up: berry, mango, pineapple, watermelon and citrus" width="900" height="290" loading="lazy" decoding="async">
-          </picture>
-        </div>
-      </section>
+        <form class="buy" data-buy data-reveal novalidate>
+          <p class="tag" data-reveal-item>05 / Shop</p>
+          <h2 class="h-cond" id="shop-title" data-reveal-item>Pick your stick.</h2>
 
-    </main>
+          <fieldset class="field" data-reveal-item>
+            <legend class="field__label">Flavour</legend>
+            <div class="chips">
+              <label class="chip chip--berry">
+                <input type="radio" name="flavour" value="berry" checked>
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">Berry</span>
+              </label>
+              <label class="chip chip--mango">
+                <input type="radio" name="flavour" value="mango">
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">Mango</span>
+              </label>
+              <label class="chip chip--pineapple">
+                <input type="radio" name="flavour" value="pineapple">
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">Pineapple</span>
+              </label>
+              <label class="chip chip--watermelon">
+                <input type="radio" name="flavour" value="watermelon">
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">Watermelon</span>
+              </label>
+              <label class="chip chip--citrus">
+                <input type="radio" name="flavour" value="citrus">
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">Citrus</span>
+              </label>
+            </div>
+          </fieldset>
 
-  </div><!-- /#content -->
+          <fieldset class="field" data-reveal-item>
+            <legend class="field__label">Pack size</legend>
+            <div class="packs">
+              <label class="pack">
+                <input type="radio" name="pack" value="box" checked>
+                <span class="pack__media"><img data-box src="assets/img/cut/box-berry.webp" alt="" width="300" height="457" loading="lazy" decoding="async"></span>
+                <span class="pack__name">1 box</span>
+                <span class="pack__detail">10 sticks</span>
+                <span class="pack__price" data-pack-price="box">$24</span>
+              </label>
+              <label class="pack pack--trio">
+                <input type="radio" name="pack" value="trio">
+                <span class="pack__media"><img data-box src="assets/img/cut/box-berry.webp" alt="" width="300" height="457" loading="lazy" decoding="async"><img data-box src="assets/img/cut/box-berry.webp" alt="" width="300" height="457" loading="lazy" decoding="async"><img data-box src="assets/img/cut/box-berry.webp" alt="" width="300" height="457" loading="lazy" decoding="async"></span>
+                <span class="pack__name">3 boxes</span>
+                <span class="pack__detail">30 sticks</span>
+                <span class="pack__price" data-pack-price="trio">$72</span>
+              </label>
+              <label class="pack pack--set">
+                <input type="radio" name="pack" value="set">
+                <span class="pack__media"><img src="assets/img/cut/all-boxes.webp" alt="" width="900" height="290" loading="lazy" decoding="async"></span>
+                <span class="pack__name">The Full Set</span>
+                <span class="pack__detail">50 sticks, all five flavours</span>
+                <span class="pack__price" data-pack-price="set">$105</span>
+              </label>
+            </div>
+          </fieldset>
 
-  <footer class="site-footer container">
-    <div class="site-footer__grid">
-      <picture class="site-footer__logo">
-        <source srcset="assets/img/cut/sahsih-logo.avif" type="image/avif">
-        <source srcset="assets/img/cut/sahsih-logo.webp" type="image/webp">
-        <img src="assets/img/cut/sahsih-logo.png" alt="Sahsih" width="659" height="300" loading="lazy" decoding="async">
-      </picture>
-      <nav class="site-footer__col" aria-label="Product">
-        <h2 class="site-footer__title">Product</h2>
-        <a href="#shop">Shop</a>
+          <div class="buy__row" data-reveal-item>
+            <div class="stepper" role="group" aria-label="Quantity">
+              <button type="button" data-step-qty="-1" aria-label="Decrease quantity">&minus;</button>
+              <output data-qty aria-live="polite">1</output>
+              <button type="button" data-step-qty="1" aria-label="Increase quantity">+</button>
+            </div>
+            <p class="buy__total"><span class="field__label">Total</span> <span class="buy__price" data-total>$24</span></p>
+          </div>
+
+          <button type="submit" class="btn btn--skew btn--lg" data-reveal-item><span>Add to cart</span></button>
+          <p class="note" data-reveal-item>Dietary supplement. 10 &times; 15&nbsp;g sticks per box. Checkout isn't live yet: your cart sends as an email order.</p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- Footer: the sachet lands on the wordmark                       -->
+  <!-- ============================================================ -->
+  <footer class="footer" data-section="footer">
+    <div class="wrap footer__grid">
+      <nav class="footer__col" aria-label="Footer">
+        <h2 class="footer__title">Explore</h2>
+        <a href="#flavours">Flavours</a>
         <a href="#science">Science</a>
-        <a href="#when">When to take it</a>
+        <a href="#when">When to take</a>
+        <a href="#shop">Shop</a>
       </nav>
-      <div class="site-footer__col">
-        <h2 class="site-footer__title">Contact</h2>
+      <div class="footer__col">
+        <h2 class="footer__title">Contact</h2>
         <a href="mailto:hello@sahsih.com">hello@sahsih.com</a>
         <a href="mailto:hello@sahsih.com?subject=Wholesale%20enquiry">Wholesale enquiries</a>
       </div>
-      <p class="site-footer__legal">Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>
+      <p class="footer__legal">Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>
     </div>
-    <p class="site-footer__copy">© 2026 Sahsih</p>
+    <!-- The sachet lands on the wordmark at the very end of the page. -->
+    <div class="footer__stage">
+      <div class="slot slot--footer" data-slot="footer" data-tilt="0" data-spin="0.22" data-face="1" data-glow="0.8"></div>
+      <p class="wordmark wordmark--footer" aria-hidden="true">SAHSIH</p>
+    </div>
+    <div class="wrap footer__base">
+      <p>&copy; 2026 Sahsih</p>
+      <p>Tear it. Squeeze it. Carry on.</p>
+    </div>
   </footer>
 
 </div><!-- /#page -->
@@ -480,23 +421,39 @@
 <div id="cart" class="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
   <div class="cart__head">
     <h2 id="cart-title">Your cart</h2>
-    <button type="button" class="btn btn--outline btn--sm" data-close-cart>Close</button>
+    <button type="button" class="icon-btn" data-close-cart aria-label="Close cart"><svg class="icon" viewBox="0 0 256 256" aria-hidden="true" focusable="false"><path fill="currentColor" d="M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z"/></svg></button>
   </div>
   <div class="cart__body">
     <div class="cart__empty" data-cart-empty>
       <p>Your cart is empty.</p>
-      <a class="btn btn--primary" href="#shop">Shop the sticks</a>
+      <a class="btn btn--skew" href="#shop" data-close-cart-link><span>Pick a flavour</span></a>
     </div>
     <ul class="cart__items" data-cart-items hidden></ul>
   </div>
   <div class="cart__foot" data-cart-foot hidden>
     <p class="cart__subtotal"><span>Subtotal</span> <span data-cart-subtotal>$0</span></p>
-    <a class="btn btn--primary" href="mailto:hello@sahsih.com" data-cart-order>Order by email</a>
+    <a class="btn btn--skew btn--block" href="mailto:hello@sahsih.com" data-cart-order><span>Order by email</span></a>
     <p class="note">Online checkout isn't live yet. Send your order by email and we'll take it from there.</p>
   </div>
 </div>
 
 <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+<!-- Images the scripts need (label artwork, posters, box shots). -->
+<template id="assets">
+  <img data-asset="logo" src="assets/img/cut/sahsih-logo.webp" alt="">
+  <img data-asset="stick-berry" src="assets/img/cut/stick-berry.webp" alt="">
+  <img data-asset="stick-mango" src="assets/img/cut/stick-mango.webp" alt="">
+  <img data-asset="stick-pineapple" src="assets/img/cut/stick-pineapple.webp" alt="">
+  <img data-asset="stick-watermelon" src="assets/img/cut/stick-watermelon.webp" alt="">
+  <img data-asset="stick-citrus" src="assets/img/cut/stick-citrus.webp" alt="">
+  <img data-asset="box-berry" src="assets/img/cut/box-berry.webp" alt="">
+  <img data-asset="box-mango" src="assets/img/cut/box-mango.webp" alt="">
+  <img data-asset="box-pineapple" src="assets/img/cut/box-pineapple.webp" alt="">
+  <img data-asset="box-watermelon" src="assets/img/cut/box-watermelon.webp" alt="">
+  <img data-asset="box-citrus" src="assets/img/cut/box-citrus.webp" alt="">
+  <img data-asset="all-boxes" src="assets/img/cut/all-boxes.webp" alt="">
+</template>
 
 </body>
 </html>

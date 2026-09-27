@@ -1,11 +1,26 @@
 {
   "name": "sahsih-site",
   "version": "1.0.0",
-  "description": "Static marketing site for Sahsih hangover jelly sticks",
+  "description": "Scroll-driven 3D marketing site for Sahsih hangover jelly sticks",
   "private": true,
   "scripts": {
+    "build": "npm run build:app && npm run build:stage",
+    "build:app": "esbuild src/app.js --bundle --minify --format=iife --target=es2020 --legal-comments=eof --outfile=scripts/app.js",
+    "build:stage": "esbuild src/stage.js --bundle --minify --format=iife --target=es2020 --loader:.svg=text --legal-comments=eof --outfile=scripts/stage.js",
+    "watch": "esbuild src/app.js src/stage.js --bundle --format=iife --target=es2020 --loader:.svg=text --outdir=scripts --watch",
+    "images": "python3 tools/build-images.py",
+    "standalone": "python3 tools/build-standalone.py && python3 tools/build-standalone.py --artifact",
     "start": "npx --yes serve .",
     "dev": "python3 -m http.server 8000"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@phosphor-icons/core": "^2.1.1",
+    "esbuild": "^0.28.2",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.26",
+    "three": "^0.186.1"
+  }
 }
