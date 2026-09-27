@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build a single self-contained HTML file of the site.
 
-  python3 tools/build-standalone.py            # writes dist/sahsih.html
-  python3 tools/build-standalone.py out.html   # custom output path
+  python3 tools/build-standalone.py                 # writes dist/sahsih.html
+  python3 tools/build-standalone.py out.html        # custom output path
+  python3 tools/build-standalone.py --artifact      # writes dist/sahsih-artifact.html
 
 Everything the page needs (styles, script, fonts, images) is inlined as
 data URIs so the file can be emailed, opened from disk or dropped into a
@@ -10,6 +11,11 @@ preview without any other files. Images are inlined as WebP only, which
 every current browser supports, so the file stays under a megabyte.
 
 The deployed site is the folder as-is; this build is only for sharing.
+
+The --artifact variant is the same page trimmed for hosts that wrap the
+content in their own document skeleton (a claude.ai artifact, for example):
+no doctype, html, head or body tags, a short <title>, and the styles,
+content and script in one fragment.
 """
 import base64
 import re
@@ -41,21 +47,12 @@ def inline_css(css_path: Path) -> str:
     return re.sub(r'url\("([^"]+)"\)', repl, css)
 
 
-def build(out: Path) -> None:
+def build(out: Path, artifact: bool = False) -> None:
     html = (ROOT / "index.html").read_text(encoding="utf-8")
 
-    # Stylesheets and script.
-    for href in ("styles/fonts.css", "styles/site.css"):
-        tag = f'<link rel="stylesheet" href="{href}">'
-        assert tag in html, tag
-        html = html.replace(tag, f"<style>\n{inline_css(ROOT / href)}\n</style>")
-    script_tag = '<script src="scripts/main.js" defer></script>'
-    assert script_tag in html
-    js = (ROOT / "scripts/main.js").read_text(encoding="utf-8")
-    html = html.replace(script_tag, f"<script defer>\n{js}\n</script>")
-
-    # Drop the preloads: nothing is fetched over the network any more.
-    html = re.sub(r'\s*<link rel="preload"[^>]*>', "", html)
+    # Rewrite the markup first, while the document still contains only
+    # markup. Inlined CSS and JS can legitimately mention "<picture>" or
+    # "<img" in comments and strings, and the tag regexes must never see it.
 
     # <picture>: keep the <img>, point it at the inlined WebP.
     def picture(m):
@@ -65,11 +62,30 @@ def build(out: Path) -> None:
         img = img.replace(f'src="{src}.png"', f'src="{data_uri(webp)}"')
         return f"<picture{m.group(1)}>{img}</picture>"
 
-    html = re.sub(r"<picture([^>]*)>.*?(<img[^>]*>)\s*</picture>", picture, html, flags=re.S)
+    html = re.sub(r"<picture(\s[^>]*)?>\s*(?:<source[^>]*>\s*)*(<img[^>]*>)\s*</picture>", picture, html)
 
     # Favicons.
     for rel_path in ("assets/img/favicon.png", "assets/img/apple-touch-icon.png"):
         html = html.replace(f'href="{rel_path}"', f'href="{data_uri(ROOT / rel_path)}"')
+
+    # Drop the preloads: nothing is fetched over the network any more.
+    html = re.sub(r'\s*<link rel="preload"[^>]*>', "", html)
+
+    # Stylesheets and script, last.
+    for href in ("styles/fonts.css", "styles/site.css"):
+        tag = f'<link rel="stylesheet" href="{href}">'
+        assert tag in html, tag
+        html = html.replace(tag, f"<style>\n{inline_css(ROOT / href)}\n</style>")
+    # `defer` only applies to external scripts, so an inlined copy in <head>
+    # would run before the DOM exists. Move it to the end of <body> instead.
+    script_tag = '<script src="scripts/main.js" defer></script>'
+    assert script_tag in html
+    js = (ROOT / "scripts/main.js").read_text(encoding="utf-8")
+    html = html.replace(script_tag, "")
+    html = html.replace("</body>", f"<script>\n{js}\n</script>\n</body>")
+
+    if artifact:
+        html = as_fragment(html)
 
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
@@ -77,7 +93,29 @@ def build(out: Path) -> None:
     print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
     if leftover:
         print("still referenced:", sorted(set(leftover)))
+    for tag, want in (("<body>", 1), ("</body>", 1), ("<style>", 2), ("</style>", 2), ("<main", 2)):
+        if not artifact and html.count(tag) != want:
+            raise SystemExit(f"structure check failed: {tag} x{html.count(tag)}, expected {want}")
+
+
+def as_fragment(html: str) -> str:
+    """Reduce a full document to title + styles + body content + script."""
+    styles = "\n".join(re.findall(r"<style>.*?</style>", html, flags=re.S))
+    body = re.search(r"<body>(.*)</body>", html, flags=re.S).group(1).strip()
+    # The host skeleton pads the root by the phone's safe-area insets and
+    # expects a sticky header to sit below the top inset; reveals must be
+    # visible at rest because the host captures a still frame of the page.
+    extra = (
+        "<style>\n"
+        ".site-header { top: env(safe-area-inset-top, 0px); }\n"
+        ".js .reveal { opacity: 1; transform: none; }\n"
+        "</style>"
+    )
+    return f"<title>Sahsih</title>\n{styles}\n{extra}\n{body}\n"
 
 
 if __name__ == "__main__":
-    build(Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "dist" / "sahsih.html")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    artifact = "--artifact" in sys.argv
+    default = ROOT / "dist" / ("sahsih-artifact.html" if artifact else "sahsih.html")
+    build(Path(args[0]) if args else default, artifact=artifact)
