@@ -1,0 +1,281 @@
+{%- liquid
+  if section.settings.button_1_link != blank
+    assign button_1_href = section.settings.button_1_link
+  else
+    assign button_1_href = '#flavours'
+  endif
+  if section.settings.button_2_link != blank
+    assign button_2_href = section.settings.button_2_link
+  else
+    assign button_2_href = '#science'
+  endif
+-%}
+<section
+  class="hero{% if section.settings.show_backdrop == false %} hero--plain{% endif %}"
+  id="top"
+  data-section="hero"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="hero-title-{{ section.id }}"
+>
+  <div class="hero__bg" aria-hidden="true">
+    {%- if section.settings.show_backdrop -%}
+      <canvas class="hero__bokeh hero__bokeh--far" data-bokeh="far"></canvas>
+      <canvas class="hero__bokeh hero__bokeh--near" data-bokeh="near"></canvas>
+    {%- endif -%}
+    <div class="hero__haze"></div>
+    <div class="grid-lines"></div>
+  </div>
+
+  {%- if section.settings.show_wordmark -%}
+    {%- render 'wordmark', modifier: 'hero' -%}
+  {%- endif -%}
+
+  <button
+    type="button"
+    class="slot slot--hero"
+    data-slot="hero"
+    data-tilt="-0.14"
+    data-glow="0.62"
+    aria-label="{{ 'hero.squeeze' | t }}"
+  >
+    {%- render 'slot-poster' -%}
+  </button>
+
+  {%- if section.blocks.size > 0 -%}
+    <dl class="hud">
+      {%- for block in section.blocks -%}
+        <div class="hud__panel" data-hud {{ block.shopify_attributes }}>
+          <dt>{{ block.settings.label | escape }}</dt>
+          <dd>
+            <span
+              class="hud__value"
+              data-count="{{ block.settings.value }}"
+              data-count-from="{{ block.settings.from }}"
+            >
+              {{- block.settings.value -}}
+            </span>
+            {%- if block.settings.unit != blank -%}
+              <span class="hud__unit">{{ block.settings.unit | escape }}</span>
+            {%- endif -%}
+          </dd>
+        </div>
+      {%- endfor -%}
+    </dl>
+  {%- endif -%}
+
+  {%- if section.settings.show_swatches -%}
+    {%- render 'swatches' -%}
+  {%- endif -%}
+
+  <h1 class="hero__title" id="hero-title-{{ section.id }}">
+    {%- if section.settings.line_1 != blank -%}
+      <span class="line"><span>{{ section.settings.line_1 | escape }}</span></span>
+    {%- endif %}
+    {% if section.settings.line_2 != blank -%}
+      <span class="line"><span>{{ section.settings.line_2 | escape }}</span></span>
+    {%- endif %}
+    {% if section.settings.line_3 != blank -%}
+      <span class="line"><span>{{ section.settings.line_3 | escape }}</span></span>
+    {%- endif -%}
+  </h1>
+
+  <div class="hero__intro">
+    {%- if section.settings.text != blank -%}
+      <div class="rte">{{ section.settings.text }}</div>
+    {%- endif -%}
+    {%- if section.settings.button_1_label != blank or section.settings.button_2_label != blank -%}
+      <div class="actions">
+        {%- if section.settings.button_1_label != blank -%}
+          <a class="btn btn--skew" href="{{ button_1_href }}"><span>{{ section.settings.button_1_label | escape }}</span></a>
+        {%- endif -%}
+        {%- if section.settings.button_2_label != blank -%}
+          <a class="btn btn--ghost" href="{{ button_2_href }}"><span>{{ section.settings.button_2_label | escape }}</span></a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.hint_1 != blank or section.settings.hint_2 != blank -%}
+    <p class="hero__hint" aria-hidden="true">
+      <span>{{ section.settings.hint_1 | escape }}</span>
+      {%- if section.settings.hint_1 != blank and section.settings.hint_2 != blank %} / {% endif -%}
+      <span>{{ section.settings.hint_2 | escape }}</span>
+    </p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Sahsih hero",
+  "tag": "div",
+  "class": "section-sahsih-hero",
+  "limit": 1,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The opening screen: the 3D jelly stick in front of the giant logo. The flavour dots recolour the whole site."
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "line_1",
+      "label": "Line 1",
+      "default": "Tear it."
+    },
+    {
+      "type": "text",
+      "id": "line_2",
+      "label": "Line 2",
+      "default": "Squeeze it."
+    },
+    {
+      "type": "text",
+      "id": "line_3",
+      "label": "Line 3",
+      "default": "Carry on."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro",
+      "default": "<p>Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. 15 g, five flavours, no water.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "First button label",
+      "default": "Shop the flavours →"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "First button link",
+      "info": "Leave empty to jump to the Flavours section."
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Second button label",
+      "default": "How it works"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Second button link",
+      "info": "Leave empty to jump to the Science section."
+    },
+    {
+      "type": "header",
+      "content": "Show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Giant logo",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Flavour dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_backdrop",
+      "label": "Night street lights in the background",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hint_1",
+      "label": "Hint at the bottom",
+      "default": "Scroll"
+    },
+    {
+      "type": "text",
+      "id": "hint_2",
+      "label": "Second hint",
+      "default": "Squeeze the stick"
+    }
+  ],
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Counter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Weight"
+        },
+        {
+          "type": "number",
+          "id": "value",
+          "label": "Number",
+          "default": 15
+        },
+        {
+          "type": "number",
+          "id": "from",
+          "label": "Count from",
+          "default": 0,
+          "info": "The counter animates from this number to the one above."
+        },
+        {
+          "type": "text",
+          "id": "unit",
+          "label": "Unit",
+          "default": "g"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sahsih hero",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Weight",
+            "value": 15,
+            "from": 0,
+            "unit": "g"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Water needed",
+            "value": 0,
+            "from": 500,
+            "unit": "ml"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "label": "Flavours",
+            "value": 5,
+            "from": 0,
+            "unit": ""
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

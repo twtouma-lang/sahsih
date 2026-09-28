@@ -1,0 +1,76 @@
+<!doctype html>
+<html
+  lang="{{ request.locale.iso_code }}"
+  class="no-js{% if request.design_mode %} is-design-mode{% endif %}"
+  data-page-type="{{ request.page_type }}"
+>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+    <meta name="color-scheme" content="dark">
+
+    {%- render 'meta-tags' -%}
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'sahsih-favicon.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'sahsih-favicon.png' | asset_url }}">
+    {%- endif -%}
+
+    {{ 'archivo-var-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+    {{ 'jetbrains-mono-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+    {%- if settings.wordmark_image == blank and request.page_type == 'index' -%}
+      {{ 'sahsih-logo-hd.webp' | asset_url | preload_tag: as: 'image', type: 'image/webp' }}
+    {%- endif -%}
+
+    {{ 'sahsih.css' | asset_url | stylesheet_tag }}
+    {%- render 'theme-styles' -%}
+
+    <script>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+    {%- render 'theme-config' -%}
+    <script src="{{ 'sahsih-theme.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <a class="skip-link" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {%- comment -%}
+      The big logo artwork, the flavour tint filter and the icons, defined once.
+    {%- endcomment -%}
+    {%- render 'logo-sprite' -%}
+
+    {%- comment -%}
+      The 3D stage: one fixed canvas for the jelly stick. It sits above section
+      backgrounds and the giant logo, below text and buttons. The script only
+      loads the 3D code on pages that have a place for the stick.
+    {%- endcomment -%}
+    {%- if settings.enable_3d -%}
+      <canvas class="stage" id="stage" aria-hidden="true"></canvas>
+    {%- endif -%}
+    {%- if settings.film_grain -%}
+      <div class="grain" aria-hidden="true"></div>
+    {%- endif -%}
+
+    <div class="page" id="page">
+      {% sections 'header-group' %}
+
+      <main id="main" class="main main--{{ request.page_type | handle }}" tabindex="-1">
+        {{ content_for_layout }}
+      </main>
+
+      {% sections 'footer-group' %}
+    </div>
+
+    {%- render 'cart-drawer-shell' -%}
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+  </body>
+</html>

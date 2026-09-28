@@ -1,0 +1,26 @@
+{%- comment -%}
+  The stick photo inside a 3D slot. It shows when the device cannot draw
+  3D (or 3D is turned off) and follows the selected flavour.
+  Usage: {% render 'slot-poster' %}
+{%- endcomment -%}
+{%- liquid
+  assign known_art = 'berry,mango,pineapple,watermelon,citrus' | split: ','
+  assign poster = ''
+  for i in (1..6)
+    assign k = 'flavour_' | append: i | append: '_name'
+    assign n = settings[k] | handleize
+    if n == blank
+      continue
+    endif
+    assign k = 'flavour_' | append: i | append: '_stick'
+    if settings[k] != blank
+      assign poster = settings[k] | image_url: width: 600
+    elsif known_art contains n
+      assign poster = 'stick-' | append: n | append: '.webp' | asset_url
+    endif
+    break
+  endfor
+-%}
+{%- if poster != blank -%}
+  <img class="slot__poster" data-poster src="{{ poster }}" alt="" width="240" height="408" decoding="async">
+{%- endif -%}

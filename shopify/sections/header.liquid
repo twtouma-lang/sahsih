@@ -1,0 +1,182 @@
+{%- liquid
+  if section.settings.cta_link != blank
+    assign cta_href = section.settings.cta_link
+  else
+    assign cta_href = routes.root_url | append: '#shop'
+  endif
+  assign root = routes.root_url
+-%}
+<header class="bar" data-header style="--brand-h: {{ section.settings.logo_height }}px;">
+  <a class="brand" href="{{ routes.root_url }}">
+    {%- if section.settings.logo != blank -%}
+      {%- assign logo_alt = section.settings.logo.alt | default: shop.name -%}
+      {{
+        section.settings.logo
+        | image_url: width: 480
+        | image_tag: class: 'brand__logo', alt: logo_alt, widths: '160, 240, 320, 480', sizes: '240px', loading: 'eager'
+      }}
+    {%- else -%}
+      <img
+        class="brand__logo"
+        src="{{ 'sahsih-logo.webp' | asset_url }}"
+        alt="{{ shop.name | escape }}"
+        width="659"
+        height="300"
+        decoding="async"
+      >
+    {%- endif -%}
+    {%- if section.settings.tag != blank -%}
+      <span class="brand__tag">{{ section.settings.tag | escape }}</span>
+    {%- endif -%}
+    {%- if section.settings.meta != blank -%}
+      <span class="brand__meta">{{ section.settings.meta | escape }}</span>
+    {%- endif -%}
+  </a>
+
+  <nav class="nav" id="nav-{{ section.id }}" aria-label="{{ 'header.nav' | t }}" data-nav>
+    {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+      {%- for link in section.settings.menu.links -%}
+        {%- if link.links.size > 0 -%}
+          <details class="nav__group" data-nav-group>
+            <summary>{{ link.title | escape }}</summary>
+            <div class="nav__sub">
+              <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ 'header.all' | t: title: link.title }}</a>
+              {%- for child in link.links -%}
+                <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+              {%- endfor -%}
+            </div>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ root }}#flavours">{{ 'header.links.flavours' | t }}</a>
+      <a href="{{ root }}#science">{{ 'header.links.science' | t }}</a>
+      <a href="{{ root }}#when">{{ 'header.links.when' | t }}</a>
+      <a href="{{ root }}#shop">{{ 'header.links.shop' | t }}</a>
+    {%- endif -%}
+  </nav>
+
+  <div class="bar__actions">
+    {%- if section.settings.show_cta and section.settings.cta_label != blank -%}
+      <a class="btn btn--skew btn--sm bar__cta" href="{{ cta_href }}"><span>{{ section.settings.cta_label | escape }}</span></a>
+    {%- endif -%}
+    {%- if section.settings.show_search -%}
+      <a class="icon-btn icon-btn--bar" href="{{ routes.search_url }}">
+        {%- render 'icon', name: 'search' -%}
+        <span class="visually-hidden">{{ 'header.search' | t }}</span>
+      </a>
+    {%- endif -%}
+    {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+      <a class="icon-btn icon-btn--bar" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+        {%- render 'icon', name: 'account' -%}
+        <span class="visually-hidden">{{ 'header.account' | t }}</span>
+      </a>
+    {%- endif -%}
+    <a
+      class="cart-btn{% if cart.item_count > 0 %} has-items{% endif %}"
+      href="{{ routes.cart_url }}"
+      data-open-cart
+    >
+      {%- render 'icon', name: 'cart' -%}
+      <span class="visually-hidden">{{ 'cart.title' | t }}</span>
+      <span class="cart-btn__count" data-cart-count>{{ cart.item_count }}</span>
+    </a>
+    <button
+      type="button"
+      class="menu-btn"
+      data-menu
+      aria-expanded="false"
+      aria-controls="nav-{{ section.id }}"
+    >
+      {{- 'header.menu' | t -}}
+    </button>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Optional. Leave empty to use the Sahsih logo."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 34
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Small tag next to the logo",
+      "default": "No.01"
+    },
+    {
+      "type": "text",
+      "id": "meta",
+      "label": "Line next to the logo",
+      "default": "Hangover jelly stick / 15 g / No water",
+      "info": "Shown on wide screens only."
+    },
+    {
+      "type": "header",
+      "content": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Leave empty to link to the homepage sections (Flavours, Science, When to take, Shop). In your own menu, a link like /#shop jumps to the Shop section."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account",
+      "default": true,
+      "info": "Appears only when customer accounts are turned on."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link",
+      "info": "Leave empty to jump to the Shop section on the homepage."
+    }
+  ]
+}
+{% endschema %}

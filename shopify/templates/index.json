@@ -1,0 +1,215 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sahsih-hero",
+      "blocks": {
+        "weight": {
+          "type": "stat",
+          "settings": {
+            "label": "Weight",
+            "value": 15,
+            "from": 0,
+            "unit": "g"
+          }
+        },
+        "water": {
+          "type": "stat",
+          "settings": {
+            "label": "Water needed",
+            "value": 0,
+            "from": 500,
+            "unit": "ml"
+          }
+        },
+        "flavours": {
+          "type": "stat",
+          "settings": {
+            "label": "Flavours",
+            "value": 5,
+            "from": 0,
+            "unit": ""
+          }
+        }
+      },
+      "block_order": [
+        "weight",
+        "water",
+        "flavours"
+      ],
+      "settings": {
+        "line_1": "Tear it.",
+        "line_2": "Squeeze it.",
+        "line_3": "Carry on.",
+        "text": "<p>Milk thistle for your liver, electrolytes for the rest of you, B vitamins because you skipped breakfast. 15 g, five flavours, no water.</p>",
+        "button_1_label": "Shop the flavours →",
+        "button_2_label": "How it works",
+        "show_wordmark": true,
+        "show_swatches": true,
+        "show_backdrop": true,
+        "hint_1": "Scroll",
+        "hint_2": "Squeeze the stick"
+      }
+    },
+    "flavours": {
+      "type": "sahsih-flavours",
+      "settings": {
+        "tag": "02 / Flavours",
+        "heading": "Five flavours. Pick a personality.",
+        "text": "<p>Hover to try one on. Every stick is the same 15 g, the same three ingredients, a different mood.</p>",
+        "row_link_label": "Shop →"
+      }
+    },
+    "science": {
+      "type": "sahsih-science",
+      "blocks": {
+        "milk-thistle": {
+          "type": "ingredient",
+          "settings": {
+            "index": "01 / Botanical",
+            "title": "Milk thistle",
+            "text": "<p>A flowering plant with a long history in herbal traditions. The headline ingredient in every stick.</p>"
+          }
+        },
+        "electrolytes": {
+          "type": "ingredient",
+          "settings": {
+            "index": "02 / Mineral salts",
+            "title": "Electrolytes",
+            "text": "<p>Salts such as sodium and potassium, the same family you find in sports drinks. Here in a jelly, not a pint of liquid.</p>"
+          }
+        },
+        "b-vitamins": {
+          "type": "ingredient",
+          "settings": {
+            "index": "03 / B1, B6, B12",
+            "title": "B vitamins",
+            "text": "<p>Three B vitamins in every stick. The least glamorous line on the panel, and the one you skipped with breakfast.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "milk-thistle",
+        "electrolytes",
+        "b-vitamins"
+      ],
+      "settings": {
+        "tag": "03 / Science",
+        "heading": "Three jobs.\nOne stick.",
+        "note": "Full quantitative panel and allergen statement to be confirmed before launch."
+      }
+    },
+    "when": {
+      "type": "sahsih-when",
+      "blocks": {
+        "before": {
+          "type": "step",
+          "settings": {
+            "when": "Before",
+            "title": "On the go",
+            "text": "<p>One stick on the way out. It fits in the pocket that isn't holding your phone.</p>"
+          }
+        },
+        "during": {
+          "type": "step",
+          "settings": {
+            "when": "During",
+            "title": "Between rounds",
+            "text": "<p>Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>"
+          }
+        },
+        "after": {
+          "type": "step",
+          "settings": {
+            "when": "After",
+            "title": "The morning after",
+            "text": "<p>Bedside, or the morning after, whichever version of you gets there first.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "before",
+        "during",
+        "after"
+      ],
+      "settings": {
+        "tag": "04 / When to take",
+        "heading": "Pocket-sized. Timing is up to you."
+      }
+    },
+    "shop": {
+      "type": "sahsih-shop",
+      "settings": {
+        "tag": "05 / Shop",
+        "heading": "Pick your stick.",
+        "show_product_title": false,
+        "sticks_per_box": 10,
+        "use_default_bundle": true,
+        "bundle_detail": "50 sticks, all five flavours",
+        "show_quantity": true,
+        "show_dynamic_checkout": false,
+        "note": "<p>Dietary supplement. 10 × 15 g sticks per box.</p>"
+      }
+    },
+    "faq": {
+      "type": "sahsih-faq",
+      "blocks": {
+        "water": {
+          "type": "question",
+          "settings": {
+            "question": "Do I need water?",
+            "answer": "<p>No. Tear the stick at the notch and squeeze. That is the whole ritual.</p>"
+          }
+        },
+        "inside": {
+          "type": "question",
+          "settings": {
+            "question": "What is in a stick?",
+            "answer": "<p>Milk thistle, electrolytes and B vitamins (B1, B6, B12) in a 15 g jelly. The full ingredient panel and allergen statement will be confirmed before launch.</p>"
+          }
+        },
+        "box": {
+          "type": "question",
+          "settings": {
+            "question": "How many sticks are in a box?",
+            "answer": "<p>Ten. The Full Set has five boxes, one of each flavour.</p>"
+          }
+        },
+        "shipping": {
+          "type": "question",
+          "settings": {
+            "question": "How much is shipping?",
+            "answer": "<p>Shipping options and prices show at checkout, before you pay.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "water",
+        "inside",
+        "box",
+        "shipping"
+      ],
+      "settings": {
+        "tag": "FAQ",
+        "heading": "Questions, answered.",
+        "open_first": false
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "flavours",
+    "science",
+    "when",
+    "shop",
+    "faq"
+  ]
+}

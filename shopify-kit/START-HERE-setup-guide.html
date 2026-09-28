@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sahsih Shopify setup</title>
+<style>
+  :root {
+    --bg: #060606; --panel: #0e0e12; --fg: #f5f5f5; --fg2: #c8c8ce; --fg3: #8d8d96;
+    --accent: #ff4de0; --line: rgba(245,245,245,.14);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg2); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 20px 96px; }
+  h1, h2, h3 { color: var(--fg); line-height: 1.1; margin: 0; }
+  h1 { font-size: clamp(40px, 7vw, 64px); font-weight: 900; letter-spacing: -.01em; text-transform: uppercase; }
+  h2 { font-size: 26px; font-weight: 800; text-transform: uppercase; margin-top: 56px; display: flex; gap: 14px; align-items: baseline; }
+  h2 span { color: var(--accent); font: 700 14px/1 ui-monospace, Menlo, monospace; letter-spacing: .12em; }
+  h3 { font-size: 18px; margin-top: 28px; }
+  p, ol, ul { margin: 12px 0 0; }
+  li + li { margin-top: 8px; }
+  ol { padding-left: 1.3em; }
+  strong { color: var(--fg); }
+  code, .path { font: 600 14px/1.4 ui-monospace, Menlo, monospace; color: var(--fg); background: rgba(245,245,245,.07); padding: 1px 6px; }
+  .path { display: inline-block; color: var(--accent); background: transparent; border: 1px solid var(--line); }
+  .tag { font: 700 12px/1 ui-monospace, Menlo, monospace; letter-spacing: .18em; color: var(--accent); text-transform: uppercase; }
+  .lede { font-size: 19px; color: var(--fg); margin-top: 18px; max-width: 44ch; }
+  .box { margin-top: 20px; padding: 18px 20px; border: 1px solid var(--line); background: var(--panel); }
+  .box.hot { border-color: var(--accent); }
+  .box p:first-child, .box ul:first-child, .box ol:first-child { margin-top: 0; }
+  .files { display: grid; gap: 10px; margin-top: 20px; }
+  .file { display: grid; grid-template-columns: minmax(0, 1fr) 2fr; gap: 16px; padding: 14px 16px; border: 1px solid var(--line); }
+  .file b { color: var(--fg); font-family: ui-monospace, Menlo, monospace; font-size: 14px; word-break: break-all; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--fg); font-weight: 700; }
+  .check li { list-style: none; position: relative; padding-left: 28px; }
+  .check { padding-left: 0; }
+  .check li::before { content: ""; position: absolute; left: 0; top: 5px; width: 14px; height: 14px; border: 2px solid var(--accent); }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 56px 0 0; }
+  @media (max-width: 640px) { .file { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+<main>
+  <p class="tag">Sahsih / Shopify</p>
+  <h1>Set up your store in 20 minutes</h1>
+  <p class="lede">Upload the theme, import the products, press publish. Everything after that is optional and done by clicking, not coding.</p>
+
+  <div class="files">
+    <div class="file"><b>sahsih-shopify-theme.zip</b><span>The theme. Upload it as it is. <strong>Do not unzip it.</strong></span></div>
+    <div class="file"><b>sahsih-products.csv</b><span>Creates the jelly stick (5 flavours &times; 2 pack sizes) and The Full Set, with photos.</span></div>
+    <div class="file"><b>photos/</b><span>The same product photos, in case you want to upload them by hand.</span></div>
+  </div>
+
+  <h2><span>01</span>Upload the theme</h2>
+  <ol>
+    <li>In your Shopify admin, go to <span class="path">Online Store &rsaquo; Themes</span>.</li>
+    <li>Scroll to <strong>Theme library</strong>, click <strong>Add theme</strong>, then <strong>Upload zip file</strong>.</li>
+    <li>Choose <code>sahsih-shopify-theme.zip</code> and click <strong>Upload file</strong>. It takes about a minute.</li>
+    <li>The theme appears in your library as <strong>Sahsih</strong>. It is not live yet, so nothing changes for customers.</li>
+  </ol>
+
+  <h2><span>02</span>Import the products</h2>
+  <ol>
+    <li>Go to <span class="path">Products</span> and click <strong>Import</strong> (top right).</li>
+    <li>Click <strong>Add file</strong>, choose <code>sahsih-products.csv</code>, then <strong>Upload and preview</strong>.</li>
+    <li>Check the preview shows <strong>Sahsih Hangover Jelly Stick</strong> and <strong>The Full Set</strong>, then click <strong>Import products</strong>.</li>
+    <li>Shopify emails you when it is done (usually within a minute). The photos come in automatically.</li>
+  </ol>
+  <div class="box">
+    <p><strong>Keep the product handles.</strong> The theme finds the products by their handles, <code>sahsih-hangover-jelly-stick</code> and <code>sahsih-full-set</code>, so the Shop section works with no set-up. You can rename the products freely; just leave the handle (the end of the product's web address) as it is, or pick the products in the Shop section settings instead.</p>
+  </div>
+  <div class="box">
+    <p><strong>Photos missing?</strong> Open the product, click <strong>Add media</strong> and drag in the files from the <code>photos</code> folder. The site still works without them: the 3D stick and built-in box art fill in.</p>
+  </div>
+
+  <h2><span>03</span>Check prices and shipping</h2>
+  <ul>
+    <li><strong>Prices are placeholders</strong> ($24 for 1 box, $72 for 3 boxes, $105 for The Full Set). Change them on each product.</li>
+    <li><strong>Weights:</strong> set the shipping weight on each variant if your shipping rates depend on weight.</li>
+    <li><strong>Stock:</strong> stock is not tracked yet, so everything can be bought. To track it, open a variant, tick <strong>Track quantity</strong> and enter how many you have. Sold-out options then show as <em>Sold out</em> on the site automatically.</li>
+  </ul>
+
+  <h2><span>04</span>Preview and publish</h2>
+  <ol>
+    <li>Back in <span class="path">Online Store &rsaquo; Themes</span>, find Sahsih and click <strong>Customize</strong> to see it with your products.</li>
+    <li>Try it: pick flavours, add to cart, open the cart. Checkout is Shopify's own and uses your payment settings.</li>
+    <li>When you are happy, click <strong>&hellip;</strong> next to the theme and choose <strong>Publish</strong>.</li>
+  </ol>
+
+  <h2><span>05</span>Change anything, no code</h2>
+  <p>Everything lives in <span class="path">Online Store &rsaquo; Themes &rsaquo; Customize</span>. Click a section on the left to edit its words and buttons. Click the <strong>gear icon</strong> (Theme settings) for everything that applies to the whole site:</p>
+  <table>
+    <tr><th>Theme settings</th><th>What it controls</th></tr>
+    <tr><td>Flavours</td><td>Up to six flavours: name, colour and short description. These colour the whole site, the 3D stick and the flavour buttons.</td></tr>
+    <tr><td>3D jelly stick</td><td>The words printed on the 3D stick (front, ingredient rows, back of the pack), or turn 3D off.</td></tr>
+    <tr><td>Logo</td><td>Replace the giant bubble logo, choose whether it recolours per flavour, set the browser tab icon.</td></tr>
+    <tr><td>Colours</td><td>Background and text colours.</td></tr>
+    <tr><td>Motion</td><td>Smooth scrolling, the opening animation, scroll reveals, film grain.</td></tr>
+    <tr><td>Cart</td><td>After "Add to cart": open the cart drawer, show a short message, or go to the cart page. Order notes on or off.</td></tr>
+    <tr><td>Social media</td><td>Links shown in the footer.</td></tr>
+  </table>
+  <p>Homepage sections, top to bottom: <strong>Sahsih hero</strong>, <strong>Sahsih flavours</strong>, <strong>Sahsih science</strong>, <strong>Sahsih when to take</strong>, <strong>Sahsih shop</strong> and <strong>Questions</strong>. Drag to reorder, click the eye to hide, or <strong>Add section</strong> for more (Text, Questions, Contact form, Apps).</p>
+
+  <h3>Add a sixth flavour</h3>
+  <ol>
+    <li>On the product, add the new value to the <strong>Flavour</strong> option (for example <em>Grape</em>) and give it a price for each pack.</li>
+    <li>In <span class="path">Theme settings &rsaquo; Flavours &rsaquo; Flavour 6</span>, type the <strong>same name</strong> and pick a colour.</li>
+    <li>Optional: add a box photo and a stick photo there too. That's it: the dot, the list, the button and the 3D label all appear.</li>
+  </ol>
+
+  <h3>Menus</h3>
+  <p>The header and footer link to the homepage sections by default. To use your own menu, build it in <span class="path">Content &rsaquo; Menus</span> and pick it in the Header or Footer section. A link to <code>/#shop</code> jumps to the Shop section.</p>
+
+  <h2><span>06</span>Before you take real orders</h2>
+  <ul class="check">
+    <li>Payments set up: <span class="path">Settings &rsaquo; Payments</span></li>
+    <li>Shipping rates: <span class="path">Settings &rsaquo; Shipping and delivery</span></li>
+    <li>Taxes: <span class="path">Settings &rsaquo; Taxes and duties</span></li>
+    <li>Refund, privacy and terms policies: <span class="path">Settings &rsaquo; Policies</span> (they appear in the footer automatically)</li>
+    <li>Real prices, weights and stock entered</li>
+    <li>Full ingredient panel and allergen statement written and reviewed. The site says "to be confirmed before launch" until you replace it (Sahsih science section, the Ingredients tab on the product page, the back of the 3D pack, the Questions section).</li>
+    <li>Health wording checked by someone qualified for your market. The copy names ingredients and makes no claims; keep it that way.</li>
+    <li>Password removed when you launch: <span class="path">Online Store &rsaquo; Preferences &rsaquo; Password protection</span></li>
+  </ul>
+
+  <h2><span>07</span>If something looks wrong</h2>
+  <table>
+    <tr><th>You see</th><th>Do this</th></tr>
+    <tr><td>"Pick a product for this section" in the Shop section</td><td>Import the products file (step 02), or choose any product in the Shop section's settings.</td></tr>
+    <tr><td>Upload says the zip is not a valid theme</td><td>Upload <code>sahsih-shopify-theme.zip</code> itself. If your computer unzipped it automatically, use the original zip from the download.</td></tr>
+    <tr><td>A flavour button has no colour or does not recolour the site</td><td>The flavour name in Theme settings must match the product's Flavour value exactly (capital letters do not matter).</td></tr>
+    <tr><td>The 3D stick does not appear on an old phone</td><td>Normal. Devices without 3D graphics show the stick photo instead.</td></tr>
+    <tr><td>The Full Set card is missing from the Shop section</td><td>The Full Set product must exist (step 02) or be chosen as the Bundle product in the Shop section.</td></tr>
+  </table>
+
+  <hr>
+  <p>Built for Shopify Online Store 2.0. Checked with Shopify Theme Check (no errors) and tested in a browser: flavours, pack sizes, sold-out options, the bundle, the cart drawer, the cart page, checkout, phones, reduced motion and browsers with JavaScript turned off.</p>
+</main>
+</body>
+</html>

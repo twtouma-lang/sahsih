@@ -1,0 +1,27 @@
+{%- comment -%}
+  The cart drawer frame. Its contents (snippets/cart-drawer.liquid) are
+  replaced with fresh HTML from the server after every cart change.
+{%- endcomment -%}
+{%- if settings.cart_type == 'drawer' and request.page_type != 'cart' -%}
+  <div class="cart-backdrop" data-close-cart hidden></div>
+  <div
+    id="cart"
+    class="cart"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cart-title"
+    tabindex="-1"
+    hidden
+    data-cart-drawer
+  >
+    <div class="cart__head">
+      <h2 id="cart-title">{{ 'cart.title' | t }}</h2>
+      <button type="button" class="icon-btn" data-close-cart>
+        {%- render 'icon', name: 'close' -%}
+        <span class="visually-hidden">{{ 'cart.close' | t }}</span>
+      </button>
+    </div>
+    <p class="form-message form-message--error cart__error" role="alert" data-cart-error hidden></p>
+    {%- render 'cart-drawer' -%}
+  </div>
+{%- endif -%}

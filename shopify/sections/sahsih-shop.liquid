@@ -1,0 +1,161 @@
+{%- liquid
+  assign shop_product = section.settings.product
+  if shop_product == blank
+    assign shop_product = all_products['sahsih-hangover-jelly-stick']
+  endif
+  assign bundle = section.settings.bundle
+  if bundle == blank and section.settings.use_default_bundle
+    assign bundle = all_products['sahsih-full-set']
+  endif
+-%}
+<section
+  class="shop"
+  id="shop"
+  data-section="shop"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="shop-title-{{ section.id }}"
+>
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap shop__grid">
+    <div class="slot-col slot-col--left">
+      <div class="slot slot--shop" data-slot="shop" data-tilt="-0.1" data-glow="0.75">
+        {%- render 'slot-poster' -%}
+      </div>
+    </div>
+    <div class="buy" data-reveal>
+      {%- if section.settings.tag != blank -%}
+        <p class="tag" data-reveal-item>{{ section.settings.tag | escape }}</p>
+      {%- endif -%}
+      <h2 class="h-cond" id="shop-title-{{ section.id }}" data-reveal-item>{{ section.settings.heading | escape }}</h2>
+
+      {%- if shop_product != blank -%}
+        {%- if section.settings.show_product_title -%}
+          <p class="buy__product" data-reveal-item>
+            <a href="{{ shop_product.url }}">{{ shop_product.title | escape }}</a>
+          </p>
+        {%- endif -%}
+        {%- render 'buy-form',
+          product: shop_product,
+          bundle: bundle,
+          bundle_detail: section.settings.bundle_detail,
+          form_key: section.id,
+          sticks_per_box: section.settings.sticks_per_box,
+          show_quantity: section.settings.show_quantity,
+          show_dynamic_checkout: section.settings.show_dynamic_checkout,
+          note: section.settings.note
+        -%}
+      {%- else -%}
+        <div class="placeholder-note" data-reveal-item>
+          {%- if request.design_mode -%}
+            <p><strong>{{ 'onboarding.no_product_title' | t }}</strong></p>
+            <p>{{ 'onboarding.no_product_text' | t }}</p>
+          {%- else -%}
+            <p>{{ 'onboarding.coming_soon' | t }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sahsih shop",
+  "tag": "div",
+  "class": "section-sahsih-shop",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Sells your product right on the page: flavour buttons, pack cards, quantity and add to cart."
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Small label",
+      "default": "05 / Shop"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Pick your stick."
+    },
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "Leave empty to use the product with the handle sahsih-hangover-jelly-stick (created by the setup file)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_title",
+      "label": "Show product name",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "sticks_per_box",
+      "label": "Sticks per box",
+      "default": 10,
+      "info": "Used for the \"30 sticks\" line under each pack. Set to 0 to hide it."
+    },
+    {
+      "type": "header",
+      "content": "Bundle card"
+    },
+    {
+      "type": "product",
+      "id": "bundle",
+      "label": "Bundle product",
+      "info": "Shown as the last pack card, for example a mixed set."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_default_bundle",
+      "label": "If empty, use the product with the handle sahsih-full-set",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "bundle_detail",
+      "label": "Bundle card detail",
+      "default": "50 sticks, all five flavours"
+    },
+    {
+      "type": "header",
+      "content": "Buying"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show quantity",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show express checkout buttons",
+      "default": false,
+      "info": "Shop Pay, Apple Pay and others, from Settings > Payments."
+    },
+    {
+      "type": "richtext",
+      "id": "note",
+      "label": "Note under the button",
+      "default": "<p>Dietary supplement. 10 × 15 g sticks per box.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sahsih shop"
+    }
+  ]
+}
+{% endschema %}

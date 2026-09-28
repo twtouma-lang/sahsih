@@ -1,0 +1,53 @@
+{%- comment -%}
+  The inside of the cart drawer: lines, subtotal and checkout.
+  Rendered in the page and by sections/cart-drawer.liquid for live updates.
+{%- endcomment -%}
+<div class="cart__inner" data-cart-inner data-count="{{ cart.item_count }}">
+  <div class="cart__body">
+    {%- if cart.item_count == 0 -%}
+      <div class="cart__empty">
+        <p>{{ 'cart.empty' | t }}</p>
+        <a class="btn btn--skew" href="{{ routes.root_url }}#shop" data-cart-continue><span>{{ 'cart.continue' | t }}</span></a>
+      </div>
+    {%- else -%}
+      <ul class="cart__items">
+        {%- for item in cart.items -%}
+          {%- render 'cart-line', item: item, context: 'drawer' -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart__foot">
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <p class="cart__discount">
+          <span>{{ discount.title | escape }}</span>
+          <span>&minus;{{ discount.total_allocated_amount | money }}</span>
+        </p>
+      {%- endfor -%}
+      <p class="cart__subtotal">
+        <span>{{ 'cart.subtotal' | t }}</span>
+        <span>{{ cart.total_price | money_with_currency }}</span>
+      </p>
+      {%- if settings.cart_note -%}
+        <details class="cart__note"{% if cart.note != blank %} open{% endif %}>
+          <summary>{{ 'cart.note' | t }}</summary>
+          <label class="visually-hidden" for="cart-note-drawer">{{ 'cart.note' | t }}</label>
+          <textarea class="input textarea" id="cart-note-drawer" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+        </details>
+      {%- endif -%}
+      <p class="note">
+        {%- if cart.taxes_included -%}
+          {{ 'cart.taxes_included' | t }}
+        {%- else -%}
+          {{ 'cart.taxes_at_checkout' | t }}
+        {%- endif -%}
+      </p>
+      <form action="{{ routes.cart_url }}" method="post" class="cart__checkout">
+        <button type="submit" name="checkout" class="btn btn--skew btn--block"><span>{{ 'cart.checkout' | t }}</span></button>
+      </form>
+      <a class="cart__view" href="{{ routes.cart_url }}">{{ 'cart.view' | t }}</a>
+    </div>
+  {%- endif -%}
+</div>

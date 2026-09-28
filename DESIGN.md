@@ -96,7 +96,8 @@ Copy voice: short, dry, a bit cheeky. Full stops as rhythm. No em-dashes. Health
 - **Buttons** are skewed parallelograms with square corners and counter-skewed labels. Primary is an accent fill; secondary is outlined. Labels never wrap.
 - **HUD panels and callouts** are glass rectangles with thin accent borders and two corner brackets. Use them for facts, not for paragraphs.
 - **Flavour controls** (dots, rows, chips) always change the one global flavour. There is no per-section flavour.
-- **Cart** holds line items per pack and flavour, persists locally, and sends the order as an email until checkout exists.
+- **Cart** holds line items per pack and flavour, persists locally, and sends the order as an email until checkout exists. In the Shopify theme (`shopify/`) the cart is Shopify's own: a drawer re-rendered by the server after every change, then Shopify checkout.
+- **Shopify theme.** Same tokens and components. Flavours come from Theme settings (name, colour, optional shades and photos) instead of `src/config.js`; each element gets its flavour colour inline (`--swatch`, `--row`, `--chip`, `--dot`). Theme-only components (forms, product gallery, cards, disclosures, pagination, cart page, password page) live in `src/shopify/shopify.css` and follow the same rules: square corners, skewed buttons, mono labels, accent borders.
 
 ## 5. Layout principles
 

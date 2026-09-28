@@ -76,6 +76,9 @@ function loadLogo(src) {
   return new Promise((resolve) => {
     if (!src) return resolve(null);
     const img = new Image();
+    // The logo is drawn into a WebGL texture, so a CDN-hosted file must be
+    // requested with CORS or the canvas is tainted (Shopify's CDN allows it).
+    img.crossOrigin = 'anonymous';
     img.decoding = 'async';
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
@@ -95,7 +98,12 @@ function mount(options) {
     initialFlavour = CONFIG.defaultFlavour,
     onReady = () => {},
     onFrame = () => {},
+    // The page can supply its own flavours and pack copy (the Shopify theme
+    // does, from theme settings); the static site uses src/config.js.
+    flavours = CONFIG.flavours,
+    label = CONFIG.label,
   } = options;
+  const flavourOf = (id) => flavours.find((f) => f.id === id) || flavours[0] || flavourById(id);
 
   let renderer;
   try {
@@ -185,9 +193,9 @@ function mount(options) {
         id,
         (async () => {
           await ready;
-          const flavour = flavourById(id);
-          const frontCanvas = await drawFront(flavour, logoImg, CONFIG.label);
-          const backCanvas = drawBack(flavour, logoImg);
+          const flavour = flavourOf(id);
+          const frontCanvas = await drawFront(flavour, logoImg, label);
+          const backCanvas = drawBack(flavour, logoImg, label);
           return { front: makeTexture(frontCanvas, renderer), back: makeTexture(backCanvas, renderer) };
         })()
       );
@@ -196,7 +204,7 @@ function mount(options) {
   }
 
   let flavourId = initialFlavour;
-  const accentNow = new Color(flavourById(flavourId).accent);
+  const accentNow = new Color(flavourOf(flavourId).accent);
   const accentTarget = accentNow.clone();
 
   async function applyFlavour(id) {
@@ -369,11 +377,11 @@ function mount(options) {
     setFlavour(id) {
       if (id === flavourId) return;
       flavourId = id;
-      accentTarget.set(flavourById(id).accent);
+      accentTarget.set(flavourOf(id).accent);
       squeeze(0.55);
       applyFlavour(id);
       // Warm the rest of the cache while idle.
-      for (const f of CONFIG.flavours) texturesFor(f.id);
+      for (const f of flavours) texturesFor(f.id);
     },
     squeeze,
     hitTest(clientX, clientY) {

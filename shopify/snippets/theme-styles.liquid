@@ -1,0 +1,65 @@
+{%- comment -%}
+  Self-hosted fonts and the colour tokens from Theme settings.
+  Archivo carries weight (100 to 900) and width (62 to 125 percent) axes,
+  so one family gives the condensed headlines and the wide buttons.
+{%- endcomment -%}
+{%- liquid
+  assign accent = settings.flavour_1_color | default: '#ff4de0'
+  assign accent_light = settings.flavour_1_light | default: accent
+  if settings.wordmark_image != blank
+    assign logo_aspect = settings.wordmark_image.aspect_ratio
+  else
+    assign logo_aspect = 3.5818
+  endif
+-%}
+{% style %}
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: swap;
+    src: url("{{ 'archivo-var-latin.woff2' | asset_url }}") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: "Archivo";
+    font-style: normal;
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-display: swap;
+    src: url("{{ 'archivo-var-latin-ext.woff2' | asset_url }}") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 100 800;
+    font-display: swap;
+    src: url("{{ 'jetbrains-mono-latin.woff2' | asset_url }}") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    font-style: normal;
+    font-weight: 100 800;
+    font-display: swap;
+    src: url("{{ 'jetbrains-mono-latin-ext.woff2' | asset_url }}") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+
+  :root {
+    --bg: {{ settings.color_background }};
+    --bg-2: {{ settings.color_background | color_lighten: 3 }};
+    --fg: {{ settings.color_text }};
+    --fg-2: {{ settings.color_text_body }};
+    --fg-3: {{ settings.color_text_muted }};
+    --ink: {{ settings.color_background }};
+    --line: {{ settings.color_text | color_modify: 'alpha', 0.12 }};
+    --line-2: {{ settings.color_text | color_modify: 'alpha', 0.22 }};
+    --glass: {{ settings.color_background | color_modify: 'alpha', 0.5 }};
+    --accent: {{ accent }};
+    --accent-light: {{ accent_light }};
+    --logo-aspect: {{ logo_aspect }};
+  }
+{% endstyle %}

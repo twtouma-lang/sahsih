@@ -1,0 +1,341 @@
+{%- liquid
+  assign root = routes.root_url
+  assign show_country = false
+  if section.settings.show_country_selector and localization.available_countries.size > 1
+    assign show_country = true
+  endif
+  assign show_language = false
+  if section.settings.show_language_selector and localization.available_languages.size > 1
+    assign show_language = true
+  endif
+  assign has_social = false
+  if settings.social_instagram_link != blank or settings.social_tiktok_link != blank or settings.social_x_link != blank
+    assign has_social = true
+  endif
+  if settings.social_facebook_link != blank or settings.social_youtube_link != blank
+    assign has_social = true
+  endif
+-%}
+<footer class="footer" data-section-type="footer">
+  <div class="wrap footer__grid">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'menu' -%}
+          {%- assign nav_label = 'footer.nav' | t -%}
+          {%- if block.settings.heading != blank -%}
+            {%- assign nav_label = block.settings.heading -%}
+          {%- endif -%}
+          <nav class="footer__col" aria-label="{{ nav_label | escape }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="footer__title">{{ block.settings.heading | escape }}</h2>
+            {%- endif -%}
+            {%- if block.settings.menu != blank and block.settings.menu.links.size > 0 -%}
+              {%- for link in block.settings.menu.links -%}
+                <a href="{{ link.url }}">{{ link.title | escape }}</a>
+              {%- endfor -%}
+            {%- else -%}
+              <a href="{{ root }}#flavours">{{ 'header.links.flavours' | t }}</a>
+              <a href="{{ root }}#science">{{ 'header.links.science' | t }}</a>
+              <a href="{{ root }}#when">{{ 'header.links.when' | t }}</a>
+              <a href="{{ root }}#shop">{{ 'header.links.shop' | t }}</a>
+            {%- endif -%}
+          </nav>
+        {%- when 'text' -%}
+          <div class="footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="footer__title">{{ block.settings.heading | escape }}</h2>
+            {%- endif -%}
+            <div class="footer__text rte">{{ block.settings.text }}</div>
+          </div>
+        {%- when 'contact' -%}
+          <div class="footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="footer__title">{{ block.settings.heading | escape }}</h2>
+            {%- endif -%}
+            {%- assign email = block.settings.email | default: shop.email | strip -%}
+            {%- if email != blank -%}
+              <a href="mailto:{{ email }}">{{ email }}</a>
+            {%- endif -%}
+            {%- if block.settings.phone != blank -%}
+              <a href="tel:{{ block.settings.phone | remove: ' ' }}">{{ block.settings.phone | escape }}</a>
+            {%- endif -%}
+            {%- if block.settings.link_label != blank -%}
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a>
+              {%- elsif email != blank -%}
+                <a href="mailto:{{ email }}?subject={{ block.settings.link_label | url_encode }}">{{ block.settings.link_label | escape }}</a>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+        {%- when 'newsletter' -%}
+          <div class="footer__col footer__col--wide" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="footer__title">{{ block.settings.heading | escape }}</h2>
+            {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <div class="footer__text rte">{{ block.settings.text }}</div>
+            {%- endif -%}
+            {%- render 'newsletter-form', form_id: block.id -%}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+
+    {%- if section.settings.legal != blank -%}
+      <div class="footer__legal rte">{{ section.settings.legal }}</div>
+    {%- endif -%}
+  </div>
+
+  {%- if has_social or show_country or show_language or section.settings.show_payment_icons -%}
+    <div class="wrap footer__meta">
+      {%- if has_social -%}
+        <ul class="social" aria-label="{{ 'footer.social' | t }}">
+          {%- if settings.social_instagram_link != blank -%}
+            <li><a href="{{ settings.social_instagram_link }}" class="icon-btn" target="_blank" rel="noopener">{% render 'icon', name: 'instagram' %}<span class="visually-hidden">Instagram</span></a></li>
+          {%- endif -%}
+          {%- if settings.social_tiktok_link != blank -%}
+            <li><a href="{{ settings.social_tiktok_link }}" class="icon-btn" target="_blank" rel="noopener">{% render 'icon', name: 'tiktok' %}<span class="visually-hidden">TikTok</span></a></li>
+          {%- endif -%}
+          {%- if settings.social_x_link != blank -%}
+            <li><a href="{{ settings.social_x_link }}" class="icon-btn" target="_blank" rel="noopener">{% render 'icon', name: 'x' %}<span class="visually-hidden">X</span></a></li>
+          {%- endif -%}
+          {%- if settings.social_facebook_link != blank -%}
+            <li><a href="{{ settings.social_facebook_link }}" class="icon-btn" target="_blank" rel="noopener">{% render 'icon', name: 'facebook' %}<span class="visually-hidden">Facebook</span></a></li>
+          {%- endif -%}
+          {%- if settings.social_youtube_link != blank -%}
+            <li><a href="{{ settings.social_youtube_link }}" class="icon-btn" target="_blank" rel="noopener">{% render 'icon', name: 'youtube' %}<span class="visually-hidden">YouTube</span></a></li>
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if show_country or show_language -%}
+        {%- form 'localization', class: 'localization', data-localization: '' -%}
+          {%- if show_country -%}
+            <div class="select-field">
+              <label class="field__label" for="country-{{ section.id }}">{{ 'footer.country' | t }}</label>
+              <select class="select" id="country-{{ section.id }}" name="country_code" data-autosubmit>
+                {%- for country in localization.available_countries -%}
+                  <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                    {{- country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+          {%- if show_language -%}
+            <div class="select-field">
+              <label class="field__label" for="language-{{ section.id }}">{{ 'footer.language' | t }}</label>
+              <select class="select" id="language-{{ section.id }}" name="language_code" data-autosubmit>
+                {%- for language in localization.available_languages -%}
+                  <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>
+                    {{- language.endonym_name | capitalize -}}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+          <button type="submit" class="btn btn--ghost btn--sm no-js-only"><span>{{ 'footer.update' | t }}</span></button>
+        {%- endform -%}
+      {%- endif -%}
+
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="payment-icons" aria-label="{{ 'footer.payment' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_wordmark -%}
+    <div class="footer__stage">
+      {%- if settings.enable_3d and section.settings.show_stick -%}
+        <div class="slot slot--footer" data-slot="footer" data-tilt="0" data-spin="0.22" data-face="1" data-glow="0.8"></div>
+      {%- endif -%}
+      {%- render 'wordmark', modifier: 'footer' -%}
+    </div>
+  {%- endif -%}
+
+  <div class="wrap footer__base">
+    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}</p>
+    {%- if section.settings.show_policies and shop.policies.size > 0 -%}
+      <ul class="footer__policies">
+        {%- for policy in shop.policies -%}
+          <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if section.settings.tagline != blank -%}
+      <p>{{ section.settings.tagline | escape }}</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "legal",
+      "label": "Legal note",
+      "default": "<p>Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Giant logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Show the giant logo",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stick",
+      "label": "Land the 3D jelly stick on the logo",
+      "default": true,
+      "info": "Only on pages that already show the 3D stick further up."
+    },
+    {
+      "type": "header",
+      "content": "Bottom row"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Tear it. Squeeze it. Carry on."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_policies",
+      "label": "Show policy links",
+      "default": true,
+      "info": "Add policies in Settings > Policies."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show country and currency selector",
+      "default": false,
+      "info": "Appears when you sell in more than one country (Settings > Markets)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language_selector",
+      "label": "Show language selector",
+      "default": false,
+      "info": "Appears when your store has more than one language."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Explore"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "info": "Leave empty to link to the homepage sections."
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Contact"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email",
+          "default": "hello@sahsih.com",
+          "info": "Leave empty to use your store email."
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Phone"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Extra link label",
+          "default": "Wholesale enquiries"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Extra link",
+          "info": "Leave empty to open an email with the label as its subject."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "About"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>A 15 g jelly stick for the night out and the morning after.</p>"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Email signup",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Launch news"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>New flavours and drops, first. No spam.</p>"
+        },
+        {
+          "type": "paragraph",
+          "content": "Signups appear in Customers, marked as subscribed to email marketing."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

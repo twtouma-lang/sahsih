@@ -1,0 +1,15 @@
+{%- comment -%}
+  The giant logo. Accepts: modifier ('hero' or 'footer').
+  Usage: {% render 'wordmark', modifier: 'hero' %}
+{%- endcomment -%}
+{%- liquid
+  if settings.wordmark_image != blank
+    assign art_h = 1000 | divided_by: settings.wordmark_image.aspect_ratio | round
+    assign view_box = '0 0 1000 ' | append: art_h
+  else
+    assign view_box = '0 0 2364 660'
+  endif
+-%}
+<div class="wordmark wordmark--{{ modifier }}" aria-hidden="true" data-wordmark="{{ modifier }}">
+  <svg class="wordmark__art" viewBox="{{ view_box }}" focusable="false"><use href="#logo-art"></use></svg>
+</div>

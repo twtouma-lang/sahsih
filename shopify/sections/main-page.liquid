@@ -1,0 +1,18 @@
+<section class="page-section" data-section-id="{{ section.id }}">
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap page-section__inner">
+    <header class="page-head" data-reveal>
+      <h1 class="h-cond" data-reveal-item>{{ page.title | escape }}</h1>
+    </header>
+    <div class="rte page-section__body">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "div",
+  "class": "section-main-page",
+  "settings": []
+}
+{% endschema %}

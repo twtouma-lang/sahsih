@@ -1,0 +1,75 @@
+<section class="cart-page" data-section-id="{{ section.id }}" data-cart-page>
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="page-head" data-reveal>
+      <p class="tag" data-reveal-item>{{ 'cart.label' | t }}</p>
+      <h1 class="h-cond" data-reveal-item>{{ 'cart.title' | t }}</h1>
+    </header>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" class="cart-page__grid" id="cart-form" novalidate>
+        <div class="cart-page__lines">
+          <ul class="cart__items">
+            {%- for item in cart.items -%}
+              {%- render 'cart-line', item: item, context: 'page' -%}
+            {%- endfor -%}
+          </ul>
+          <button type="submit" name="update" class="btn btn--ghost btn--sm no-js-only"><span>{{ 'cart.update' | t }}</span></button>
+          <p class="form-message form-message--error" role="alert" data-cart-error hidden></p>
+        </div>
+
+        <aside class="cart-page__summary">
+          {%- if settings.cart_note -%}
+            <div class="field">
+              <label class="field__label" for="cart-note-page">{{ 'cart.note' | t }}</label>
+              <textarea class="input textarea" id="cart-note-page" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <p class="cart__discount">
+              <span>{{ discount.title | escape }}</span>
+              <span>&minus;{{ discount.total_allocated_amount | money }}</span>
+            </p>
+          {%- endfor -%}
+          <p class="cart__subtotal">
+            <span>{{ 'cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money_with_currency }}</span>
+          </p>
+          <p class="note">
+            {%- if cart.taxes_included -%}
+              {{ 'cart.taxes_included' | t }}
+            {%- else -%}
+              {{ 'cart.taxes_at_checkout' | t }}
+            {%- endif -%}
+          </p>
+          <button type="submit" name="checkout" class="btn btn--skew btn--lg btn--block"><span>{{ 'cart.checkout' | t }}</span></button>
+          {%- if additional_checkout_buttons and section.settings.show_dynamic_checkout -%}
+            <div class="cart-page__dynamic">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+        </aside>
+      </form>
+    {%- else -%}
+      <div class="empty-state">
+        <p>{{ 'cart.empty' | t }}</p>
+        <a class="btn btn--skew" href="{{ routes.root_url }}#shop"><span>{{ 'cart.continue' | t }}</span></a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "div",
+  "class": "section-main-cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show express checkout buttons",
+      "default": true,
+      "info": "Shop Pay, Apple Pay and others, from Settings > Payments."
+    }
+  ]
+}
+{% endschema %}

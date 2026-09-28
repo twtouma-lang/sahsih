@@ -1,0 +1,36 @@
+{%- comment -%}
+  Email signup. Signups are saved as customers subscribed to email marketing.
+  Accepts: form_id (string, unique on the page)
+  Usage: {% render 'newsletter-form', form_id: block.id %}
+{%- endcomment -%}
+{%- assign newsletter_id = 'newsletter-' | append: form_id -%}
+{%- form 'customer', id: newsletter_id, class: 'newsletter' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  <label class="visually-hidden" for="{{ newsletter_id }}-email">{{ 'newsletter.label' | t }}</label>
+  <div class="newsletter__row">
+    <input
+      class="input"
+      id="{{ newsletter_id }}-email"
+      type="email"
+      name="contact[email]"
+      value="{{ form.email }}"
+      placeholder="{{ 'newsletter.label' | t }}"
+      autocomplete="email"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      required
+      {% if form.errors %}
+        aria-invalid="true" aria-describedby="{{ newsletter_id }}-error"
+      {% endif %}
+    >
+    <button type="submit" class="btn btn--skew btn--sm"><span>{{ 'newsletter.button' | t }}</span></button>
+  </div>
+  {%- if form.errors -%}
+    <p class="form-message form-message--error" id="{{ newsletter_id }}-error" role="alert">
+      {{- form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email -}}
+    </p>
+  {%- elsif form.posted_successfully? -%}
+    <p class="form-message form-message--success" role="status">{{ 'newsletter.success' | t }}</p>
+  {%- endif -%}
+{%- endform -%}

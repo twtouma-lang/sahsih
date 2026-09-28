@@ -1,0 +1,70 @@
+<section class="listing" data-section-id="{{ section.id }}">
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="page-head" data-reveal>
+      <p class="tag" data-reveal-item>{{ 'search.label' | t }}</p>
+      <h1 class="h-cond" data-reveal-item>
+        {%- if search.performed -%}
+          {%- assign terms = search.terms | escape -%}
+          {{ 'search.results_for' | t: terms: terms }}
+        {%- else -%}
+          {{ 'search.title' | t }}
+        {%- endif -%}
+      </h1>
+    </header>
+
+    <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="search-{{ section.id }}">{{ 'search.label' | t }}</label>
+      <input
+        class="input"
+        id="search-{{ section.id }}"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'search.placeholder' | t }}"
+        autocomplete="off"
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="btn btn--skew"><span>{{ 'search.submit' | t }}</span></button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        <p class="field__label listing__count">{{ 'search.count' | t: count: search.results_count }}</p>
+        {%- if search.results_count > 0 -%}
+          <ul class="cards">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- render 'product-card', card_product: item -%}
+              {%- else -%}
+                <li class="card card--text">
+                  <a class="card__link" href="{{ item.url }}">
+                    <span class="card__body">
+                      <span class="field__label">{{ item.object_type | capitalize }}</span>
+                      <span class="card__title">{{ item.title | escape }}</span>
+                      <span class="note">{{ item.content | strip_html | truncatewords: 24 }}</span>
+                    </span>
+                  </a>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <div class="empty-state">
+            <p>{{ 'search.none' | t }}</p>
+          </div>
+        {%- endif -%}
+        {%- render 'pagination', paginate: paginate -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "div",
+  "class": "section-main-search",
+  "settings": []
+}
+{% endschema %}

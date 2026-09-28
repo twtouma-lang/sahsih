@@ -1,0 +1,353 @@
+{%- comment -%}
+  The add-to-cart form used by the Shop section and the product page.
+
+  Flavour buttons come from the product's Flavour option (also accepted:
+  Flavor, Taste); every other option becomes a row of cards. If the option
+  name contains "pack", "box" or "size", the cards show box photos, one per
+  box in the value ("3 boxes" shows three). A bundle product, if given,
+  joins the last row of cards.
+
+  Without JavaScript the form falls back to a plain variant dropdown, so a
+  customer can always buy.
+
+  Accepts:
+  - product: the product to sell (required)
+  - bundle: a second product shown as an extra card (optional)
+  - bundle_detail: small text on the bundle card (optional)
+  - form_key: a string unique on the page, usually section.id (required)
+  - sticks_per_box: number used for the "30 sticks" line on pack cards (optional)
+  - show_quantity, show_dynamic_checkout, update_url: booleans (optional)
+  - note: rich text under the button (optional)
+
+  Usage:
+  {% render 'buy-form', product: product, form_key: section.id, show_quantity: true %}
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign form_id = 'buy-' | append: form_key
+
+  assign flavour_pos = 0
+  for option in product.options_with_values
+    assign n = option.name | downcase | strip
+    if n == 'flavour' or n == 'flavor' or n == 'flavours' or n == 'flavors' or n == 'taste'
+      assign flavour_pos = option.position
+      break
+    endif
+  endfor
+
+  assign last_other_pos = 0
+  unless product.has_only_default_variant
+    for option in product.options_with_values
+      if option.position != flavour_pos
+        assign last_other_pos = option.position
+      endif
+    endfor
+  endunless
+
+  assign show_bundle = false
+  if bundle != blank and last_other_pos > 0 and bundle.id != product.id
+    assign show_bundle = true
+    assign bundle_variant = bundle.selected_or_first_available_variant
+  endif
+
+  assign current_flavour = ''
+  if flavour_pos > 0
+    assign flavour_index = flavour_pos | minus: 1
+    assign current_flavour = current.options[flavour_index]
+  endif
+  capture current_box
+    render 'flavour-art', value: current_flavour, kind: 'box'
+  endcapture
+  assign current_box = current_box | strip
+  if current_box == blank
+    if current.featured_image
+      assign current_box = current.featured_image | image_url: width: 400
+    elsif product.featured_image
+      assign current_box = product.featured_image | image_url: width: 400
+    endif
+  endif
+-%}
+
+{%- form 'product', product, id: form_id, class: 'buy__form', novalidate: 'novalidate', data-buy-form: '' -%}
+  <script type="application/json" data-buy-json>
+    {
+      "productId": {{ product.id }},
+      "title": {{ product.title | json }},
+      "url": {{ product.url | json }},
+      "flavourOption": {{ flavour_pos }},
+      "updateUrl": {{ update_url | default: false | json }},
+      "variants": [
+        {%- for v in product.variants -%}
+          {
+            "id": {{ v.id }},
+            "title": {{ v.title | json }},
+            "options": {{ v.options | json }},
+            "available": {{ v.available | json }},
+            "price": {{ v.price }},
+            "priceText": {{ v.price | money | strip_html | json }},
+            "compare": {% if v.compare_at_price > v.price %}{{ v.compare_at_price }}{% else %}null{% endif %},
+            "compareText": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | money | strip_html | json }}{% else %}null{% endif %},
+            "media": {% if v.featured_media %}{{ v.featured_media.id }}{% else %}null{% endif %},
+            "image": {% if v.featured_image %}{{ v.featured_image | image_url: width: 400 | json }}{% else %}null{% endif %}
+          }
+          {%- unless forloop.last %},{% endunless -%}
+        {%- endfor -%}
+      ],
+      "bundle": {%- if show_bundle -%}
+        {
+          "id": {{ bundle_variant.id }},
+          "title": {{ bundle.title | json }},
+          "available": {{ bundle_variant.available | json }},
+          "price": {{ bundle_variant.price }},
+          "priceText": {{ bundle_variant.price | money | strip_html | json }},
+          "compare": {% if bundle_variant.compare_at_price > bundle_variant.price %}{{ bundle_variant.compare_at_price }}{% else %}null{% endif %},
+          "compareText": {% if bundle_variant.compare_at_price > bundle_variant.price %}{{ bundle_variant.compare_at_price | money | strip_html | json }}{% else %}null{% endif %}
+        }
+      {%- else -%}
+        null
+      {%- endif %}
+    }
+  </script>
+
+  {%- unless product.has_only_default_variant -%}
+    {%- for option in product.options_with_values -%}
+      {%- if option.position == flavour_pos -%}
+        <fieldset class="field js-only" data-reveal-item data-option="{{ option.position }}" data-flavour-field>
+          <legend class="field__label">
+            {{- option.name | escape -}}
+            {%- if show_bundle -%}
+              <span class="field__hint" data-mixed-hint hidden> {{ 'products.bundle_hint' | t: title: bundle.title }}</span>
+            {%- endif -%}
+          </legend>
+          <div class="chips">
+            {%- for value in option.values -%}
+              {%- capture chip_color -%}{%- render 'flavour-color', value: value -%}{%- endcapture -%}
+              {%- assign chip_color = chip_color | strip -%}
+              <label class="chip"{% if chip_color != blank %} style="--chip: {{ chip_color }};"{% endif %}>
+                <input
+                  type="radio"
+                  name="{{ form_id }}-option-{{ option.position }}"
+                  value="{{ value | escape }}"
+                  data-flavour="{{ value | handleize }}"
+                  {% if option.selected_value == value %}
+                    checked
+                  {% endif %}
+                >
+                <span class="chip__dot" aria-hidden="true"></span>
+                <span class="chip__name">{{ value | escape }}</span>
+              </label>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+      {%- else -%}
+        {%- liquid
+          assign option_name = option.name | downcase
+          assign is_pack = false
+          if option_name contains 'pack' or option_name contains 'box' or option_name contains 'size'
+            assign is_pack = true
+          endif
+          assign card_count = option.values.size
+          if show_bundle and option.position == last_other_pos
+            assign card_count = card_count | plus: 1
+          endif
+        -%}
+        <fieldset class="field js-only" data-reveal-item data-option="{{ option.position }}">
+          <legend class="field__label">{{ option.name | escape }}</legend>
+          <div class="packs packs--{{ card_count | at_most: 4 }}">
+            {%- for value in option.values -%}
+              {%- liquid
+                assign card_variant = false
+                for v in product.variants
+                  assign match = true
+                  for o in v.options
+                    if forloop.index == option.position
+                      if o != value
+                        assign match = false
+                      endif
+                    elsif o != current.options[forloop.index0]
+                      assign match = false
+                    endif
+                  endfor
+                  if match
+                    assign card_variant = v
+                    break
+                  endif
+                endfor
+                assign boxes = value | split: ' ' | first | plus: 0
+                assign sticks = 0
+                if boxes > 0 and sticks_per_box > 0
+                  assign sticks = boxes | times: sticks_per_box
+                endif
+                assign boxes = boxes | at_least: 1 | at_most: 3
+              -%}
+              <label class="pack{% if is_pack and boxes > 1 %} pack--multi{% endif %}" data-card>
+                <input
+                  type="radio"
+                  name="{{ form_id }}-option-{{ option.position }}"
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}
+                    checked
+                  {% endif %}
+                >
+                {%- if is_pack and current_box != blank -%}
+                  <span class="pack__media">
+                    {%- for b in (1..boxes) -%}
+                      <img data-box src="{{ current_box }}" alt="" width="300" height="457" loading="lazy" decoding="async">
+                    {%- endfor -%}
+                  </span>
+                {%- endif -%}
+                <span class="pack__name">{{ value | escape }}</span>
+                {%- if is_pack and sticks > 0 -%}
+                  <span class="pack__detail">{{ 'products.sticks' | t: count: sticks }}</span>
+                {%- endif -%}
+                <span class="pack__price" data-card-price>
+                  {%- if card_variant -%}
+                    {{- card_variant.price | money -}}
+                  {%- else -%}
+                    {{- 'products.unavailable' | t -}}
+                  {%- endif -%}
+                </span>
+              </label>
+            {%- endfor -%}
+            {%- if show_bundle and option.position == last_other_pos -%}
+              <label class="pack pack--set" data-card data-bundle-card>
+                <input type="radio" name="{{ form_id }}-option-{{ option.position }}" value="__bundle">
+                <span class="pack__media">
+                  {%- if bundle.featured_image -%}
+                    {{
+                      bundle.featured_image
+                      | image_url: width: 600
+                      | image_tag: alt: '', loading: 'lazy', widths: '300, 600', sizes: '220px'
+                    }}
+                  {%- else -%}
+                    <img src="{{ 'all-boxes.webp' | asset_url }}" alt="" width="900" height="290" loading="lazy" decoding="async">
+                  {%- endif -%}
+                </span>
+                <span class="pack__name">{{ bundle.title | escape }}</span>
+                {%- if bundle_detail != blank -%}
+                  <span class="pack__detail">{{ bundle_detail | escape }}</span>
+                {%- endif -%}
+                <span class="pack__price">
+                  {%- if bundle_variant.available -%}
+                    {{- bundle_variant.price | money -}}
+                  {%- else -%}
+                    {{- 'products.sold_out' | t -}}
+                  {%- endif -%}
+                </span>
+              </label>
+            {%- endif -%}
+          </div>
+        </fieldset>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endunless -%}
+
+  {%- if product.has_only_default_variant and show_bundle == false -%}
+    <input type="hidden" name="id" value="{{ current.id }}" data-variant-select>
+  {%- else -%}
+    <div class="field no-js-only">
+      <label class="field__label" for="{{ form_id }}-id">{{ 'products.choose' | t }}</label>
+      <select class="select" name="id" id="{{ form_id }}-id" data-variant-select>
+        {%- for v in product.variants -%}
+          <option
+            value="{{ v.id }}"
+            {% if v.id == current.id %}
+              selected
+            {% endif %}
+            {% unless v.available %}
+              disabled
+            {% endunless %}
+          >
+            {{- v.title | escape }} &middot; {{ v.price | money | strip_html -}}
+            {%- unless v.available %} &middot; {{ 'products.sold_out' | t }}{% endunless -%}
+          </option>
+        {%- endfor -%}
+        {%- if show_bundle -%}
+          {%- for v in bundle.variants -%}
+            <option
+              value="{{ v.id }}"
+              {% unless v.available %}
+                disabled
+              {% endunless %}
+            >
+              {{- bundle.title | escape -}}
+              {%- unless bundle.has_only_default_variant %} &middot; {{ v.title | escape }}{% endunless %} &middot; {{ v.price | money | strip_html -}}
+            </option>
+          {%- endfor -%}
+        {%- endif -%}
+      </select>
+    </div>
+  {%- endif -%}
+
+  <div class="buy__row" data-reveal-item>
+    {%- if show_quantity -%}
+      <div class="stepper" role="group" aria-label="{{ 'products.quantity' | t }}">
+        <button type="button" class="js-only" data-qty-step="-1" aria-label="{{ 'products.decrease' | t }}">&minus;</button>
+        <input
+          class="stepper__input"
+          type="number"
+          name="quantity"
+          value="1"
+          min="1"
+          max="99"
+          inputmode="numeric"
+          aria-label="{{ 'products.quantity' | t }}"
+          data-qty
+        >
+        <button type="button" class="js-only" data-qty-step="1" aria-label="{{ 'products.increase' | t }}">+</button>
+      </div>
+    {%- else -%}
+      <input type="hidden" name="quantity" value="1" data-qty>
+    {%- endif -%}
+    <p class="buy__total">
+      <span class="field__label">{{ 'products.total' | t }}</span>
+      <s class="buy__compare"{% unless current.compare_at_price > current.price %} hidden{% endunless %} data-compare>
+        {{- current.compare_at_price | money -}}
+      </s>
+      <span class="buy__price" data-total>{{ current.price | money }}</span>
+    </p>
+  </div>
+
+  <div class="buy__actions" data-reveal-item>
+    <button
+      type="submit"
+      name="add"
+      class="btn btn--skew btn--lg"
+      data-add
+      {% unless current.available %}
+        disabled
+      {% endunless %}
+    >
+      <span data-add-label>
+        {%- if current.available -%}
+          {{- 'products.add_to_cart' | t -}}
+        {%- else -%}
+          {{- 'products.sold_out' | t -}}
+        {%- endif -%}
+      </span>
+    </button>
+    {%- if show_dynamic_checkout -%}
+      <div class="buy__dynamic">{{ form | payment_button }}</div>
+    {%- endif -%}
+  </div>
+
+  <p class="form-message form-message--error" role="alert" data-buy-error hidden></p>
+
+  {%- if note != blank or shop.taxes_included or shop.shipping_policy.body != blank -%}
+    <div class="note" data-reveal-item>
+      {%- if note != blank -%}
+        <div class="rte">{{ note }}</div>
+      {%- endif -%}
+      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+        <p>
+          {%- if shop.taxes_included %}{{ 'products.tax_included' | t }} {% endif -%}
+          {%- if shop.shipping_policy.body != blank -%}
+            {{ 'products.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+          {%- else -%}
+            {{ 'products.shipping_at_checkout' | t }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endform -%}

@@ -1,0 +1,102 @@
+<section
+  class="flavours"
+  id="flavours"
+  data-section="flavours"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="flavours-title-{{ section.id }}"
+>
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap flavours__grid">
+    <div class="flavours__copy" data-reveal>
+      {%- if section.settings.tag != blank -%}
+        <p class="tag" data-reveal-item>{{ section.settings.tag | escape }}</p>
+      {%- endif -%}
+      <h2 class="h-cond" id="flavours-title-{{ section.id }}" data-reveal-item>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="lede rte" data-reveal-item>{{ section.settings.text }}</div>
+      {%- endif -%}
+      <ul class="flavour-list">
+        {%- for i in (1..6) -%}
+          {%- liquid
+            assign k = 'flavour_' | append: i | append: '_name'
+            assign name = settings[k] | strip
+            if name == blank
+              continue
+            endif
+            assign k = 'flavour_' | append: i | append: '_note'
+            assign note = settings[k]
+            assign k = 'flavour_' | append: i | append: '_color'
+            assign color = settings[k]
+          -%}
+          <li>
+            <button
+              type="button"
+              class="flavour-row"
+              style="--row: {{ color }};"
+              data-flavour="{{ name | handleize }}"
+              data-go="shop"
+            >
+              <span class="flavour-row__chip" aria-hidden="true"></span>
+              <span class="flavour-row__name">{{ name | escape }}</span>
+              {%- if note != blank -%}
+                <span class="flavour-row__note">{{ note | escape }}</span>
+              {%- endif -%}
+              <span class="flavour-row__go" aria-hidden="true">{{ section.settings.row_link_label | escape }}</span>
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+    <div class="slot-col">
+      <div class="slot slot--flavours" data-slot="flavours" data-tilt="0.12" data-glow="0.7">
+        {%- render 'slot-poster' -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sahsih flavours",
+  "tag": "div",
+  "class": "section-sahsih-flavours",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Lists the flavours from Theme settings > Flavours. Hovering a flavour tries it on; clicking it jumps to the Shop section with that flavour picked."
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Small label",
+      "default": "02 / Flavours"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Five flavours. Pick a personality."
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Hover to try one on. Every stick is the same 15 g, the same three ingredients, a different mood.</p>"
+    },
+    {
+      "type": "text",
+      "id": "row_link_label",
+      "label": "Link label on each flavour",
+      "default": "Shop →"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sahsih flavours"
+    }
+  ]
+}
+{% endschema %}

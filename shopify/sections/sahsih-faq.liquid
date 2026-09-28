@@ -1,0 +1,86 @@
+<section class="faq" data-section-id="{{ section.id }}" aria-labelledby="faq-title-{{ section.id }}">
+  <div class="wrap faq__grid">
+    <div class="faq__head" data-reveal>
+      {%- if section.settings.tag != blank -%}
+        <p class="tag" data-reveal-item>{{ section.settings.tag | escape }}</p>
+      {%- endif -%}
+      <h2 class="h-cond" id="faq-title-{{ section.id }}" data-reveal-item>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="lede rte" data-reveal-item>{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        <details class="disclosure" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+          <summary class="disclosure__summary">
+            <span>{{ block.settings.question | escape }}</span>
+            <span class="disclosure__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="disclosure__body rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Questions",
+  "tag": "div",
+  "class": "section-sahsih-faq",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    { "type": "text", "id": "tag", "label": "Small label", "default": "FAQ" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions, answered." },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "checkbox", "id": "open_first", "label": "Open the first answer", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "Do I need water?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>No. Tear the stick at the notch and squeeze.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Questions",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "question": "Do I need water?",
+            "answer": "<p>No. Tear the stick at the notch and squeeze. That is the whole ritual.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "What is in a stick?",
+            "answer": "<p>Milk thistle, electrolytes and B vitamins (B1, B6, B12) in a 15 g jelly. The full ingredient panel and allergen statement will be confirmed before launch.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How many sticks are in a box?",
+            "answer": "<p>Ten. The Full Set has five boxes, one of each flavour.</p>"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "question": "How much is shipping?",
+            "answer": "<p>Shipping options and prices show at checkout, before you pay.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

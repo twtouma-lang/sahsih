@@ -1,0 +1,53 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Explore"
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "heading": "Contact",
+            "email": "hello@sahsih.com",
+            "link_label": "Wholesale enquiries"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Launch news",
+            "text": "<p>New flavours and drops, first. No spam.</p>"
+          }
+        }
+      },
+      "block_order": ["menu", "contact", "newsletter"],
+      "settings": {
+        "legal": "<p>Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease. Not a licence to drink more than you would otherwise.</p>",
+        "show_wordmark": true,
+        "show_stick": true,
+        "tagline": "Tear it. Squeeze it. Carry on.",
+        "show_policies": true,
+        "show_payment_icons": false,
+        "show_country_selector": false,
+        "show_language_selector": false
+      }
+    }
+  },
+  "order": ["footer"]
+}

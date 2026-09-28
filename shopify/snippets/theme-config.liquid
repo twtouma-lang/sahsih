@@ -1,0 +1,128 @@
+{%- comment -%}
+  Everything the theme script needs from Theme settings, as JSON: flavours,
+  the copy printed on the 3D stick, cart behaviour, routes and strings.
+{%- endcomment -%}
+{%- liquid
+  assign known_art = 'berry,mango,pineapple,watermelon,citrus' | split: ','
+  if settings.label_logo != blank
+    assign label_logo = settings.label_logo | image_url: width: 1200
+  else
+    assign label_logo = 'sahsih-logo.webp' | asset_url
+  endif
+-%}
+<script type="application/json" id="sahsih-config">
+  {
+    "flavours": [
+      {%- assign is_first = true -%}
+      {%- for i in (1..6) -%}
+        {%- liquid
+          assign key = 'flavour_' | append: i
+          assign k_name = key | append: '_name'
+          assign name = settings[k_name] | strip
+          if name == blank
+            continue
+          endif
+          assign id = name | handleize
+          assign k = key | append: '_note'
+          assign note = settings[k]
+          assign k = key | append: '_color'
+          assign color = settings[k] | default: '#ff4de0' | color_to_hex
+          assign k = key | append: '_light'
+          assign light = settings[k]
+          if light != blank
+            assign light = light | color_to_hex
+          endif
+          assign k = key | append: '_deep'
+          assign deep = settings[k]
+          if deep != blank
+            assign deep = deep | color_to_hex
+          endif
+          assign k = key | append: '_stick'
+          assign stick = settings[k]
+          if stick != blank
+            assign stick = stick | image_url: width: 600
+          elsif known_art contains id
+            assign stick = 'stick-' | append: id | append: '.webp' | asset_url
+          else
+            assign stick = ''
+          endif
+          assign k = key | append: '_box'
+          assign box = settings[k]
+          if box != blank
+            assign box = box | image_url: width: 600
+          elsif known_art contains id
+            assign box = 'box-' | append: id | append: '.webp' | asset_url
+          else
+            assign box = ''
+          endif
+        -%}
+        {%- unless is_first %},{% endunless -%}
+        {%- assign is_first = false -%}
+        {
+          "id": {{ id | json }},
+          "name": {{ name | json }},
+          "note": {{ note | json }},
+          "accent": {{ color | json }},
+          "light": {{ light | json }},
+          "deep": {{ deep | json }},
+          "stick": {{ stick | json }},
+          "box": {{ box | json }}
+        }
+      {%- endfor -%}
+    ],
+    "label": {
+      "lines": [{{ settings.label_line_1 | json }}, {{ settings.label_line_2 | json }}],
+      "strap": {{ settings.label_strap | json }},
+      "rows": [
+        {%- for i in (1..3) -%}
+          {%- liquid
+            assign k = 'label_row_' | append: i | append: '_icon'
+            assign icon = settings[k]
+            assign k = 'label_row_' | append: i | append: '_title'
+            assign title = settings[k]
+            assign k = 'label_row_' | append: i | append: '_sub'
+            assign sub = settings[k]
+          -%}
+          {"icon": {{ icon | json }}, "title": {{ title | json }}, "sub": {{ sub | json }}}
+          {%- unless forloop.last %},{% endunless -%}
+        {%- endfor -%}
+      ],
+      "flavourWord": {{ settings.label_flavour_word | json }},
+      "weight": {{ settings.label_weight | json }},
+      "back": {
+        "big": {{ settings.label_back_big | newline_to_br | split: '<br />' | json }},
+        "small": {{ settings.label_back_small | newline_to_br | split: '<br />' | json }},
+        "fine": {{ settings.label_back_fine | newline_to_br | split: '<br />' | json }}
+      }
+    },
+    "logo": {{ label_logo | json }},
+    "stageSrc": {{ 'sahsih-stage.js' | asset_url | json }},
+    "enable3d": {{ settings.enable_3d | json }},
+    "tintWordmark": {{ settings.wordmark_tint | json }},
+    "motion": {
+      "smoothScroll": {{ settings.smooth_scroll | json }},
+      "intro": {{ settings.intro_animation | json }},
+      "reveal": {{ settings.reveal_animations | json }}
+    },
+    "designMode": {{ request.design_mode | json }},
+    "pageType": {{ request.page_type | json }},
+    "cartType": {{ settings.cart_type | json }},
+    "moneyFormat": {{ shop.money_format | json }},
+    "routes": {
+      "root": {{ routes.root_url | json }},
+      "cart": {{ routes.cart_url | json }},
+      "cartAdd": {{ routes.cart_add_url | json }},
+      "cartChange": {{ routes.cart_change_url | json }},
+      "cartUpdate": {{ routes.cart_update_url | json }}
+    },
+    "strings": {
+      "added": {{ 'cart.added' | t | json }},
+      "addToCart": {{ 'products.add_to_cart' | t | json }},
+      "soldOut": {{ 'products.sold_out' | t | json }},
+      "unavailable": {{ 'products.unavailable' | t | json }},
+      "error": {{ 'cart.error' | t | json }},
+      "menu": {{ 'header.menu' | t | json }},
+      "close": {{ 'header.close' | t | json }}
+    }
+  }
+</script>

@@ -1,0 +1,69 @@
+{%- comment -%}
+  A product in a grid.
+  Accepts: card_product (product), loading ('lazy' or 'eager', optional)
+  Usage: {% render 'product-card', card_product: product %}
+{%- endcomment -%}
+{%- liquid
+  assign loading = loading | default: 'lazy'
+  assign flavour_option = false
+  for option in card_product.options_with_values
+    assign n = option.name | downcase | strip
+    if n == 'flavour' or n == 'flavor' or n == 'flavours' or n == 'flavors' or n == 'taste'
+      assign flavour_option = option
+      break
+    endif
+  endfor
+  assign price = card_product.price | money
+-%}
+<li class="card" data-reveal-item>
+  <a class="card__link" href="{{ card_product.url }}">
+    <span class="card__media">
+      {%- if card_product.featured_media -%}
+        {%- assign alt = card_product.featured_media.alt | default: card_product.title -%}
+        {{
+          card_product.featured_media.preview_image
+          | image_url: width: 800
+          | image_tag: loading: loading, widths: '300, 500, 800', sizes: '(min-width: 900px) 30vw, 50vw', alt: alt, class: 'card__img'
+        }}
+        {%- if card_product.media[1] -%}
+          {{
+            card_product.media[1].preview_image
+            | image_url: width: 800
+            | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 900px) 30vw, 50vw', alt: '', class: 'card__img card__img--hover'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+      {%- unless card_product.available -%}
+        <span class="card__badge">{{ 'products.sold_out' | t }}</span>
+      {%- else -%}
+        {%- if card_product.compare_at_price > card_product.price -%}
+          <span class="card__badge card__badge--sale">{{ 'products.sale' | t }}</span>
+        {%- endif -%}
+      {%- endunless -%}
+    </span>
+    <span class="card__body">
+      <span class="card__title">{{ card_product.title | escape }}</span>
+      <span class="card__price">
+        {%- if card_product.price_varies -%}
+          {{ 'products.from' | t: price: price }}
+        {%- else -%}
+          {{ price }}
+        {%- endif -%}
+        {%- if card_product.compare_at_price > card_product.price and card_product.price_varies == false %}
+          <s>{{ card_product.compare_at_price | money }}</s>
+        {%- endif -%}
+      </span>
+      {%- if flavour_option -%}
+        <span class="card__dots" aria-hidden="true">
+          {%- for value in flavour_option.values -%}
+            {%- capture c -%}{%- render 'flavour-color', value: value -%}{%- endcapture -%}
+            {%- assign c = c | strip -%}
+            <span class="card__dot"{% if c != blank %} style="--dot: {{ c }};"{% endif %}></span>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </span>
+  </a>
+</li>

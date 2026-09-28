@@ -1,0 +1,190 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "ingredients": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "<p>Milk thistle, electrolytes and B vitamins (B1, B6, B12). Full ingredient panel and allergen statement to be confirmed before launch.</p>",
+            "open": false
+          }
+        },
+        "how": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "How to take",
+            "content": "<p>Tear at the notch and squeeze. No water needed. Follow the directions on the pack.</p>",
+            "open": false
+          }
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Shipping and returns",
+            "content": "<p>Shipping options and prices show at checkout. See our refund policy for returns.</p>",
+            "open": false
+          }
+        },
+        "legal": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dietary supplement. Not intended to diagnose, treat, cure or prevent any disease.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "ingredients",
+        "how",
+        "shipping",
+        "legal"
+      ],
+      "settings": {
+        "show_3d": true,
+        "show_type": true,
+        "description_position": "top",
+        "sticks_per_box": 10,
+        "bundle_detail": "50 sticks, all five flavours",
+        "show_quantity": true,
+        "show_dynamic_checkout": true
+      }
+    },
+    "science": {
+      "type": "sahsih-science",
+      "blocks": {
+        "milk-thistle": {
+          "type": "ingredient",
+          "settings": {
+            "index": "01 / Botanical",
+            "title": "Milk thistle",
+            "text": "<p>A flowering plant with a long history in herbal traditions. The headline ingredient in every stick.</p>"
+          }
+        },
+        "electrolytes": {
+          "type": "ingredient",
+          "settings": {
+            "index": "02 / Mineral salts",
+            "title": "Electrolytes",
+            "text": "<p>Salts such as sodium and potassium, the same family you find in sports drinks. Here in a jelly, not a pint of liquid.</p>"
+          }
+        },
+        "b-vitamins": {
+          "type": "ingredient",
+          "settings": {
+            "index": "03 / B1, B6, B12",
+            "title": "B vitamins",
+            "text": "<p>Three B vitamins in every stick. The least glamorous line on the panel, and the one you skipped with breakfast.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "milk-thistle",
+        "electrolytes",
+        "b-vitamins"
+      ],
+      "settings": {
+        "tag": "03 / Science",
+        "heading": "Three jobs.\nOne stick.",
+        "note": "Full quantitative panel and allergen statement to be confirmed before launch."
+      }
+    },
+    "when": {
+      "type": "sahsih-when",
+      "blocks": {
+        "before": {
+          "type": "step",
+          "settings": {
+            "when": "Before",
+            "title": "On the go",
+            "text": "<p>One stick on the way out. It fits in the pocket that isn't holding your phone.</p>"
+          }
+        },
+        "during": {
+          "type": "step",
+          "settings": {
+            "when": "During",
+            "title": "Between rounds",
+            "text": "<p>Somewhere between the second round and the taxi. No water, no glass, no ceremony.</p>"
+          }
+        },
+        "after": {
+          "type": "step",
+          "settings": {
+            "when": "After",
+            "title": "The morning after",
+            "text": "<p>Bedside, or the morning after, whichever version of you gets there first.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "before",
+        "during",
+        "after"
+      ],
+      "settings": {
+        "tag": "04 / When to take",
+        "heading": "Pocket-sized. Timing is up to you."
+      }
+    },
+    "faq": {
+      "type": "sahsih-faq",
+      "blocks": {
+        "water": {
+          "type": "question",
+          "settings": {
+            "question": "Do I need water?",
+            "answer": "<p>No. Tear the stick at the notch and squeeze. That is the whole ritual.</p>"
+          }
+        },
+        "inside": {
+          "type": "question",
+          "settings": {
+            "question": "What is in a stick?",
+            "answer": "<p>Milk thistle, electrolytes and B vitamins (B1, B6, B12) in a 15 g jelly. The full ingredient panel and allergen statement will be confirmed before launch.</p>"
+          }
+        },
+        "box": {
+          "type": "question",
+          "settings": {
+            "question": "How many sticks are in a box?",
+            "answer": "<p>Ten. The Full Set has five boxes, one of each flavour.</p>"
+          }
+        },
+        "shipping": {
+          "type": "question",
+          "settings": {
+            "question": "How much is shipping?",
+            "answer": "<p>Shipping options and prices show at checkout, before you pay.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "water",
+        "inside",
+        "box",
+        "shipping"
+      ],
+      "settings": {
+        "tag": "FAQ",
+        "heading": "Questions, answered.",
+        "open_first": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "science",
+    "when",
+    "faq"
+  ]
+}

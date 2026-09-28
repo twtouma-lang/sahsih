@@ -19,6 +19,15 @@ import {
 import leafSvg from '@phosphor-icons/core/assets/bold/leaf-bold.svg';
 import dropSvg from '@phosphor-icons/core/assets/bold/drop-bold.svg';
 import lightningSvg from '@phosphor-icons/core/assets/bold/lightning-bold.svg';
+import heartSvg from '@phosphor-icons/core/assets/bold/heart-bold.svg';
+import sparkleSvg from '@phosphor-icons/core/assets/bold/sparkle-bold.svg';
+import flaskSvg from '@phosphor-icons/core/assets/bold/flask-bold.svg';
+import sunSvg from '@phosphor-icons/core/assets/bold/sun-bold.svg';
+import moonSvg from '@phosphor-icons/core/assets/bold/moon-bold.svg';
+import shieldCheckSvg from '@phosphor-icons/core/assets/bold/shield-check-bold.svg';
+import starSvg from '@phosphor-icons/core/assets/bold/star-bold.svg';
+import fireSvg from '@phosphor-icons/core/assets/bold/fire-bold.svg';
+import coffeeSvg from '@phosphor-icons/core/assets/bold/coffee-bold.svg';
 import { tintRamp } from './tint.js';
 
 export const DIM = {
@@ -29,7 +38,21 @@ export const DIM = {
 };
 const SEAL = DIM.S / DIM.H; // seal length as a fraction of v
 
-const ICONS = { leaf: leafSvg, drop: dropSvg, lightning: lightningSvg };
+// Icons for the ingredient rows on the label (Phosphor, bold weight).
+const ICONS = {
+  leaf: leafSvg,
+  drop: dropSvg,
+  lightning: lightningSvg,
+  heart: heartSvg,
+  sparkle: sparkleSvg,
+  flask: flaskSvg,
+  sun: sunSvg,
+  moon: moonSvg,
+  shield: shieldCheckSvg,
+  star: starSvg,
+  fire: fireSvg,
+  coffee: coffeeSvg,
+};
 
 const smoothstep = (a, b, x) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -141,7 +164,7 @@ const iconCache = new Map();
 function icon(name, color) {
   const key = `${name}:${color}`;
   if (!iconCache.has(key)) {
-    const svg = ICONS[name].replace(/currentColor/g, color);
+    const svg = (ICONS[name] || ICONS.leaf).replace(/currentColor/g, color);
     iconCache.set(key, loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`));
   }
   return iconCache.get(key);
@@ -239,13 +262,22 @@ function swoosh(ctx, flavour, corner) {
   ctx.restore();
 }
 
-function text(ctx, str, x, y, { font, color = '#fff', spacing = 0, align = 'center' } = {}) {
+/* Draw one line of label text. Anything wider than maxWidth is shrunk to
+   fit, so a long flavour name or label line never runs off the pack. */
+function text(ctx, str, x, y, { font, color = '#fff', spacing = 0, align = 'center', maxWidth = TEX_W * 0.86 } = {}) {
+  if (!str) return;
+  const value = String(str);
   ctx.font = font;
   ctx.fillStyle = color;
   ctx.textAlign = align;
   ctx.textBaseline = 'middle';
   if ('letterSpacing' in ctx) ctx.letterSpacing = `${spacing}px`;
-  ctx.fillText(str, x, y);
+  const width = ctx.measureText(value).width;
+  if (width > maxWidth) {
+    const size = parseFloat(/(\d+(?:\.\d+)?)px/.exec(font)[1]);
+    ctx.font = font.replace(/\d+(?:\.\d+)?px/, `${Math.max(8, Math.floor((size * maxWidth) / width))}px`);
+  }
+  ctx.fillText(value, x, y);
   if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
 }
 
@@ -302,17 +334,18 @@ export async function drawFront(flavour, logo, copy) {
   ctx.fillRect(TEX_W * 0.12, TEX_H * (L.rows[0] - 0.04), TEX_W * 0.76, 2);
   ctx.fillRect(TEX_W * 0.12, TEX_H * (L.rows[2] + 0.04), TEX_W * 0.76, 2);
 
-  for (let i = 0; i < copy.rows.length; i++) {
+  for (let i = 0; i < Math.min(3, copy.rows.length); i++) {
     const row = copy.rows[i];
     const y = TEX_H * L.rows[i];
     const img = await icon(row.icon, flavour.accent);
     ctx.drawImage(img, TEX_W * 0.14, y - 34, 68, 68);
-    text(ctx, row.title, TEX_W * 0.31, y - 15, { font: '800 38px Archivo', align: 'left', spacing: 1 });
+    text(ctx, row.title, TEX_W * 0.31, y - 15, { font: '800 38px Archivo', align: 'left', spacing: 1, maxWidth: TEX_W * 0.6 });
     text(ctx, row.sub, TEX_W * 0.31, y + 22, {
       font: '600 22px "JetBrains Mono", monospace',
       color: 'rgba(255,255,255,0.62)',
       align: 'left',
       spacing: 1,
+      maxWidth: TEX_W * 0.6,
     });
   }
 
@@ -326,7 +359,7 @@ export async function drawFront(flavour, logo, copy) {
     spacing: 2,
   });
   ctx.restore();
-  text(ctx, 'FLAVOUR', TEX_W / 2, TEX_H * L.flavourWord, {
+  text(ctx, copy.flavourWord || 'FLAVOUR', TEX_W / 2, TEX_H * L.flavourWord, {
     font: '700 26px "JetBrains Mono", monospace',
     color: flavour.light,
     spacing: 8,
@@ -340,7 +373,13 @@ export async function drawFront(flavour, logo, copy) {
   return c;
 }
 
-export function drawBack(flavour, logo) {
+const BACK_DEFAULT = {
+  big: ['TEAR AT THE NOTCH.', 'SQUEEZE. CARRY ON.'],
+  small: ['DIETARY SUPPLEMENT \u00b7 15 g', 'NO WATER NEEDED'],
+  fine: ['FULL INGREDIENT PANEL AND', 'ALLERGEN STATEMENT TO BE', 'CONFIRMED BEFORE LAUNCH.'],
+};
+
+export function drawBack(flavour, logo, copy = {}) {
   const c = document.createElement('canvas');
   c.width = TEX_W;
   c.height = TEX_H;
@@ -369,19 +408,16 @@ export function drawBack(flavour, logo) {
     ctx.globalAlpha = 1;
   }
 
+  const back = { ...BACK_DEFAULT, ...(copy.back || {}) };
   const lines = [
-    ['800 30px Archivo', '#fff', 'TEAR AT THE NOTCH.'],
-    ['800 30px Archivo', '#fff', 'SQUEEZE. CARRY ON.'],
-    ['600 19px "JetBrains Mono", monospace', 'rgba(255,255,255,0.6)', 'DIETARY SUPPLEMENT · 15 g'],
-    ['600 19px "JetBrains Mono", monospace', 'rgba(255,255,255,0.6)', 'NO WATER NEEDED'],
-    ['600 17px "JetBrains Mono", monospace', 'rgba(255,255,255,0.45)', 'FULL INGREDIENT PANEL AND'],
-    ['600 17px "JetBrains Mono", monospace', 'rgba(255,255,255,0.45)', 'ALLERGEN STATEMENT TO BE'],
-    ['600 17px "JetBrains Mono", monospace', 'rgba(255,255,255,0.45)', 'CONFIRMED BEFORE LAUNCH.'],
+    ...back.big.slice(0, 3).map((s) => ['800 30px Archivo', '#fff', s, 44]),
+    ...back.small.slice(0, 3).map((s) => ['600 19px "JetBrains Mono", monospace', 'rgba(255,255,255,0.6)', s, 34]),
+    ...back.fine.slice(0, 4).map((s) => ['600 17px "JetBrains Mono", monospace', 'rgba(255,255,255,0.45)', s, 30]),
   ];
   let y = TEX_H * 0.36;
-  for (const [font, color, s] of lines) {
-    text(ctx, s, TEX_W / 2, y, { font, color, spacing: 1 });
-    y += font.startsWith('800') ? 44 : 34;
+  for (const [font, color, s, step] of lines) {
+    text(ctx, s, TEX_W / 2, y, { font, color, spacing: 1, maxWidth: TEX_W * 0.8 });
+    y += step;
   }
 
   ctx.fillStyle = flavour.accent;

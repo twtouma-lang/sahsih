@@ -1,0 +1,26 @@
+{%- comment -%}
+  One dot per flavour from Theme settings; clicking one recolours the site.
+  Usage: {% render 'swatches' %}
+{%- endcomment -%}
+<div class="swatches" role="group" aria-label="{{ 'flavours.choose' | t }}">
+  {%- for i in (1..6) -%}
+    {%- liquid
+      assign k = 'flavour_' | append: i | append: '_name'
+      assign name = settings[k] | strip
+      if name == blank
+        continue
+      endif
+      assign k = 'flavour_' | append: i | append: '_color'
+      assign color = settings[k]
+    -%}
+    <button
+      type="button"
+      class="swatch"
+      style="--swatch: {{ color }};"
+      data-flavour="{{ name | handleize }}"
+      aria-pressed="false"
+    >
+      <span class="visually-hidden">{{ name | escape }}</span>
+    </button>
+  {%- endfor -%}
+</div>

@@ -1,0 +1,15 @@
+{%- comment -%}
+  Prints the Theme settings colour of the flavour named `value` (any case),
+  or nothing if no flavour has that name.
+  Usage: {% render 'flavour-color', value: option.value %}
+{%- endcomment -%}
+{%- assign wanted = value | handleize -%}
+{%- for i in (1..6) -%}
+  {%- assign k = 'flavour_' | append: i | append: '_name' -%}
+  {%- assign n = settings[k] | handleize -%}
+  {%- if n != blank and n == wanted -%}
+    {%- assign k = 'flavour_' | append: i | append: '_color' -%}
+    {{- settings[k] -}}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}

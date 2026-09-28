@@ -1,0 +1,71 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_background": "#060606",
+      "color_text": "#f5f5f5",
+      "color_text_body": "#c8c8ce",
+      "color_text_muted": "#8d8d96",
+      "flavour_1_name": "Berry",
+      "flavour_1_note": "Deep and jammy",
+      "flavour_1_color": "#ff4de0",
+      "flavour_1_light": "#ffc2f5",
+      "flavour_1_deep": "#5a1a86",
+      "flavour_2_name": "Mango",
+      "flavour_2_note": "Thick and golden",
+      "flavour_2_color": "#ff9a2e",
+      "flavour_2_light": "#ffe0a8",
+      "flavour_2_deep": "#9a3a05",
+      "flavour_3_name": "Pineapple",
+      "flavour_3_note": "Sharp, tropical",
+      "flavour_3_color": "#ffd52e",
+      "flavour_3_light": "#fff4b0",
+      "flavour_3_deep": "#8a6a00",
+      "flavour_4_name": "Watermelon",
+      "flavour_4_note": "Light, cooling",
+      "flavour_4_color": "#ff3b6b",
+      "flavour_4_light": "#ffc0cf",
+      "flavour_4_deep": "#8a0a2c",
+      "flavour_5_name": "Citrus",
+      "flavour_5_note": "Clean and bright",
+      "flavour_5_color": "#8fe23f",
+      "flavour_5_light": "#e2ffb8",
+      "flavour_5_deep": "#2f6a07",
+      "flavour_6_color": "#3fb8ff",
+      "wordmark_tint": true,
+      "enable_3d": true,
+      "label_line_1": "HANGOVER",
+      "label_line_2": "JELLY STICK",
+      "label_strap": "REPLENISH • REBALANCE • FEEL GOOD",
+      "label_row_1_icon": "leaf",
+      "label_row_1_title": "MILK THISTLE",
+      "label_row_1_sub": "BOTANICAL",
+      "label_row_2_icon": "drop",
+      "label_row_2_title": "ELECTROLYTES",
+      "label_row_2_sub": "MINERAL SALTS",
+      "label_row_3_icon": "lightning",
+      "label_row_3_title": "B VITAMINS",
+      "label_row_3_sub": "B1 · B6 · B12",
+      "label_flavour_word": "FLAVOUR",
+      "label_weight": "NET WT. 15 g",
+      "label_back_big": "TEAR AT THE NOTCH.\nSQUEEZE. CARRY ON.",
+      "label_back_small": "DIETARY SUPPLEMENT · 15 g\nNO WATER NEEDED",
+      "label_back_fine": "FULL INGREDIENT PANEL AND\nALLERGEN STATEMENT TO BE\nCONFIRMED BEFORE LAUNCH.",
+      "smooth_scroll": true,
+      "intro_animation": true,
+      "reveal_animations": true,
+      "film_grain": true,
+      "cart_type": "drawer",
+      "cart_note": false
+    }
+  }
+}

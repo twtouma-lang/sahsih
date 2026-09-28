@@ -1,0 +1,53 @@
+<section class="listing" data-section-id="{{ section.id }}">
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="page-head" data-reveal>
+      <p class="tag" data-reveal-item>{{ 'blogs.label' | t }}</p>
+      <h1 class="h-cond" data-reveal-item>{{ blog.title | escape }}</h1>
+    </header>
+    {%- paginate blog.articles by 12 -%}
+      {%- if blog.articles.size > 0 -%}
+        <ul class="cards cards--articles" data-reveal>
+          {%- for article in blog.articles -%}
+            <li class="card card--article" data-reveal-item>
+              <a class="card__link" href="{{ article.url }}">
+                {%- if article.image -%}
+                  <span class="card__media card__media--wide">
+                    {{
+                      article.image
+                      | image_url: width: 900
+                      | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 900px) 30vw, 100vw', alt: article.image.alt, class: 'card__img card__img--cover'
+                    }}
+                  </span>
+                {%- endif -%}
+                <span class="card__body">
+                  <span class="field__label">{{ article.published_at | time_tag: format: 'date' }}</span>
+                  <span class="card__title">{{ article.title | escape }}</span>
+                  <span class="note">
+                    {%- if article.excerpt != blank -%}
+                      {{ article.excerpt | strip_html | truncatewords: 30 }}
+                    {%- else -%}
+                      {{ article.content | strip_html | truncatewords: 30 }}
+                    {%- endif -%}
+                  </span>
+                </span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <div class="empty-state"><p>{{ 'blogs.empty' | t }}</p></div>
+      {%- endif -%}
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog",
+  "tag": "div",
+  "class": "section-main-blog",
+  "settings": []
+}
+{% endschema %}

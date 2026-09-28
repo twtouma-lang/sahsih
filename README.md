@@ -53,6 +53,11 @@ tools/
   build-images.py       WebP/AVIF siblings, cutouts (--cutouts), OG card
   build-logo.py         Rebuilds the high-resolution logo from the original artwork
   build-standalone.py   One self-contained HTML file for sharing
+  build-shopify*.py     Shopify theme assets, theme zip, setup kit
+  build-product-photos.py  High-resolution transparent product photos
+shopify/                The Shopify theme (see "Shopify theme" below)
+shopify-kit/            Products CSV, photos and setup guide for store owners
+src/shopify/            Theme script and theme-only styles
 ```
 
 ## The big logo
@@ -112,6 +117,38 @@ npm run build && npm run standalone
 Writes `dist/sahsih.html` (everything inlined, about 2 MB) and
 `dist/sahsih-artifact.html` (the same page as a fragment for hosts that add
 their own document wrapper). `dist/` is ignored by git.
+
+## Shopify theme
+
+`shopify/` is the same site as a Shopify Online Store 2.0 theme, with real
+products, an Ajax cart drawer and Shopify checkout. Flavours, colours, the
+words on the 3D pack and every section are editable in the theme editor.
+`shopify-kit/` holds the product import file, product photos and the
+step-by-step guide for store owners (`START-HERE-setup-guide.html`).
+
+```bash
+npm run shopify:build     # styles/site.css + src/shopify/shopify.css -> shopify/assets/sahsih.css
+                          # src/shopify/theme.js, src/stage.js -> shopify/assets/*.js
+npm run shopify:check     # tools/check-shopify.py + Shopify Theme Check
+npm run shopify:preview   # local render with a mock store and cart, http://127.0.0.1:9292
+npm run shopify:test      # browser test against the preview (needs Playwright)
+npm run shopify:zip       # dist/sahsih-shopify-theme.zip and dist/sahsih-shopify-setup-kit.zip
+```
+
+- **Theme settings** are generated: edit `tools/shopify-schema.py`, then
+  `npm run shopify:schema`.
+- **Flavours** come from Theme settings and are matched to the product's
+  Flavour option by name. Any other option becomes a row of cards; options
+  named Pack, Box or Size show box photos.
+- **The Shop section** uses the products with the handles
+  `sahsih-hangover-jelly-stick` and `sahsih-full-set` unless others are
+  picked, so an imported store works with no set-up.
+- **The cart** re-renders through Shopify's Section Rendering API
+  (`sections/cart-drawer.liquid`), so prices and discounts are always
+  formatted by Shopify.
+- **Without JavaScript** the buy form falls back to a variant dropdown.
+- `tools/check-shopify.py` catches what Theme Check does not: settings in
+  JSON templates, presets and defaults that Shopify would reject on upload.
 
 ## Checking your work
 

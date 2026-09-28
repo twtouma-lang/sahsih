@@ -1,0 +1,165 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "pagination": {
+      "label": "Pages",
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "header": {
+    "nav": "Main",
+    "menu": "Menu",
+    "close": "Close",
+    "search": "Search",
+    "account": "Account",
+    "all": "All {{ title }}",
+    "links": {
+      "flavours": "Flavours",
+      "science": "Science",
+      "when": "When to take",
+      "shop": "Shop"
+    }
+  },
+  "footer": {
+    "nav": "Footer",
+    "social": "Social media",
+    "country": "Country/region",
+    "language": "Language",
+    "update": "Update",
+    "payment": "Payment methods"
+  },
+  "hero": {
+    "squeeze": "Squeeze the stick"
+  },
+  "flavours": {
+    "choose": "Choose a flavour"
+  },
+  "onboarding": {
+    "no_product_title": "Pick a product for this section",
+    "no_product_text": "Import the Sahsih products file (Products > Import), or choose any product in this section's settings.",
+    "coming_soon": "Coming soon."
+  },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "choose": "Choose",
+    "quantity": "Quantity",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "total": "Total",
+    "from": "From {{ price }}",
+    "sale": "Sale",
+    "sticks": {
+      "one": "{{ count }} stick",
+      "other": "{{ count }} sticks"
+    },
+    "bundle_hint": "({{ title }} has them all)",
+    "tax_included": "Tax included.",
+    "shipping_at_checkout": "Shipping calculated at checkout.",
+    "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+    "description": "Description",
+    "view_3d": "3D",
+    "view_media": "View image {{ number }}"
+  },
+  "cart": {
+    "label": "Checkout",
+    "title": "Your cart",
+    "close": "Close cart",
+    "empty": "Your cart is empty.",
+    "continue": "Pick a flavour",
+    "added": "added",
+    "error": "Something went wrong. Please try again.",
+    "subtotal": "Subtotal",
+    "note": "Order note",
+    "taxes_included": "Taxes included. Discounts and shipping calculated at checkout.",
+    "taxes_at_checkout": "Taxes, discounts and shipping calculated at checkout.",
+    "checkout": "Check out",
+    "view": "View cart",
+    "update": "Update cart",
+    "each": "{{ price }} each",
+    "remove": "Remove",
+    "quantity_of": "Quantity of {{ title }}",
+    "decrease": "Decrease quantity of {{ title }}",
+    "increase": "Increase quantity of {{ title }}"
+  },
+  "collections": {
+    "label": "Shop",
+    "count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "sort": "Sort by",
+    "apply": "Apply",
+    "empty": "Nothing here yet.",
+    "all": "See everything"
+  },
+  "search": {
+    "label": "Search",
+    "title": "Search the shop",
+    "results_for": "Results for “{{ terms }}”",
+    "placeholder": "Search",
+    "submit": "Search",
+    "count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    },
+    "none": "No results. Try another word."
+  },
+  "blogs": {
+    "label": "Journal",
+    "empty": "No stories yet.",
+    "comments": {
+      "one": "{{ count }} comment",
+      "other": "{{ count }} comments"
+    },
+    "leave_comment": "Leave a comment",
+    "moderated": "Thanks. Your comment will appear once it has been approved.",
+    "posted": "Thanks. Your comment is live.",
+    "post": "Post comment",
+    "back": "Back to {{ title }}"
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send",
+    "success": "Thanks. We'll get back to you soon."
+  },
+  "newsletter": {
+    "label": "Email",
+    "button": "Sign up",
+    "success": "You're on the list."
+  },
+  "not_found": {
+    "label": "Lost",
+    "text": "This page tore at the wrong notch. Let's get you back.",
+    "home": "Back home",
+    "shop": "Shop everything"
+  },
+  "password": {
+    "enter_store": "Store owner or on the list?",
+    "password": "Password",
+    "enter": "Enter",
+    "owner_html": "Are you the store owner? <a href=\"{{ link }}\">Log in here</a>."
+  },
+  "gift_card": {
+    "title": "Your gift card for {{ shop }}",
+    "heading": "Your gift card",
+    "initial": "Original value: {{ value }}",
+    "expired": "This gift card has expired or is disabled.",
+    "expires_on": "Expires on {{ date }}",
+    "code": "Use this code at checkout",
+    "shop": "Start shopping",
+    "print": "Print",
+    "apple_wallet": "Add to Apple Wallet"
+  }
+}

@@ -1,0 +1,88 @@
+{%- liquid
+  assign per_page = section.settings.products_per_page
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+-%}
+<section class="listing" data-section-id="{{ section.id }}">
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap">
+    <header class="page-head" data-reveal>
+      <p class="tag" data-reveal-item>{{ 'collections.label' | t }}</p>
+      <h1 class="h-cond" data-reveal-item>{{ collection.title | escape }}</h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="lede rte" data-reveal-item>{{ collection.description }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- paginate collection.products by per_page -%}
+      <div class="listing__bar">
+        <p class="field__label">{{ 'collections.count' | t: count: collection.products_count }}</p>
+        {%- if section.settings.show_sort and collection.products_count > 1 -%}
+          <form class="sort" method="get" data-sort-form>
+            {%- for filter in collection.filters -%}
+              {%- for value in filter.active_values -%}
+                <input type="hidden" name="{{ value.param_name }}" value="{{ value.value | escape }}">
+              {%- endfor -%}
+            {%- endfor -%}
+            <label class="field__label" for="sort-{{ section.id }}">{{ 'collections.sort' | t }}</label>
+            <select class="select" id="sort-{{ section.id }}" name="sort_by" data-autosubmit>
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+              {%- endfor -%}
+            </select>
+            <button type="submit" class="btn btn--ghost btn--sm no-js-only"><span>{{ 'collections.apply' | t }}</span></button>
+          </form>
+        {%- endif -%}
+      </div>
+
+      {%- if collection.products.size > 0 -%}
+        <ul class="cards" data-reveal>
+          {%- for product in collection.products -%}
+            {%- if forloop.index <= 4 -%}
+              {%- render 'product-card', card_product: product, loading: 'eager' -%}
+            {%- else -%}
+              {%- render 'product-card', card_product: product -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <div class="empty-state">
+          <p>{{ 'collections.empty' | t }}</p>
+          <a class="btn btn--skew" href="{{ routes.all_products_collection_url }}"><span>{{ 'collections.all' | t }}</span></a>
+        </div>
+      {%- endif -%}
+
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "div",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sorting",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

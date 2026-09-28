@@ -1,0 +1,759 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Sahsih",
+    "theme_version": "1.0.0",
+    "theme_author": "Sahsih",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes/customizing-themes",
+    "theme_support_url": "https://help.shopify.com/"
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The highlight colour of the site comes from the selected flavour. Set flavour colours under Flavours."
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#060606"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Headings",
+        "default": "#f5f5f5"
+      },
+      {
+        "type": "color",
+        "id": "color_text_body",
+        "label": "Body text",
+        "default": "#c8c8ce"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Small labels",
+        "default": "#8d8d96"
+      }
+    ]
+  },
+  {
+    "name": "Flavours",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Up to six flavours. They colour the whole site, the 3D stick and the flavour buttons. Each name must match a value of the Flavour option on your product (for example Berry). Leave a name empty to hide that flavour."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 1"
+      },
+      {
+        "type": "text",
+        "id": "flavour_1_name",
+        "label": "Name",
+        "default": "Berry"
+      },
+      {
+        "type": "text",
+        "id": "flavour_1_note",
+        "label": "Short description",
+        "default": "Deep and jammy"
+      },
+      {
+        "type": "color",
+        "id": "flavour_1_color",
+        "label": "Colour",
+        "default": "#ff4de0"
+      },
+      {
+        "type": "color",
+        "id": "flavour_1_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour.",
+        "default": "#ffc2f5"
+      },
+      {
+        "type": "color",
+        "id": "flavour_1_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour.",
+        "default": "#5a1a86"
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_1_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_1_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 2"
+      },
+      {
+        "type": "text",
+        "id": "flavour_2_name",
+        "label": "Name",
+        "default": "Mango"
+      },
+      {
+        "type": "text",
+        "id": "flavour_2_note",
+        "label": "Short description",
+        "default": "Thick and golden"
+      },
+      {
+        "type": "color",
+        "id": "flavour_2_color",
+        "label": "Colour",
+        "default": "#ff9a2e"
+      },
+      {
+        "type": "color",
+        "id": "flavour_2_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour.",
+        "default": "#ffe0a8"
+      },
+      {
+        "type": "color",
+        "id": "flavour_2_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour.",
+        "default": "#9a3a05"
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_2_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_2_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 3"
+      },
+      {
+        "type": "text",
+        "id": "flavour_3_name",
+        "label": "Name",
+        "default": "Pineapple"
+      },
+      {
+        "type": "text",
+        "id": "flavour_3_note",
+        "label": "Short description",
+        "default": "Sharp, tropical"
+      },
+      {
+        "type": "color",
+        "id": "flavour_3_color",
+        "label": "Colour",
+        "default": "#ffd52e"
+      },
+      {
+        "type": "color",
+        "id": "flavour_3_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour.",
+        "default": "#fff4b0"
+      },
+      {
+        "type": "color",
+        "id": "flavour_3_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour.",
+        "default": "#8a6a00"
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_3_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_3_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 4"
+      },
+      {
+        "type": "text",
+        "id": "flavour_4_name",
+        "label": "Name",
+        "default": "Watermelon"
+      },
+      {
+        "type": "text",
+        "id": "flavour_4_note",
+        "label": "Short description",
+        "default": "Light, cooling"
+      },
+      {
+        "type": "color",
+        "id": "flavour_4_color",
+        "label": "Colour",
+        "default": "#ff3b6b"
+      },
+      {
+        "type": "color",
+        "id": "flavour_4_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour.",
+        "default": "#ffc0cf"
+      },
+      {
+        "type": "color",
+        "id": "flavour_4_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour.",
+        "default": "#8a0a2c"
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_4_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_4_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 5"
+      },
+      {
+        "type": "text",
+        "id": "flavour_5_name",
+        "label": "Name",
+        "default": "Citrus"
+      },
+      {
+        "type": "text",
+        "id": "flavour_5_note",
+        "label": "Short description",
+        "default": "Clean and bright"
+      },
+      {
+        "type": "color",
+        "id": "flavour_5_color",
+        "label": "Colour",
+        "default": "#8fe23f"
+      },
+      {
+        "type": "color",
+        "id": "flavour_5_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour.",
+        "default": "#e2ffb8"
+      },
+      {
+        "type": "color",
+        "id": "flavour_5_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour.",
+        "default": "#2f6a07"
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_5_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_5_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      },
+      {
+        "type": "header",
+        "content": "Flavour 6"
+      },
+      {
+        "type": "text",
+        "id": "flavour_6_name",
+        "label": "Name",
+        "info": "Leave empty to hide."
+      },
+      {
+        "type": "text",
+        "id": "flavour_6_note",
+        "label": "Short description"
+      },
+      {
+        "type": "color",
+        "id": "flavour_6_color",
+        "label": "Colour",
+        "default": "#3fb8ff"
+      },
+      {
+        "type": "color",
+        "id": "flavour_6_light",
+        "label": "Highlight colour",
+        "info": "Optional. Used for shine on the logo and the 3D label. Leave empty to work it out from the colour."
+      },
+      {
+        "type": "color",
+        "id": "flavour_6_deep",
+        "label": "Shadow colour",
+        "info": "Optional. Leave empty to work it out from the colour."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_6_stick",
+        "label": "Stick photo",
+        "info": "Optional. Shown only on devices that cannot show 3D. Transparent PNG, portrait."
+      },
+      {
+        "type": "image_picker",
+        "id": "flavour_6_box",
+        "label": "Box photo",
+        "info": "Optional. Shown on the pack buttons. Transparent PNG, portrait. Leave empty to use the variant photo."
+      }
+    ]
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "wordmark_image",
+        "label": "Giant logo",
+        "info": "Optional. The huge logo behind the jelly stick in the hero and footer. Leave empty to use the Sahsih bubble logo. Transparent PNG, wide."
+      },
+      {
+        "type": "checkbox",
+        "id": "wordmark_tint",
+        "label": "Recolour the giant logo to the selected flavour",
+        "default": true,
+        "info": "Flavour 1 always shows the logo in its original colours."
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Browser tab icon",
+        "info": "Optional. Square PNG, at least 96 x 96 px. Leave empty to use the Sahsih icon."
+      }
+    ]
+  },
+  {
+    "name": "3D jelly stick",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_3d",
+        "label": "Show the 3D jelly stick",
+        "default": true,
+        "info": "Turn off to show product photos in its place."
+      },
+      {
+        "type": "image_picker",
+        "id": "label_logo",
+        "label": "Logo printed on the stick",
+        "info": "Optional. Transparent PNG, wide. Leave empty to use the Sahsih logo."
+      },
+      {
+        "type": "header",
+        "content": "Front of the pack"
+      },
+      {
+        "type": "text",
+        "id": "label_line_1",
+        "label": "First line",
+        "default": "HANGOVER"
+      },
+      {
+        "type": "text",
+        "id": "label_line_2",
+        "label": "Second line",
+        "default": "JELLY STICK"
+      },
+      {
+        "type": "text",
+        "id": "label_strap",
+        "label": "Strapline",
+        "default": "REPLENISH • REBALANCE • FEEL GOOD"
+      },
+      {
+        "type": "header",
+        "content": "Ingredient row 1"
+      },
+      {
+        "type": "select",
+        "id": "label_row_1_icon",
+        "label": "Icon",
+        "default": "leaf",
+        "options": [
+          {
+            "value": "leaf",
+            "label": "Leaf"
+          },
+          {
+            "value": "drop",
+            "label": "Drop"
+          },
+          {
+            "value": "lightning",
+            "label": "Lightning"
+          },
+          {
+            "value": "heart",
+            "label": "Heart"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "flask",
+            "label": "Flask"
+          },
+          {
+            "value": "sun",
+            "label": "Sun"
+          },
+          {
+            "value": "moon",
+            "label": "Moon"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "star",
+            "label": "Star"
+          },
+          {
+            "value": "fire",
+            "label": "Flame"
+          },
+          {
+            "value": "coffee",
+            "label": "Coffee cup"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "label_row_1_title",
+        "label": "Ingredient",
+        "default": "MILK THISTLE"
+      },
+      {
+        "type": "text",
+        "id": "label_row_1_sub",
+        "label": "Detail",
+        "default": "BOTANICAL"
+      },
+      {
+        "type": "header",
+        "content": "Ingredient row 2"
+      },
+      {
+        "type": "select",
+        "id": "label_row_2_icon",
+        "label": "Icon",
+        "default": "drop",
+        "options": [
+          {
+            "value": "leaf",
+            "label": "Leaf"
+          },
+          {
+            "value": "drop",
+            "label": "Drop"
+          },
+          {
+            "value": "lightning",
+            "label": "Lightning"
+          },
+          {
+            "value": "heart",
+            "label": "Heart"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "flask",
+            "label": "Flask"
+          },
+          {
+            "value": "sun",
+            "label": "Sun"
+          },
+          {
+            "value": "moon",
+            "label": "Moon"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "star",
+            "label": "Star"
+          },
+          {
+            "value": "fire",
+            "label": "Flame"
+          },
+          {
+            "value": "coffee",
+            "label": "Coffee cup"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "label_row_2_title",
+        "label": "Ingredient",
+        "default": "ELECTROLYTES"
+      },
+      {
+        "type": "text",
+        "id": "label_row_2_sub",
+        "label": "Detail",
+        "default": "MINERAL SALTS"
+      },
+      {
+        "type": "header",
+        "content": "Ingredient row 3"
+      },
+      {
+        "type": "select",
+        "id": "label_row_3_icon",
+        "label": "Icon",
+        "default": "lightning",
+        "options": [
+          {
+            "value": "leaf",
+            "label": "Leaf"
+          },
+          {
+            "value": "drop",
+            "label": "Drop"
+          },
+          {
+            "value": "lightning",
+            "label": "Lightning"
+          },
+          {
+            "value": "heart",
+            "label": "Heart"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "flask",
+            "label": "Flask"
+          },
+          {
+            "value": "sun",
+            "label": "Sun"
+          },
+          {
+            "value": "moon",
+            "label": "Moon"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "star",
+            "label": "Star"
+          },
+          {
+            "value": "fire",
+            "label": "Flame"
+          },
+          {
+            "value": "coffee",
+            "label": "Coffee cup"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "id": "label_row_3_title",
+        "label": "Ingredient",
+        "default": "B VITAMINS"
+      },
+      {
+        "type": "text",
+        "id": "label_row_3_sub",
+        "label": "Detail",
+        "default": "B1 · B6 · B12"
+      },
+      {
+        "type": "header",
+        "content": "Bottom of the pack"
+      },
+      {
+        "type": "text",
+        "id": "label_flavour_word",
+        "label": "Word under the flavour name",
+        "default": "FLAVOUR"
+      },
+      {
+        "type": "text",
+        "id": "label_weight",
+        "label": "Weight",
+        "default": "NET WT. 15 g"
+      },
+      {
+        "type": "header",
+        "content": "Back of the pack"
+      },
+      {
+        "type": "textarea",
+        "id": "label_back_big",
+        "label": "Large text",
+        "default": "TEAR AT THE NOTCH.\nSQUEEZE. CARRY ON.",
+        "info": "One line per row, up to three rows."
+      },
+      {
+        "type": "textarea",
+        "id": "label_back_small",
+        "label": "Small text",
+        "default": "DIETARY SUPPLEMENT · 15 g\nNO WATER NEEDED"
+      },
+      {
+        "type": "textarea",
+        "id": "label_back_fine",
+        "label": "Fine print",
+        "default": "FULL INGREDIENT PANEL AND\nALLERGEN STATEMENT TO BE\nCONFIRMED BEFORE LAUNCH."
+      }
+    ]
+  },
+  {
+    "name": "Motion",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Visitors whose device asks for reduced motion always see a still version of the site."
+      },
+      {
+        "type": "checkbox",
+        "id": "smooth_scroll",
+        "label": "Smooth scrolling",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "intro_animation",
+        "label": "Opening animation on the homepage",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "reveal_animations",
+        "label": "Reveal sections as you scroll",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "film_grain",
+        "label": "Film grain",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "After adding to cart",
+        "default": "drawer",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Open the cart drawer"
+          },
+          {
+            "value": "toast",
+            "label": "Show a short message"
+          },
+          {
+            "value": "page",
+            "label": "Go to the cart page"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_note",
+        "label": "Let customers add an order note",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Links appear in the footer. Leave empty to hide."
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "placeholder": "https://instagram.com/sahsih"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "placeholder": "https://tiktok.com/@sahsih"
+      },
+      {
+        "type": "text",
+        "id": "social_x_link",
+        "label": "X (Twitter)",
+        "placeholder": "https://x.com/sahsih"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "placeholder": "https://facebook.com/sahsih"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "placeholder": "https://youtube.com/@sahsih"
+      }
+    ]
+  }
+]

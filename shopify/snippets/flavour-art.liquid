@@ -1,0 +1,27 @@
+{%- comment -%}
+  Prints the URL of a flavour's stick or box photo: the image set in Theme
+  settings, else the built-in Sahsih photo for that flavour, else nothing.
+  Accepts: value (flavour name, any case), kind ('stick' or 'box')
+  Usage: {% render 'flavour-art', value: 'Berry', kind: 'box' %}
+{%- endcomment -%}
+{%- liquid
+  assign known_art = 'berry,mango,pineapple,watermelon,citrus' | split: ','
+  assign wanted = value | handleize
+  assign url = ''
+  for i in (1..6)
+    assign k = 'flavour_' | append: i | append: '_name'
+    assign n = settings[k] | handleize
+    if n == blank or n != wanted
+      continue
+    endif
+    assign k = 'flavour_' | append: i | append: '_' | append: kind
+    if settings[k] != blank
+      assign url = settings[k] | image_url: width: 600
+    endif
+    break
+  endfor
+  if url == blank and known_art contains wanted
+    assign url = kind | append: '-' | append: wanted | append: '.webp' | asset_url
+  endif
+-%}
+{{- url -}}

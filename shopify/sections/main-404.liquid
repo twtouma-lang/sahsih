@@ -1,0 +1,21 @@
+<section class="not-found" data-section-id="{{ section.id }}">
+  <div class="grid-lines" aria-hidden="true"></div>
+  <div class="wrap not-found__inner">
+    <p class="tag">{{ 'not_found.label' | t }}</p>
+    <h1 class="not-found__code">404</h1>
+    <p class="lede">{{ 'not_found.text' | t }}</p>
+    <div class="actions">
+      <a class="btn btn--skew" href="{{ routes.root_url }}"><span>{{ 'not_found.home' | t }}</span></a>
+      <a class="btn btn--ghost" href="{{ routes.all_products_collection_url }}"><span>{{ 'not_found.shop' | t }}</span></a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page not found",
+  "tag": "div",
+  "class": "section-main-404",
+  "settings": []
+}
+{% endschema %}

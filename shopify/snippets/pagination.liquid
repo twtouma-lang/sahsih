@@ -1,0 +1,28 @@
+{%- comment -%}
+  Page links for a paginated list.
+  Accepts: paginate (the paginate object)
+  Usage: {% render 'pagination', paginate: paginate %}
+{%- endcomment -%}
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" aria-label="{{ 'general.pagination.label' | t }}">
+    {%- if paginate.previous -%}
+      <a class="pagination__step" href="{{ paginate.previous.url }}">&larr; {{ 'general.pagination.previous' | t }}</a>
+    {%- endif -%}
+    <ul class="pagination__pages">
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span>{{ part.title }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+    {%- if paginate.next -%}
+      <a class="pagination__step" href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }} &rarr;</a>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

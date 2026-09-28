@@ -1,0 +1,143 @@
+<section
+  class="science"
+  id="science"
+  data-section="science"
+  data-section-id="{{ section.id }}"
+  aria-labelledby="science-title-{{ section.id }}"
+>
+  <div class="grid-lines grid-lines--dense" aria-hidden="true"></div>
+  <div class="science__stage">
+    <div class="science__head" data-reveal>
+      {%- if section.settings.tag != blank -%}
+        <p class="tag" data-reveal-item>{{ section.settings.tag | escape }}</p>
+      {%- endif -%}
+      <h2 class="h-cond" id="science-title-{{ section.id }}" data-reveal-item>
+        {{- section.settings.heading | escape | newline_to_br -}}
+      </h2>
+    </div>
+
+    <div class="slot slot--science" data-slot="science" data-face="1" data-glow="0.85" data-fill="0.94">
+      {%- render 'slot-poster' -%}
+    </div>
+
+    <svg class="callout-lines" aria-hidden="true" focusable="false">
+      {%- for block in section.blocks -%}
+        <path class="callout-line" data-line="{{ forloop.index0 }}" d=""></path>
+      {%- endfor -%}
+      {%- for block in section.blocks -%}
+        <circle class="callout-dot" data-dot="{{ forloop.index0 }}" r="5" cx="-20" cy="-20"></circle>
+      {%- endfor -%}
+    </svg>
+
+    <ol class="callouts">
+      {%- for block in section.blocks -%}
+        <li class="callout callout--{{ forloop.index0 }}" data-callout="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.index != blank -%}
+            <p class="callout__index">{{ block.settings.index | escape }}</p>
+          {%- endif -%}
+          <h3 class="callout__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}
+            <div class="callout__body rte">{{ block.settings.text }}</div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+
+    {%- if section.settings.note != blank -%}
+      <p class="science__note">{{ section.settings.note | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sahsih science",
+  "tag": "div",
+  "class": "section-sahsih-science",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The jelly stick turns to face you and a line runs from each ingredient to its row on the label. Edit the rows printed on the stick in Theme settings > 3D jelly stick. Describe ingredients; do not claim effects."
+    },
+    {
+      "type": "text",
+      "id": "tag",
+      "label": "Small label",
+      "default": "03 / Science"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Three jobs.\nOne stick."
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note in the corner",
+      "default": "Full quantitative panel and allergen statement to be confirmed before launch."
+    }
+  ],
+  "max_blocks": 3,
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        {
+          "type": "text",
+          "id": "index",
+          "label": "Small label",
+          "default": "01 / Botanical"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Ingredient",
+          "default": "Milk thistle"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>A flowering plant with a long history in herbal traditions. The headline ingredient in every stick.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sahsih science",
+      "blocks": [
+        {
+          "type": "ingredient",
+          "settings": {
+            "index": "01 / Botanical",
+            "title": "Milk thistle",
+            "text": "<p>A flowering plant with a long history in herbal traditions. The headline ingredient in every stick.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "index": "02 / Mineral salts",
+            "title": "Electrolytes",
+            "text": "<p>Salts such as sodium and potassium, the same family you find in sports drinks. Here in a jelly, not a pint of liquid.</p>"
+          }
+        },
+        {
+          "type": "ingredient",
+          "settings": {
+            "index": "03 / B1, B6, B12",
+            "title": "B vitamins",
+            "text": "<p>Three B vitamins in every stick. The least glamorous line on the panel, and the one you skipped with breakfast.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

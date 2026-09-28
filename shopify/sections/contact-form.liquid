@@ -1,0 +1,58 @@
+<section class="page-section" data-section-id="{{ section.id }}">
+  <div class="wrap page-section__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="h-cond contact__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- assign contact_id = 'contact-' | append: section.id -%}
+    {%- form 'contact', id: contact_id, class: 'contact' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status" tabindex="-1" autofocus>{{ 'contact.success' | t }}</p>
+      {%- elsif form.errors -%}
+        <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="contact__row">
+        <div class="field">
+          <label class="field__label" for="{{ contact_id }}-name">{{ 'contact.name' | t }}</label>
+          <input class="input" id="{{ contact_id }}-name" type="text" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </div>
+        <div class="field">
+          <label class="field__label" for="{{ contact_id }}-email">{{ 'contact.email' | t }} <span aria-hidden="true">*</span></label>
+          <input class="input" id="{{ contact_id }}-email" type="email" name="contact[email]" autocomplete="email" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field__label" for="{{ contact_id }}-phone">{{ 'contact.phone' | t }}</label>
+        <input class="input" id="{{ contact_id }}-phone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+      </div>
+      <div class="field">
+        <label class="field__label" for="{{ contact_id }}-body">{{ 'contact.message' | t }} <span aria-hidden="true">*</span></label>
+        <textarea class="input textarea" id="{{ contact_id }}-body" name="contact[body]" rows="6" required>{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="btn btn--skew btn--lg"><span>{{ 'contact.send' | t }}</span></button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "tag": "div",
+  "class": "section-contact-form",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Write to us"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form"
+    }
+  ]
+}
+{% endschema %}
