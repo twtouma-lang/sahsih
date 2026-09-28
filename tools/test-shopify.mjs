@@ -255,6 +255,21 @@ for (const [name, url] of [
     await wait(900);
     await shot(page, `44-phone-${f}`);
   }
+  // "When to take" plays like on desktop: pinned, one step at a time.
+  const when = await page.evaluate(() => {
+    const w = document.querySelector('.when');
+    return { scene: w.classList.contains('is-scene'), top: w.getBoundingClientRect().top + window.scrollY };
+  });
+  check('phone: timeline is a pinned scene', when.scene);
+  const states = [];
+  for (const f of [0.05, 0.5, 0.95]) {
+    await page.evaluate(([top, f]) => window.scrollTo(0, top + f * 1.5 * window.innerHeight), [when.top, f]);
+    await wait(900);
+    states.push(await page.evaluate(() => [...document.querySelectorAll('.when .step')].findIndex((s) => s.classList.contains('is-current'))));
+  }
+  check('phone: timeline steps advance with scroll', states.join(',') === '0,1,2', states.join(','));
+  const bar = await page.evaluate(() => getComputedStyle(document.querySelector('.bar')).backdropFilter);
+  check('phone: no live blur behind the header', bar === 'none', bar);
   check('phone: no script errors', page.errors.length === 0, page.errors.slice(0, 5).join(' | '));
   await context.close();
 }

@@ -378,7 +378,10 @@ function intro() {
 const steps = $$('[data-step]');
 function setStep(progress) {
   const active = progress < 0.3 ? 0 : progress < 0.7 ? 1 : 2;
-  steps.forEach((s, i) => s.classList.toggle('is-on', i <= active));
+  steps.forEach((s, i) => {
+    s.classList.toggle('is-on', i <= active);
+    s.classList.toggle('is-current', i === active);
+  });
 }
 
 let footerLanded = false;
@@ -398,7 +401,7 @@ mm.add(
       gsap
         .timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
         // Animate the art, not its wrapper: the wrapper's CSS translate centres it.
-        .to('[data-wordmark] .wordmark__art', { yPercent: desktop ? -40 : -20, scale: 0.9, autoAlpha: 0.15, ease: 'none' }, 0)
+        .to('[data-wordmark] .wordmark__art', { yPercent: desktop ? -40 : -20, scale: desktop ? 0.9 : 1, autoAlpha: 0.15, ease: 'none' }, 0)
         .to('.hero__bokeh--near', { yPercent: -14, ease: 'none' }, 0)
         .to('.hero__bokeh--far', { yPercent: -5, ease: 'none' }, 0)
         .to('.hud', { y: -140, autoAlpha: 0, ease: 'none' }, 0)
@@ -485,14 +488,17 @@ mm.add(
     // When to take
     $$('.when [data-reveal]').forEach(reveal);
     slotTrigger(byName('when'));
-    if (desktop && motion) {
+    // Desktop and phones alike: the section holds while the stick travels
+    // the timeline (phones swap the step text under the rail, see .is-scene).
+    if (motion) {
+      $$('.when').forEach((w) => w.classList.add('is-scene'));
       setStep(0);
       gsap
         .timeline({
           scrollTrigger: {
             trigger: '.when',
             start: 'top top',
-            end: '+=170%',
+            end: desktop ? '+=170%' : '+=150%',
             pin: '.when__stage',
             scrub: 0.6,
             anticipatePin: 1,
@@ -566,6 +572,7 @@ mm.add(
     return () => {
       slots.forEach((s) => (s.st = null));
       calloutsLive = false;
+      $$('.when').forEach((w) => w.classList.remove('is-scene'));
     };
   }
 );
@@ -733,8 +740,14 @@ document.addEventListener('keydown', (e) => {
 /* ------------------------------------------------------------------
    Resize
    ------------------------------------------------------------------ */
+/* Phones fire resize whenever the address bar shows or hides during a
+   scroll; recalculating the whole film then makes scrolling stutter, so
+   only real width changes (rotation, window resize) count. */
 let resizeTimer = 0;
+let lastWidth = window.innerWidth;
 window.addEventListener('resize', () => {
+  if (window.innerWidth === lastWidth) return;
+  lastWidth = window.innerWidth;
   setPageWidth();
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {

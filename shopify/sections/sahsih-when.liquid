@@ -24,10 +24,12 @@
             {%- if block.settings.when != blank -%}
               <p class="step__when">{{ block.settings.when | escape }}</p>
             {%- endif -%}
-            <h3 class="step__title">{{ block.settings.title | escape }}</h3>
-            {%- if block.settings.text != blank -%}
-              <div class="step__body rte">{{ block.settings.text }}</div>
-            {%- endif -%}
+            <div class="step__text">
+              <h3 class="step__title">{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.text != blank -%}
+                <div class="step__body rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+            </div>
           </li>
         {%- endfor -%}
       </ol>

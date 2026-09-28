@@ -1297,6 +1297,12 @@ html:not(.has-3d) .callout-lines { display: none; }
   transition: opacity 0.5s ease;
 }
 .step.is-on { opacity: 1; }
+.step__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
 .step__node {
   position: absolute;
   top: -8px;
@@ -1396,6 +1402,107 @@ html:not(.has-3d) .callout-lines { display: none; }
   .step .step__node {
     background: var(--accent);
     border-color: var(--accent);
+  }
+  .step__text { align-items: flex-start; }
+
+  /* The same scene as on desktop: the section holds still while the stick
+     travels the timeline and the steps light up. There is room for one
+     step's words at a time, so they swap under the rail. The script adds
+     .is-scene; with reduced motion the simple list above stays. */
+  .when.is-scene .when__stage {
+    height: 100vh;
+    height: 100svh;
+    min-height: 540px;
+    padding: calc(var(--bar-h) + 20px) var(--gutter) 24px;
+    gap: 14px;
+  }
+  .when.is-scene .when__head { gap: 12px; }
+  .when.is-scene .when__head .h-cond { font-size: clamp(36px, 10.4vw, 58px); }
+  .when.is-scene .timeline {
+    display: block;
+    flex: 1;
+    min-height: 0;
+  }
+  .when.is-scene .timeline__rail {
+    left: 0;
+    right: 0;
+    top: 46%;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+  .when.is-scene .timeline__fill {
+    width: 100%;
+    height: 100%;
+    transform-origin: left;
+  }
+  .when.is-scene .slot--when {
+    position: absolute;
+    top: 46%;
+    left: 16.7%;
+    width: 26vw;
+    height: min(42%, 36svh);
+    translate: -50% -104%;
+  }
+  .when.is-scene .steps {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 46%;
+    bottom: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+  .when.is-scene .step {
+    position: static;
+    display: block;
+    padding: 0;
+    text-align: center;
+    opacity: 0.42;
+    transition: opacity 0.4s ease;
+  }
+  .when.is-scene .step.is-on { opacity: 1; }
+  .when.is-scene .step__node {
+    position: relative;
+    display: block;
+    top: auto;
+    left: auto;
+    margin: -8px auto 0;
+    translate: none;
+    background: var(--bg);
+    border-color: var(--line-2);
+  }
+  .when.is-scene .step.is-on .step__node {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--accent);
+  }
+  .when.is-scene .step__when {
+    margin-top: 14px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .when.is-scene .step__text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 66px;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    translate: 0 14px;
+    pointer-events: none;
+    transition: opacity 0.35s ease, translate 0.45s var(--ease-out);
+  }
+  .when.is-scene .step.is-current .step__text {
+    opacity: 1;
+    translate: none;
+    pointer-events: auto;
+  }
+  .when.is-scene .step__title { font-size: clamp(30px, 9vw, 46px); }
+  .when.is-scene .step__body {
+    max-width: 30ch;
+    font-size: 15px;
   }
 }
 
@@ -1914,6 +2021,32 @@ html:not(.has-3d) .callout-lines { display: none; }
   .grain { animation: grain 1.1s steps(6) infinite; }
   .hero__hint span:last-child { animation: hint 2.4s ease-in-out infinite; }
   .cart-btn.is-bumped { animation: bump 0.4s var(--ease-out); }
+}
+
+/* Phones and tablets: keep scrolling smooth. Full-screen blending, live
+   background blur and large filtered layers cost the phone's graphics chip
+   on every scroll frame, so they give way to flat equivalents that look
+   the same at arm's length. The 3D stick is untouched. */
+@media (max-width: 899px), (hover: none) and (pointer: coarse) {
+  .grain { display: none; }
+  .bar,
+  .hud__panel,
+  .callout,
+  .cart-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .bar { background: rgba(6, 6, 6, 0.94); }
+  .hud__panel,
+  .callout { background: rgba(10, 10, 14, 0.88); }
+  .cart-backdrop { background: rgba(6, 6, 6, 0.85); }
+  .hero__haze { mix-blend-mode: normal; opacity: 0.75; }
+  /* The glow around the big logo is a blur the size of the screen. */
+  .wordmark__art { filter: none; }
+  .is-tinted .wordmark__art { filter: url(#logo-tint); }
+  .wordmark__art,
+  .hero__bokeh,
+  .stage { will-change: transform, opacity; }
 }
 
 @media (prefers-reduced-motion: reduce) {

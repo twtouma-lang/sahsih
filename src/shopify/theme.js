@@ -565,7 +565,7 @@ function buildScenes() {
         $$('.hero').forEach((hero) => {
           const tl = gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
           const art = $('[data-wordmark] .wordmark__art', hero);
-          if (art) tl.to(art, { yPercent: desktop ? -40 : -20, scale: 0.9, autoAlpha: 0.15, ease: 'none' }, 0);
+          if (art) tl.to(art, { yPercent: desktop ? -40 : -20, scale: desktop ? 0.9 : 1, autoAlpha: 0.15, ease: 'none' }, 0);
           const near = $('.hero__bokeh--near', hero);
           const far = $('.hero__bokeh--far', hero);
           if (near) tl.to(near, { yPercent: -14, ease: 'none' }, 0);
@@ -645,18 +645,24 @@ function buildScenes() {
           const n = Math.max(1, steps.length);
           const setStep = (progress) => {
             const active = Math.min(n - 1, Math.floor(progress * n));
-            steps.forEach((s, i) => s.classList.toggle('is-on', i <= active));
+            steps.forEach((s, i) => {
+              s.classList.toggle('is-on', i <= active);
+              s.classList.toggle('is-current', i === active);
+            });
           };
           const stageEl = $('.when__stage', section);
           const slotEl = $('.slot--when', section);
           const fill = $('.timeline__fill', section);
-          if (desktop && motion && stageEl && n > 1) {
+          // Desktop and phones alike: the section holds while the stick
+          // travels the timeline (phones swap the step text under the rail).
+          if (motion && stageEl && n > 1) {
+            section.classList.add('is-scene');
             setStep(0);
             const tl = gsap.timeline({
               scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: `+=${60 + n * 36}%`,
+                end: `+=${(desktop ? 60 : 45) + n * (desktop ? 36 : 32)}%`,
                 pin: stageEl,
                 scrub: 0.6,
                 anticipatePin: 1,
@@ -734,6 +740,7 @@ function buildScenes() {
       return () => {
         slots.forEach((s) => (s.st = null));
         scienceScenes.forEach((scene) => (scene.live = false));
+        $$('.when').forEach((w) => w.classList.remove('is-scene'));
       };
     }
   );
@@ -987,17 +994,18 @@ if (designMode) {
 /* ------------------------------------------------------------------
    Resize
    ------------------------------------------------------------------ */
+/* Phones fire resize whenever the address bar shows or hides during a
+   scroll; recalculating the whole film then makes scrolling stutter, so
+   only real width changes (rotation, window resize) count. */
 let resizeTimer = 0;
 let lastWidth = window.innerWidth;
 window.addEventListener('resize', () => {
+  if (window.innerWidth === lastWidth) return;
+  lastWidth = window.innerWidth;
   setPageWidth();
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    // Phones fire resize when the address bar hides; only repaint on real width changes.
-    if (window.innerWidth !== lastWidth) {
-      lastWidth = window.innerWidth;
-      paintHeroes();
-    }
+    paintHeroes();
     ScrollTrigger.refresh();
   }, 200);
 });

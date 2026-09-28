@@ -244,9 +244,16 @@ function mount(options) {
   /* Sizing. */
   let vw = 1;
   let vh = 1;
+  /* The canvas is 100vh tall in CSS, which on phones is the height with
+     the address bar hidden and does not change while scrolling. Sizing to
+     that box (not innerHeight) means the address bar showing or hiding
+     never reallocates the drawing buffer mid-scroll. */
   function resize() {
-    vw = window.innerWidth;
-    vh = window.innerHeight;
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    if (w === vw && h === vh) return;
+    vw = w;
+    vh = h;
     renderer.setSize(vw, vh, false);
     camera.aspect = vw / vh;
     camera.updateProjectionMatrix();
@@ -352,12 +359,14 @@ function mount(options) {
       onReady();
     }
 
-    if (!mobile && sampled < 180) {
+    // If frames run long in the first few seconds, draw fewer pixels.
+    if (sampled < 180) {
       sampled++;
       if (dt > 0.024) slowFrames++;
       if (sampled === 180 && slowFrames > 90 && pixelRatio > 1) {
         pixelRatio = 1;
         renderer.setPixelRatio(pixelRatio);
+        vw = 0;
         resize();
       }
     }

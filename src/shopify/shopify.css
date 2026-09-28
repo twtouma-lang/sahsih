@@ -1135,6 +1135,9 @@ textarea { font: inherit; color: inherit; }
   .steps { grid-template-columns: 1fr; }
   .slot--when { left: auto; }
   .timeline__fill { transform: scaleY(1); }
+  .when.is-scene .steps { grid-template-columns: repeat(var(--steps, 3), minmax(0, 1fr)); }
+  .when.is-scene .slot--when { left: calc(50% / var(--steps, 3)); }
+  .when.is-scene .timeline__fill { transform: scaleX(calc(0.5 / var(--steps, 3))); }
 }
 
 .hero--plain .hero__bg {
