@@ -399,65 +399,65 @@ function drawCallouts() {
 }
 
 /* ------------------------------------------------------------------
-   The 3D stage: loaded after first paint, only if the page has a slot
+   The 3D stage. It starts loading as soon as this script runs (the layout
+   also preloads it), only on pages with a slot. While it loads the flat
+   photos stay hidden (.stage-on in the CSS); they are shown straight away
+   if this device cannot draw 3D or the script fails (.no-3d).
    ------------------------------------------------------------------ */
+function showPosters() {
+  if (!root.classList.contains('has-3d')) root.classList.add('no-3d');
+}
+
+/* A quick check only: opening a throwaway WebGL context to test support
+   costs time on every device. If the browser has WebGL but cannot create a
+   context, the stage's own start-up fails and the photos show instead. */
 function webglAvailable() {
-  try {
-    const c = document.createElement('canvas');
-    const gl = c.getContext('webgl2') || c.getContext('webgl');
-    const ok = !!gl;
-    const lose = gl && gl.getExtension('WEBGL_lose_context');
-    if (lose) lose.loseContext();
-    return ok;
-  } catch {
-    return false;
-  }
+  return typeof window.WebGLRenderingContext !== 'undefined';
 }
 
 function mountStage() {
   const canvas = $('#stage');
-  if (!window.SahsihStage || !canvas || stage) return;
-  stage = window.SahsihStage.mount({
-    canvas,
-    getPose,
-    getVelocity: velocity,
-    getPointer: () => pointer,
-    logoSrc: CFG.logo,
-    reducedMotion: reduced,
-    mobile: !desktopMQ.matches,
-    initialFlavour: flavour,
-    flavours: CFG.flavours,
-    label: CFG.label,
-    onFrame: drawCallouts,
-    onReady: () => {
-      root.classList.add('has-3d');
-      if (!reduced) stage.squeeze(0.9);
-    },
-  });
-  if (!stage) root.classList.add('no-3d');
+  if (stage) return;
+  if (!window.SahsihStage || !canvas) return showPosters();
+  try {
+    stage = window.SahsihStage.mount({
+      canvas,
+      getPose,
+      getVelocity: velocity,
+      getPointer: () => pointer,
+      logoSrc: CFG.logo,
+      reducedMotion: reduced,
+      mobile: !desktopMQ.matches,
+      initialFlavour: flavour,
+      flavours: CFG.flavours,
+      label: CFG.label,
+      onFrame: drawCallouts,
+      onReady: () => {
+        root.classList.remove('no-3d');
+        root.classList.add('has-3d');
+        if (!reduced && stage) stage.squeeze(0.9);
+      },
+    });
+  } catch (err) {
+    stage = null;
+    console.error('Sahsih 3D stage could not start', err);
+  }
+  if (!stage) showPosters();
 }
 
 function loadStage() {
-  if (stageRequested || !CFG.enable3d || !$('#stage') || !CFG.stageSrc) return;
+  if (stageRequested) return;
+  if (!CFG.enable3d || !$('#stage') || !CFG.stageSrc) return showPosters();
   if (!slots.some((s) => s.el.dataset.slot !== 'footer')) return;
   stageRequested = true;
-  if (!webglAvailable()) {
-    root.classList.add('no-3d');
-    return;
-  }
+  if (!webglAvailable()) return showPosters();
   if (window.SahsihStage) return mountStage();
   const s = document.createElement('script');
   s.src = CFG.stageSrc;
   s.async = true;
   s.onload = mountStage;
-  s.onerror = () => root.classList.add('no-3d');
+  s.onerror = showPosters;
   document.head.appendChild(s);
-}
-
-function whenIdle(fn) {
-  const go = () => ('requestIdleCallback' in window ? window.requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 120));
-  if (document.readyState === 'complete') go();
-  else window.addEventListener('load', go, { once: true });
 }
 
 /* ------------------------------------------------------------------
@@ -1009,6 +1009,10 @@ paintHeroes();
 initBuyForms();
 initGalleries();
 
+// Start the 3D straight away, before fonts and scroll scenes.
+slots = collectSlots();
+loadStage();
+
 // On a product page the page takes the product's flavour; elsewhere the first.
 const productForm = buyForms.find((b) => b.ownsUrl && b.flavour());
 setFlavour(productForm ? productForm.flavour() : flavour, { quiet: true });
@@ -1030,4 +1034,3 @@ Promise.race([fontsReady, new Promise((r) => setTimeout(r, 900))]).then(() => {
   }
 });
 
-whenIdle(loadStage);

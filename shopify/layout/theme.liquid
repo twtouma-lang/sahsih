@@ -1,7 +1,7 @@
 <!doctype html>
 <html
   lang="{{ request.locale.iso_code }}"
-  class="no-js{% if request.design_mode %} is-design-mode{% endif %}"
+  class="no-js{% if settings.enable_3d %} stage-on{% endif %}{% if request.design_mode %} is-design-mode{% endif %}"
   data-page-type="{{ request.page_type }}"
 >
   <head>
@@ -23,6 +23,17 @@
 
     {{ 'archivo-var-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
     {{ 'jetbrains-mono-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: true }}
+    {%- liquid
+      assign preload_stage = false
+      if settings.enable_3d
+        if request.page_type == 'index' or request.page_type == 'product'
+          assign preload_stage = true
+        endif
+      endif
+    -%}
+    {%- if preload_stage -%}
+      {{ 'sahsih-stage.js' | asset_url | preload_tag: as: 'script' }}
+    {%- endif -%}
     {%- if settings.wordmark_image == blank and request.page_type == 'index' -%}
       {{ 'sahsih-logo-hd.webp' | asset_url | preload_tag: as: 'image', type: 'image/webp' }}
     {%- endif -%}
@@ -32,6 +43,11 @@
 
     <script>
       document.documentElement.classList.replace('no-js', 'js');
+      // If the 3D stick has not appeared after 12 seconds, show the product photos instead.
+      setTimeout(function () {
+        var root = document.documentElement;
+        if (!root.classList.contains('has-3d')) root.classList.add('no-3d');
+      }, 12000);
     </script>
     {%- render 'theme-config' -%}
     <script src="{{ 'sahsih-theme.js' | asset_url }}" defer="defer"></script>

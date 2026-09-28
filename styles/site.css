@@ -584,6 +584,11 @@ main:focus { outline: none; }
   transition: opacity 0.6s ease;
 }
 .has-3d .slot__poster { opacity: 0; }
+/* The page opens straight into 3D: while the stick loads, the flat photo
+   stays hidden. It appears only when 3D is unavailable (.no-3d): no WebGL,
+   the script failed, or it took longer than the fallback in the <head>. */
+.js.stage-on .slot__poster { opacity: 0; }
+.js.stage-on.no-3d:not(.has-3d) .slot__poster { opacity: 1; }
 .slot.is-over { cursor: grab; }
 .slot.is-squeezed .slot__poster { animation: bump 0.45s var(--ease-out); }
 .slot.is-over:active { cursor: grabbing; }

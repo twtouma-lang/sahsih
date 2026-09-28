@@ -278,57 +278,55 @@ function drawCallouts() {
 /* ------------------------------------------------------------------
    Load the 3D stage after first paint
    ------------------------------------------------------------------ */
+/* A quick check only: opening a throwaway WebGL context to test support
+   costs time on every device. If the browser has WebGL but cannot create a
+   context, the stage's own start-up fails and the photos show instead. */
 function webglAvailable() {
-  try {
-    const c = document.createElement('canvas');
-    const gl = c.getContext('webgl2') || c.getContext('webgl');
-    const ok = !!gl;
-    const lose = gl && gl.getExtension('WEBGL_lose_context');
-    if (lose) lose.loseContext();
-    return ok;
-  } catch {
-    return false;
-  }
+  return typeof window.WebGLRenderingContext !== 'undefined';
+}
+
+/* While the 3D loads, the flat photos stay hidden (.stage-on in the CSS);
+   they appear straight away if this device cannot draw 3D (.no-3d). */
+function showPosters() {
+  if (!root.classList.contains('has-3d')) root.classList.add('no-3d');
 }
 
 function mountStage() {
-  if (!window.SahsihStage) return;
-  stage = window.SahsihStage.mount({
-    canvas: $('#stage'),
-    getPose,
-    getVelocity: velocity,
-    getPointer: () => pointer,
-    logoSrc: asset('logo'),
-    reducedMotion: reduced,
-    mobile: !desktopMQ.matches,
-    initialFlavour: flavour,
-    onFrame: drawCallouts,
-    onReady: () => {
-      root.classList.add('has-3d');
-      if (!reduced) stage.squeeze(0.9);
-    },
-  });
-  if (!stage) root.classList.add('no-3d');
+  if (stage) return;
+  if (!window.SahsihStage) return showPosters();
+  try {
+    stage = window.SahsihStage.mount({
+      canvas: $('#stage'),
+      getPose,
+      getVelocity: velocity,
+      getPointer: () => pointer,
+      logoSrc: asset('logo'),
+      reducedMotion: reduced,
+      mobile: !desktopMQ.matches,
+      initialFlavour: flavour,
+      onFrame: drawCallouts,
+      onReady: () => {
+        root.classList.remove('no-3d');
+        root.classList.add('has-3d');
+        if (!reduced && stage) stage.squeeze(0.9);
+      },
+    });
+  } catch (err) {
+    stage = null;
+    console.error('Sahsih 3D stage could not start', err);
+  }
+  if (!stage) showPosters();
 }
 
 function loadStage() {
-  if (!webglAvailable()) {
-    root.classList.add('no-3d');
-    return;
-  }
+  if (!webglAvailable()) return showPosters();
   if (window.SahsihStage) return mountStage();
   const s = document.createElement('script');
   s.src = 'scripts/stage.js';
   s.async = true;
   s.onload = mountStage;
-  s.onerror = () => root.classList.add('no-3d');
+  s.onerror = showPosters;
   document.head.appendChild(s);
-}
-
-function whenIdle(fn) {
-  const go = () => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 120));
-  if (document.readyState === 'complete') go();
-  else window.addEventListener('load', go, { once: true });
 }
 
 /* ------------------------------------------------------------------
@@ -761,4 +759,5 @@ Promise.race([fontsReady, new Promise((r) => setTimeout(r, 900))]).then(() => {
   }
 });
 
-whenIdle(loadStage);
+// Start the 3D straight away (index.html also preloads it).
+loadStage();

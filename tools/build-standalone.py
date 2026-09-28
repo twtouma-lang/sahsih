@@ -112,7 +112,7 @@ def as_fragment(html: str) -> str:
     """Reduce a full document to title + styles + body content + scripts."""
     styles = "\n".join(re.findall(r"<style>.*?</style>", html, flags=re.S))
     body = re.search(r"<body>(.*)</body>", html, flags=re.S).group(1).strip()
-    head_script = re.search(r"<script>document\.documentElement[^<]*</script>", html).group(0)
+    head_script = re.search(r"<script>\s*document\.documentElement[\s\S]*?</script>", html).group(0)
     return f"<title>Sahsih</title>\n{head_script}\n{styles}\n{body}\n"
 
 

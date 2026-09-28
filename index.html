@@ -26,13 +26,22 @@
 <link rel="icon" href="assets/img/favicon.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
+<link rel="preload" href="scripts/stage.js" as="script">
 <link rel="preload" href="assets/img/logo/sahsih-logo-hd.webp" as="image" type="image/webp">
 <link rel="preload" href="assets/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles/fonts.css">
 <link rel="stylesheet" href="styles/site.css">
 
-<script>document.documentElement.classList.replace('no-js', 'js');</script>
+<script>
+document.documentElement.classList.remove('no-js');
+document.documentElement.classList.add('js', 'stage-on');
+// If the 3D stick has not appeared after 12 seconds, show the product photos instead.
+setTimeout(function () {
+  var root = document.documentElement;
+  if (!root.classList.contains('has-3d')) root.classList.add('no-3d');
+}, 12000);
+</script>
 <script src="scripts/app.js" defer></script>
 
 <script type="application/ld+json">

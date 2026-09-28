@@ -332,6 +332,43 @@ for (const [name, url] of [
   await context.close();
 }
 
+/* 10. The page opens straight into 3D: no flat photo while it loads */
+{
+  const { context, page } = await newPage();
+  const t0 = Date.now();
+  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+  await wait(300);
+  const early = await page.evaluate(() => {
+    const img = document.querySelector('.slot--hero .slot__poster');
+    return { opacity: img ? getComputedStyle(img).opacity : null, cls: document.documentElement.className };
+  });
+  check('3D first: photo hidden while 3D loads', early.opacity === '0', JSON.stringify(early));
+  await page.waitForFunction(() => document.documentElement.classList.contains('has-3d'), null, { timeout: 30000 }).catch(() => {});
+  check('3D first: stick appears', await page.evaluate(() => document.documentElement.classList.contains('has-3d')), `${Date.now() - t0} ms in software rendering`);
+  check('3D first: photos stay hidden after', (await page.locator('.slot--hero .slot__poster').evaluate((i) => getComputedStyle(i).opacity)) === '0');
+  await context.close();
+}
+
+/* 11. No WebGL: the photos show at once */
+{
+  const noGl = await chromium.launch({ executablePath, args: ['--disable-webgl', '--disable-webgl2', '--disable-3d-apis'] });
+  const context = await noGl.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+  await wait(1500);
+  const state = await page.evaluate(() => ({
+    no3d: document.documentElement.classList.contains('no-3d'),
+    opacity: getComputedStyle(document.querySelector('.slot--hero .slot__poster')).opacity,
+  }));
+  check('no WebGL: photos shown straight away', state.no3d && Number(state.opacity) > 0.5, JSON.stringify(state));
+  await wait(700);
+  await page.screenshot({ path: path.join(SHOTS, '80-no-webgl.png') });
+  check('no WebGL: no script errors', errors.length === 0, errors.join(' | '));
+  await noGl.close();
+}
+
 await browser.close();
 console.log(results.join('\n'));
 console.log(`\n${results.length - failures}/${results.length} passed`);
